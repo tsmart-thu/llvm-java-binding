@@ -27,8 +27,8 @@ import static org.bytedeco.javacpp.LLVM.*;
 public class Value {
     protected String name;
 
-    Value(LLVMValueRef f) {
-        name = LLVMGetValueName(f).getString();
+    Value(LLVMValueRef valueRef) {
+        name = LLVMGetValueName(valueRef).getString();
     }
 
     public String getName() {

@@ -19,13 +19,13 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
+import static org.bytedeco.javacpp.LLVM.*;
 
 /**
  * @author guangchen on 26/02/2017.
  */
 public class User extends Value {
-    User(LLVM.LLVMValueRef f) {
-        super(f);
+    User(LLVMValueRef valueRef) {
+        super(valueRef);
     }
 }

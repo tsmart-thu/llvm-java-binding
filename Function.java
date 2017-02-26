@@ -30,9 +30,9 @@ import static org.bytedeco.javacpp.LLVM.*;
 public class Function extends GlobalObject {
     private List<BasicBlock> basicBlockList = new ArrayList<>();
 
-    Function(LLVMValueRef f) {
-        super(f);
-        for (LLVMBasicBlockRef bb = LLVMGetFirstBasicBlock(f); bb != null; bb = LLVMGetNextBasicBlock(bb)) {
+    Function(LLVMValueRef valueRef) {
+        super(valueRef);
+        for (LLVMBasicBlockRef bb = LLVMGetFirstBasicBlock(valueRef); bb != null; bb = LLVMGetNextBasicBlock(bb)) {
             basicBlockList.add(new BasicBlock(bb));
         }
     }

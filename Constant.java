@@ -19,13 +19,13 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
+import static org.bytedeco.javacpp.LLVM.*;
 
 /**
  * @author guangchen on 26/02/2017.
  */
 public class Constant extends User {
-    Constant(LLVM.LLVMValueRef f) {
-        super(f);
+    Constant(LLVMValueRef valueRef) {
+        super(valueRef);
     }
 }
