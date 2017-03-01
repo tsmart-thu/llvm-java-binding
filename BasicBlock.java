@@ -29,9 +29,11 @@ import static org.bytedeco.javacpp.LLVM.*;
  */
 public class BasicBlock extends Value {
     private List<Instruction> instList = new ArrayList<>();
+    private Function parent;
 
-    BasicBlock(LLVMBasicBlockRef basicBlockRef) {
+    BasicBlock(LLVMBasicBlockRef basicBlockRef, Function parent) {
         super(LLVMBasicBlockAsValue(basicBlockRef));
+        this.parent = parent;
         for (LLVMValueRef inst = LLVMGetFirstInstruction(basicBlockRef); inst != null; inst = LLVMGetNextInstruction(inst)) {
             int opcode = LLVMGetInstructionOpcode(inst);
             switch (opcode) {
@@ -199,5 +201,9 @@ public class BasicBlock extends Value {
 
     public List<Instruction> getInstList() {
         return instList;
+    }
+
+    public Function getParent() {
+        return parent;
     }
 }

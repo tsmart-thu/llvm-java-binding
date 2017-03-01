@@ -33,7 +33,7 @@ public class Function extends GlobalObject {
     Function(LLVMValueRef valueRef) {
         super(valueRef);
         for (LLVMBasicBlockRef bb = LLVMGetFirstBasicBlock(valueRef); bb != null; bb = LLVMGetNextBasicBlock(bb)) {
-            basicBlockList.add(new BasicBlock(bb));
+            basicBlockList.add(new BasicBlock(bb, this));
         }
     }
 
