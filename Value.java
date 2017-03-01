@@ -19,7 +19,8 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static org.bytedeco.javacpp.LLVM.*;
+import static org.bytedeco.javacpp.LLVM.LLVMGetValueName;
+import static org.bytedeco.javacpp.LLVM.LLVMValueRef;
 
 /**
  * @author guangchen on 26/02/2017.

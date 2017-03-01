@@ -27,10 +27,10 @@ import java.util.List;
  * @author guangchen on 26/02/2017.
  */
 public class Use {
-    Value value;
-    User user;
-    int index;
-    Use next = null;
+    private Value value;
+    private User user;
+    private int index;
+    private Use next = null;
 
     public Use(Value value, User user, int index) {
         this.value = value;
@@ -52,5 +52,9 @@ public class Use {
 
     public int getOperandNo() {
         return index;
+    }
+
+    public void setNext(Use next) {
+        this.next = next;
     }
 }
