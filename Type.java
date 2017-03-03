@@ -81,7 +81,7 @@ public class Type {
     }
 
     public boolean isPPC_FP128Ty() {
-        return this.typeID == TypeID.FP128TyID;
+        return this.typeID == TypeID.PPC_FP128TyID;
     }
 
     public boolean isFloatingPointTy() {
@@ -97,15 +97,15 @@ public class Type {
     }
 
     public boolean isLabelTy() {
-        throw new NotImplementedException();
+        return this.typeID == TypeID.LabelTyID;
     }
 
     public boolean isMetadataTy() {
-        throw new NotImplementedException();
+        return this.typeID == TypeID.MetadataTyID;
     }
 
     public boolean isTokenTy() {
-        throw new NotImplementedException();
+        return this.typeID == TypeID.TokenTyID;
     }
 
     public boolean isIntegerTy() {
