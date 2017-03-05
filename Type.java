@@ -45,8 +45,13 @@ public class Type {
         VectorTyID
     }
 
-    private TypeID typeID;
-    private Context context;
+    private final TypeID typeID;
+    private final Context context;
+
+    protected Type(Context context, TypeID id) {
+        this.context = context;
+        this.typeID = id;
+    }
 
     public TypeID getTypeID() {
         return typeID;
@@ -257,51 +262,51 @@ public class Type {
     }
 
     public static Type getVoidTy(Context context) {
-        throw new NotImplementedException();
+        return new Type(context, TypeID.VoidTyID);
     }
 
     public static Type getLabelTy(Context context) {
-        throw new NotImplementedException();
+        return new Type(context, TypeID.LabelTyID);
     }
 
     public static Type getHalfTy(Context context) {
-        throw new NotImplementedException();
+        return new Type(context, TypeID.HalfTyID);
     }
 
     public static Type getFloatTy(Context context) {
-        throw new NotImplementedException();
+        return new Type(context, TypeID.FloatTyID);
     }
 
     public static Type getDoubleTy(Context context) {
-        throw new NotImplementedException();
+        return new Type(context, TypeID.DoubleTyID);
     }
 
     public static Type getMetadataTy(Context context) {
-        throw new NotImplementedException();
+        return new Type(context, TypeID.MetadataTyID);
     }
 
     public static Type getX86_FP80Ty(Context context) {
-        throw new NotImplementedException();
+        return new Type(context, TypeID.X86_FP80TyID);
     }
 
     public static Type getFP128Ty(Context context) {
-        throw new NotImplementedException();
+        return new Type(context, TypeID.FP128TyID);
     }
 
     public static Type getPPC_FP128Ty(Context context) {
-        throw new NotImplementedException();
+        return new Type(context, TypeID.PPC_FP128TyID);
     }
 
     public static Type getX86_MMXTy(Context context) {
-        throw new NotImplementedException();
+        return new Type(context, TypeID.X86_MMXTyID);
     }
 
     public static Type getTokenTy(Context context) {
-        throw new NotImplementedException();
+        return new Type(context, TypeID.TokenTyID);
     }
 
     public static IntegerType getIntNTy(Context context, int N) {
-        throw new NotImplementedException();
+        return new IntegerType(context, N);
     }
 
     public static IntegerType getInt1Ty(Context context) {

@@ -19,13 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
-
 /**
  * @author guangchen on 27/02/2017.
  */
 public class UnreachableInst extends TerminatorInst {
-    public UnreachableInst(LLVM.LLVMValueRef inst) {
-        super(inst);
+    public UnreachableInst(String name, Type type) {
+        super(name, type);
     }
 }

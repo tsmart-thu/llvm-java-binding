@@ -19,14 +19,12 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
-
 
 /**
  * @author guangchen on 27/02/2017.
  */
 public class AtomicCmpXchgInst extends Instruction {
-    public AtomicCmpXchgInst(LLVM.LLVMValueRef inst) {
-        super(inst);
+    public AtomicCmpXchgInst(String name, Type type) {
+        super(name, type);
     }
 }

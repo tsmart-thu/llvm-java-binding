@@ -19,13 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static org.bytedeco.javacpp.LLVM.*;
-
 /**
  * @author guangchen on 26/02/2017.
  */
 public class GlobalObject extends GlobalValue {
-    GlobalObject(LLVMValueRef valueRef) {
-        super(valueRef);
+    public GlobalObject(String name, Type type) {
+        super(name, type);
     }
 }

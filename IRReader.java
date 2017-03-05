@@ -14,6 +14,7 @@ public class IRReader {
         LLVMCreateMemoryBufferWithContentsOfFile(new BytePointer(fileName), bufferRef, outMessage);
         LLVMModuleRef moduleRef = new LLVMModuleRef();
         LLVMParseIRInContext(context.getContextRef(), bufferRef, moduleRef, outMessage);
-        return new Module(moduleRef);
+        Converter converter = new Converter(context);
+        return converter.convert(moduleRef);
     }
 }

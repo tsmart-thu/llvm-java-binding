@@ -19,13 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
-
 /**
  * @author guangchen on 27/02/2017.
  */
 public class ShuffleVectorInst extends Instruction {
-    public ShuffleVectorInst(LLVM.LLVMValueRef inst) {
-        super(inst);
+    public ShuffleVectorInst(String name, Type type) {
+        super(name, type);
     }
 }

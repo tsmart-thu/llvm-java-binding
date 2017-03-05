@@ -23,4 +23,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 01/03/2017.
  */
 public class StructType extends CompositeType {
+    protected StructType(Context context, TypeID id) {
+        super(context, id);
+    }
 }

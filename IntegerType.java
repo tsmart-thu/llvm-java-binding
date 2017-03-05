@@ -23,4 +23,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 01/03/2017.
  */
 public class IntegerType extends Type {
+    public IntegerType(Context context, int n) {
+        super(context, TypeID.IntegerTyID);
+    }
 }

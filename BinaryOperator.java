@@ -19,13 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
-
 /**
  * @author guangchen on 27/02/2017.
  */
 public class BinaryOperator extends Instruction {
-    public BinaryOperator(LLVM.LLVMValueRef inst, int opcode) {
-        super(inst);
+    public BinaryOperator(String name, Type type, int opcode) {
+        super(name, type);
     }
 }

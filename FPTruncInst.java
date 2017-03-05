@@ -19,13 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
-
 /**
  * @author guangchen on 27/02/2017.
  */
 public class FPTruncInst extends CastInst {
-    public FPTruncInst(LLVM.LLVMValueRef inst) {
-        super(inst);
+    public FPTruncInst(String name, Type type) {
+        super(name, type);
     }
 }

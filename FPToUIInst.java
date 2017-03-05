@@ -19,13 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
-
 /**
  * @author guangchen on 27/02/2017.
  */
 public class FPToUIInst extends CastInst {
-    public FPToUIInst(LLVM.LLVMValueRef inst) {
-        super(inst);
+    public FPToUIInst(String name, Type type) {
+        super(name, type);
     }
 }

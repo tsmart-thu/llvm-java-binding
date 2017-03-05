@@ -19,20 +19,28 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static org.bytedeco.javacpp.LLVM.LLVMGetValueName;
-import static org.bytedeco.javacpp.LLVM.LLVMValueRef;
-
 /**
  * @author guangchen on 26/02/2017.
  */
 public class Value {
-    protected String name;
+    private final String name;
+    private final Type type;
 
-    Value(LLVMValueRef valueRef) {
-        name = LLVMGetValueName(valueRef).getString();
+    public Value(String name, Type type) {
+        this.name = name;
+        this.type = type;
     }
 
     public String getName() {
         return name;
     }
+
+    public Type getType() {
+        return type;
+    }
+
+    public boolean hasName() {
+        return name != null && !name.equals("");
+    }
+
 }

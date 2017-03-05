@@ -22,23 +22,25 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.bytedeco.javacpp.LLVM.*;
-
 /**
  * @author guangchen on 26/02/2017.
  */
 public class User extends Value {
-    private List<Use> use = new ArrayList<>();
+    private final List<Use> use = new ArrayList<>();
+//
+//    User(LLVMValueRef valueRef) {
+//        super(valueRef);
+//        for (int i = 0, end = LLVMGetNumOperands(valueRef); i < end; i++) {
+//            Value value = new Value(LLVMGetOperand(valueRef, i));
+//            use.add(new Use(value, this, i));
+//        }
+//        for (int i = 0; i < use.size() - 1; i ++) {
+//            use.get(i).setNext(use.get(i + 1));
+//        }
+//    }
 
-    User(LLVMValueRef valueRef) {
-        super(valueRef);
-        for (int i = 0, end = LLVMGetNumOperands(valueRef); i < end; i++) {
-            Value value = new Value(LLVMGetOperand(valueRef, i));
-            use.add(new Use(value, this, i));
-        }
-        for (int i = 0; i < use.size() - 1; i ++) {
-            use.get(i).setNext(use.get(i + 1));
-        }
+    public User(String name, Type type) {
+        super(name, type);
     }
 
     public Value getOperand(int i) {

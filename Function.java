@@ -22,18 +22,17 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 import java.util.ArrayList;
 import java.util.List;
 
-import static org.bytedeco.javacpp.LLVM.*;
-
 /**
  * @author guangchen on 26/02/2017.
  */
 public class Function extends GlobalObject {
     private List<BasicBlock> basicBlockList = new ArrayList<>();
 
-    Function(LLVMValueRef valueRef) {
-        super(valueRef);
-        for (LLVMBasicBlockRef bb = LLVMGetFirstBasicBlock(valueRef); bb != null; bb = LLVMGetNextBasicBlock(bb)) {
-            basicBlockList.add(new BasicBlock(bb, this));
+    public Function(String name, Type type, List<BasicBlock> basicBlockList) {
+        super(name, type);
+        this.basicBlockList = basicBlockList;
+        for (BasicBlock basicBlock: this.basicBlockList) {
+            basicBlock.setParent(this);
         }
     }
 

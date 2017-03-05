@@ -19,17 +19,13 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import com.sun.istack.internal.Nullable;
-
-import java.util.List;
-
 /**
  * @author guangchen on 26/02/2017.
  */
 public class Use {
-    private Value value;
-    private User user;
-    private int index;
+    private final Value value;
+    private final User user;
+    private final int index;
     private Use next = null;
 
     public Use(Value value, User user, int index) {
@@ -42,7 +38,7 @@ public class Use {
         return value;
     }
 
-    public @Nullable Use getNext() {
+    public Use getNext() {
         return next;
     }
 

@@ -25,7 +25,7 @@ import static org.bytedeco.javacpp.LLVM.*;
  * @author guangchen on 26/02/2017.
  */
 public class Context {
-    private LLVMContextRef contextRef;
+    private final LLVMContextRef contextRef;
 
     public Context(LLVMContextRef contextRef) {
         this.contextRef = contextRef;

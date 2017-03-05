@@ -19,13 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
-
 /**
  * @author guangchen on 27/02/2017.
  */
 public class AtomicRMWInst extends Instruction {
-    public AtomicRMWInst(LLVM.LLVMValueRef inst) {
-        super(inst);
+    public AtomicRMWInst(String name, Type type) {
+        super(name, type);
     }
 }

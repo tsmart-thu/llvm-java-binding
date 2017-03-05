@@ -19,13 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
-
 /**
  * @author guangchen on 27/02/2017.
  */
 public class StoreInst extends Instruction {
-    public StoreInst(LLVM.LLVMValueRef inst) {
-        super(inst);
+    public StoreInst(String name, Type type) {
+        super(name, type);
     }
 }

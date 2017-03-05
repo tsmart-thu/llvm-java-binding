@@ -19,13 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
-
 /**
  * @author guangchen on 27/02/2017.
  */
 public class AddrSpaceCastInst extends CastInst {
-    public AddrSpaceCastInst(LLVM.LLVMValueRef inst) {
-        super(inst);
+    public AddrSpaceCastInst(String name, Type type) {
+        super(name, type);
     }
 }

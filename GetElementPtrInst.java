@@ -19,13 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
-
 /**
  * @author guangchen on 27/02/2017.
  */
 public class GetElementPtrInst extends Instruction {
-    public GetElementPtrInst(LLVM.LLVMValueRef inst) {
-        super(inst);
+    public GetElementPtrInst(String name, Type type) {
+        super(name, type);
     }
 }

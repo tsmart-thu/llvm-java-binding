@@ -19,13 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import org.bytedeco.javacpp.LLVM;
-
 /**
  * @author guangchen on 27/02/2017.
  */
 public class ICmpInst extends CmpInst {
-    public ICmpInst(LLVM.LLVMValueRef inst) {
-        super(inst);
+    public ICmpInst(String name, Type type) {
+        super(name, type);
     }
 }
