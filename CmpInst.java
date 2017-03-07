@@ -23,7 +23,8 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class CmpInst extends Instruction {
-    public CmpInst(String name, Type type) {
-        super(name, type);
-    }
+
+  protected CmpInst(String name, Type type) {
+    super(name, type);
+  }
 }

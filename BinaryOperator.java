@@ -23,7 +23,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class BinaryOperator extends Instruction {
-    public BinaryOperator(String name, Type type, int opcode) {
-        super(name, type);
-    }
+
+  public BinaryOperator(String name, Type type, OpCode opcode) {
+    super(name, type);
+    super.opCode = opcode;
+  }
 }

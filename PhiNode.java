@@ -23,7 +23,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class PhiNode extends Instruction {
-    public PhiNode(String name, Type type) {
-        super(name, type);
-    }
+
+  public PhiNode(String name, Type type) {
+    super(name, type);
+    super.opCode = OpCode.PHI;
+  }
 }

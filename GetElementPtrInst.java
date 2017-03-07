@@ -23,7 +23,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class GetElementPtrInst extends Instruction {
-    public GetElementPtrInst(String name, Type type) {
-        super(name, type);
-    }
+
+  public GetElementPtrInst(String name, Type type) {
+    super(name, type);
+    super.opCode = OpCode.GETELEMENTPTR;
+  }
 }

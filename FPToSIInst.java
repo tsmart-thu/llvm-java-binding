@@ -23,7 +23,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class FPToSIInst extends CastInst {
-    public FPToSIInst(String name, Type type) {
-        super(name, type);
-    }
+
+  public FPToSIInst(String name, Type type) {
+    super(name, type);
+    super.opCode = OpCode.FPTOSI;
+  }
 }

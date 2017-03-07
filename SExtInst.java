@@ -23,7 +23,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class SExtInst extends CastInst {
-    public SExtInst(String name, Type type) {
-        super(name, type);
-    }
+
+  public SExtInst(String name, Type type) {
+    super(name, type);
+    super.opCode = OpCode.SEXT;
+  }
 }

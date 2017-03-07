@@ -23,7 +23,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class CleanupPadInst extends FuncletPadInst {
-    public CleanupPadInst(String name, Type type) {
-        super(name, type);
-    }
+
+  public CleanupPadInst(String name, Type type) {
+    super(name, type);
+    super.opCode = OpCode.CLEANUPPAD;
+  }
 }

@@ -33,9 +33,10 @@ public class Instruction extends User {
   }
 
   protected BasicBlock parent;
+  // initialized in child class
   protected OpCode opCode;
 
-  // this can only be called from Converter
+  // only for Converter
   void setParent(BasicBlock block) {
     parent = block;
   }

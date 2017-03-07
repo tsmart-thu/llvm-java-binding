@@ -23,7 +23,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class SelectInst extends Instruction {
-    public SelectInst(String name, Type type) {
-        super(name, type);
-    }
+
+  public SelectInst(String name, Type type) {
+    super(name, type);
+    super.opCode = OpCode.SELECT;
+  }
 }

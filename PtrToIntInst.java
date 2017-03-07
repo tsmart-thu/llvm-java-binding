@@ -23,7 +23,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class PtrToIntInst extends CastInst {
-    public PtrToIntInst(String name, Type type) {
-        super(name, type);
-    }
+
+  public PtrToIntInst(String name, Type type) {
+    super(name, type);
+    super.opCode = OpCode.PTRTOINT;
+  }
 }

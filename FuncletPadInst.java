@@ -23,7 +23,8 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class FuncletPadInst extends Instruction {
-    public FuncletPadInst(String name, Type type) {
-        super(name, type);
-    }
+
+  protected FuncletPadInst(String name, Type type) {
+    super(name, type);
+  }
 }

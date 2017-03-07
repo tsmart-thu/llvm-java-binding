@@ -24,7 +24,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class AtomicCmpXchgInst extends Instruction {
-    public AtomicCmpXchgInst(String name, Type type) {
-        super(name, type);
-    }
+
+  public AtomicCmpXchgInst(String name, Type type) {
+    super(name, type);
+    super.opCode = OpCode.CMPXCHG;
+  }
 }

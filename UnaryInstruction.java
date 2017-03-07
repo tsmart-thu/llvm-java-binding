@@ -23,7 +23,8 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class UnaryInstruction extends Instruction {
-    public UnaryInstruction(String name, Type type) {
-        super(name, type);
-    }
+
+  protected UnaryInstruction(String name, Type type) {
+    super(name, type);
+  }
 }

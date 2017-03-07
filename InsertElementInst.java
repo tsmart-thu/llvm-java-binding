@@ -23,7 +23,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 27/02/2017.
  */
 public class InsertElementInst extends Instruction {
-    public InsertElementInst(String name, Type type) {
-        super(name, type);
-    }
+
+  public InsertElementInst(String name, Type type) {
+    super(name, type);
+    super.opCode = OpCode.INSERTELEMENT;
+  }
 }
