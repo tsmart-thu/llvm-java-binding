@@ -21,9 +21,6 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.*;
 
-import static org.bytedeco.javacpp.LLVM.*;
-import static org.bytedeco.javacpp.LLVM.LLVMGetInstructionOpcode;
-
 import com.google.common.base.Optional;
 
 public class Instruction extends User {
@@ -35,31 +32,37 @@ public class Instruction extends User {
   protected BasicBlock parent;
   // initialized in child class
   protected OpCode opCode;
+  protected FastMathFlags fastMathFlags;
 
   // only for Converter
-  void setParent(BasicBlock block) {
+  public void setParent(BasicBlock block) {
     parent = block;
   }
 
-  BasicBlock getParent() {
+  // only for Converter
+  public void setFastMathFlags(FastMathFlags flags) {
+    fastMathFlags = flags;
+  }
+
+  public BasicBlock getParent() {
     return parent;
   }
 
-  Module getModule() {
+  public Module getModule() {
     // TODO get module from parent function
     Optional<Module> module = Optional.absent();
     return module.get();
   }
 
-  Function getFunction() {
+  public Function getFunction() {
     return getParent().getParent();
   }
 
-  OpCode getOpcode() {
+  public OpCode getOpcode() {
     return opCode;
   }
 
-  boolean isTerminator() {
+  public boolean isTerminator() {
     if (opCode.ordinal() >= OpCode.RET.ordinal() && opCode.ordinal() <= OpCode.UNREACHABLE
         .ordinal()) {
       return true;
@@ -68,7 +71,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean isBinaryOp() {
+  public boolean isBinaryOp() {
     if (opCode.ordinal() >= OpCode.ADD.ordinal() && opCode.ordinal() <= OpCode.XOR.ordinal()) {
       return true;
     } else {
@@ -76,7 +79,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean isShift() {
+  public boolean isShift() {
     if (opCode.ordinal() >= OpCode.SHL.ordinal() && opCode.ordinal() <= OpCode.ASHR.ordinal()) {
       return true;
     } else {
@@ -84,7 +87,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean isCast() {
+  public boolean isCast() {
     if (opCode.ordinal() >= OpCode.TRUNC.ordinal() && opCode.ordinal() <= OpCode.ADDRSPACECAST
         .ordinal()) {
       return true;
@@ -93,7 +96,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean isFuncletPad() {
+  public boolean isFuncletPad() {
     if (opCode == OpCode.CLEANUPPAD || opCode == OpCode.CATCHPAD) {
       return true;
     } else {
@@ -101,7 +104,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean isLogicalShift() {
+  public boolean isLogicalShift() {
     if (opCode == OpCode.SHL || opCode == OpCode.LSHR) {
       return true;
     } else {
@@ -109,7 +112,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean isArithmeticShift() {
+  public boolean isArithmeticShift() {
     if (opCode == OpCode.ASHR) {
       return true;
     } else {
@@ -117,7 +120,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean isBitwiseLogicOp() {
+  public boolean isBitwiseLogicOp() {
     if (opCode.ordinal() >= OpCode.AND.ordinal() && opCode.ordinal() <= OpCode.XOR.ordinal()) {
       return true;
     } else {
@@ -138,21 +141,60 @@ public class Instruction extends User {
   / getDebugLoc
   */
 
-  /*
-  TODO api involving operator
-  / hasNoUnsignedWrap
-  / hasNoSignedWrap
-  / dropPoisonGeneratingFlags
-  / isExact
-  / hasUnsafeAlgebra
-  / hasNoNaNs
-  / hasNoInfs
-  / hasNoSignedZeros
-  / hasAllowReciprocal
-  / getFastMathFlags
-  */
+  public boolean hasNoUnsignedWrap() {
+    assert opCode != OpCode.ADD && opCode != OpCode.SUB && opCode != OpCode.MUL
+        && opCode != OpCode.SHL : "No nuw flag!";
+    return fastMathFlags.hasNoUnsignedWrapFlag();
+  }
 
-  boolean isAssociative() {
+  public boolean hasNoSignedWrap() {
+    assert opCode != OpCode.ADD && opCode != OpCode.SUB && opCode != OpCode.MUL
+        && opCode != OpCode.SHL : "No nsw flag!";
+    return fastMathFlags.hasNoSignedWrapFlag();
+  }
+
+  public boolean isExact() {
+    assert opCode != OpCode.UDIV && opCode != OpCode.SDIV && opCode != OpCode.LSHR
+        && opCode != OpCode.ASHR : "No exact flag!";
+    return fastMathFlags.hasExactFlag();
+  }
+
+  public boolean hasUnsafeAlgebra() {
+    assert opCode != OpCode.FADD && opCode != OpCode.FSUB && opCode != OpCode.FMUL
+        && opCode != OpCode.FDIV && opCode != OpCode.FREM && opCode != OpCode.FCMP
+        && opCode != OpCode.CALL : "No fast-math flags!";
+    return fastMathFlags.hasFastFlag();
+  }
+
+  public boolean hasNoNaNs() {
+    assert opCode != OpCode.FADD && opCode != OpCode.FSUB && opCode != OpCode.FMUL
+        && opCode != OpCode.FDIV && opCode != OpCode.FREM && opCode != OpCode.FCMP
+        && opCode != OpCode.CALL : "No fast-math flags!";
+    return fastMathFlags.hasNoNaNFlag();
+  }
+
+  public boolean hasNoInfs() {
+    assert opCode != OpCode.FADD && opCode != OpCode.FSUB && opCode != OpCode.FMUL
+        && opCode != OpCode.FDIV && opCode != OpCode.FREM && opCode != OpCode.FCMP
+        && opCode != OpCode.CALL : "No fast-math flags!";
+    return fastMathFlags.hasNoInfFlag();
+  }
+
+  public boolean hasNoSignedZeros() {
+    assert opCode != OpCode.FADD && opCode != OpCode.FSUB && opCode != OpCode.FMUL
+        && opCode != OpCode.FDIV && opCode != OpCode.FREM && opCode != OpCode.FCMP
+        && opCode != OpCode.CALL : "No fast-math flags!";
+    return fastMathFlags.hasNoSignedZeroFlag();
+  }
+
+  public boolean hasAllowReciprocal() {
+    assert opCode != OpCode.FADD && opCode != OpCode.FSUB && opCode != OpCode.FMUL
+        && opCode != OpCode.FDIV && opCode != OpCode.FREM && opCode != OpCode.FCMP
+        && opCode != OpCode.CALL : "No fast-math flags!";
+    return fastMathFlags.hasAllowReciprocalFlag();
+  }
+
+  public boolean isAssociative() {
     switch (opCode) {
       case AND:
       case OR:
@@ -162,14 +204,13 @@ public class Instruction extends User {
         return true;
       case FMUL:
       case FADD:
-        // TODO involve operator
-        // return cast<FPMathOperator>(this)->hasUnsafeAlgebra();
+        return hasUnsafeAlgebra();
       default:
         return false;
     }
   }
 
-  boolean isCommutative() {
+  public boolean isCommutative() {
     switch (opCode) {
       case ADD:
       case FADD:
@@ -184,7 +225,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean isIdempotent() {
+  public boolean isIdempotent() {
     if (opCode == OpCode.AND || opCode == OpCode.OR) {
       return true;
     } else {
@@ -192,7 +233,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean isNilpotent() {
+  public boolean isNilpotent() {
     if (opCode == OpCode.XOR) {
       return true;
     } else {
@@ -200,7 +241,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean mayWriteToMemory() {
+  public boolean mayWriteToMemory() {
     switch (opCode) {
       case FENCE:
       case STORE:
@@ -224,7 +265,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean mayReadFromMemory() {
+  public boolean mayReadFromMemory() {
     switch (opCode) {
       case VA_ARG:
       case LOAD:
@@ -248,7 +289,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean mayReadOrWriteMemory() {
+  public boolean mayReadOrWriteMemory() {
     if (mayReadFromMemory() || mayWriteToMemory()) {
       return true;
     } else {
@@ -256,7 +297,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean isAtomic() {
+  public boolean isAtomic() {
     switch (opCode) {
       case ATOMICRMW:
       case CMPXCHG:
@@ -273,7 +314,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean mayThrow() {
+  public boolean mayThrow() {
     // TODO involve CallInst
     // if (const CallInst *CI = dyn_cast<CallInst>(this))
     //   return !CI->doesNotThrow();
@@ -290,7 +331,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean isFenceLike() {
+  public boolean isFenceLike() {
     switch (opCode) {
       case FENCE:
       case CATCHPAD:
@@ -303,7 +344,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean mayHaveSideEffects() {
+  public boolean mayHaveSideEffects() {
     if (mayWriteToMemory() || mayThrow()) {
       return true;
     } else {
@@ -311,7 +352,7 @@ public class Instruction extends User {
     }
   }
 
-  boolean isEHPad() {
+  public boolean isEHPad() {
     switch (opCode) {
       case CATCHSWITCH:
       case CATCHPAD:
@@ -331,7 +372,7 @@ public class Instruction extends User {
   // TODO involve classes of mutiple kinds of instructions
   // haveSameSpecialState
 
-  boolean isUsedOutsideOfBlock(BasicBlock block) {
+  public boolean isUsedOutsideOfBlock(BasicBlock block) {
     for (Use use = getOperandList(); use != null; use = use.getNext()) {
       Instruction inst = cast(use, Instruction.class);
       PhiNode pn = dyncast(use, PhiNode.class);
