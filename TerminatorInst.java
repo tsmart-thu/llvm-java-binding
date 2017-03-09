@@ -19,12 +19,19 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import com.sun.istack.internal.Nullable;
+
 /**
  * @author guangchen on 27/02/2017.
  */
-public class TerminatorInst extends Instruction {
+public abstract class TerminatorInst extends Instruction {
 
   protected TerminatorInst(String name, Type type) {
     super(name, type);
   }
+
+  public abstract int getNumSuccessors();
+
+  @Nullable
+  public abstract BasicBlock getSuccessor(int i);
 }

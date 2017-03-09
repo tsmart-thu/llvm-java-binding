@@ -28,4 +28,15 @@ public class UnreachableInst extends TerminatorInst {
     super(name, type);
     super.opCode = OpCode.UNREACHABLE;
   }
+
+  @Override
+  public int getNumSuccessors() {
+    return 0;
+  }
+
+  @Override
+  public BasicBlock getSuccessor(int i) {
+    assert false : "UnreachableInst has no successors!";
+    return null;
+  }
 }

@@ -19,7 +19,7 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
+import static cn.edu.thu.tsmart.core.cfa.util.Casting.*;
 
 import static org.bytedeco.javacpp.LLVM.*;
 import static org.bytedeco.javacpp.LLVM.LLVMGetInstructionOpcode;
@@ -333,18 +333,16 @@ public class Instruction extends User {
 
   boolean isUsedOutsideOfBlock(BasicBlock block) {
     for (Use use = getOperandList(); use != null; use = use.getNext()) {
-      Instruction inst = dyncast(use, Instruction.class);
-      if (inst != null) {
-        PhiNode pn = dyncast(use, PhiNode.class);
-        if (pn != null) {
-          // TODO check the condition pn->getIncomingBlock(U) != block
+      Instruction inst = cast(use, Instruction.class);
+      PhiNode pn = dyncast(use, PhiNode.class);
+      if (pn == null) {
+        if (inst.getParent() != block) {
           return true;
-        } else {
-          if (inst.getParent() != block) {
-            return true;
-          }
         }
+        continue;
       }
+      // TODO check the condition pn->getIncomingBlock(U) != block
+      // if (pn->getIncomingBlock(U) != block) {return true;}
     }
     return false;
   }

@@ -19,6 +19,8 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import com.sun.istack.internal.Nullable;
+
 /**
  * @author guangchen on 27/02/2017.
  */
@@ -27,5 +29,19 @@ public class CleanupReturnInst extends TerminatorInst {
   public CleanupReturnInst(String name, Type type) {
     super(name, type);
     super.opCode = OpCode.CLEANUPRET;
+    // this instruction should not be used when analysing C
+    assert false : "Unhandled instruction: cleanupret";
+  }
+
+  @Override
+  public int getNumSuccessors() {
+    // return hasUnwindDest() ? 1 : 0;
+    return 0;
+  }
+
+  @Override
+  public BasicBlock getSuccessor(int i) {
+    // assert i == 0; return getUnwindDest();
+    return null;
   }
 }

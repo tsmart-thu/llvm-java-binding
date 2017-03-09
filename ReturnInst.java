@@ -19,6 +19,8 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import com.sun.istack.internal.Nullable;
+
 /**
  * @author guangchen on 27/02/2017.
  */
@@ -27,5 +29,25 @@ public class ReturnInst extends TerminatorInst {
   public ReturnInst(String name, Type type) {
     super(name, type);
     super.opCode = OpCode.RET;
+  }
+
+  @Override
+  public int getNumSuccessors() {
+    return 0;
+  }
+
+  @Override
+  @Nullable
+  public BasicBlock getSuccessor(int i) {
+    return null;
+  }
+
+  @Nullable
+  public Value getReturnValue() {
+    if (getNumOperands() == 0) {
+      return null;
+    } else {
+      return getOperand(0);
+    }
   }
 }
