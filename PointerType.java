@@ -19,15 +19,15 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /** @author guangchen on 01/03/2017. */
 public class PointerType extends SequentialType {
   private int addressSpace;
+  private Type elementType;
 
-  protected PointerType(Context context, int addressSpace) {
+  protected PointerType(Context context, Type elementType, int addressSpace) {
     super(context, TypeID.PointerTyID);
     this.addressSpace = addressSpace;
+    this.elementType = elementType;
   }
 
   public static PointerType get(Type elementType, int addressSpace) {
@@ -40,5 +40,15 @@ public class PointerType extends SequentialType {
 
   public int getAddressSpace() {
     return addressSpace;
+  }
+
+  @Override
+  public int getPointerAddressSpace() {
+    return getAddressSpace();
+  }
+
+  @Override
+  public Type getPointerElementType() {
+    return this.elementType;
   }
 }

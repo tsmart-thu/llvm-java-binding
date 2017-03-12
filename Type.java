@@ -252,7 +252,7 @@ public class Type {
   }
 
   public PointerType getPointerTo(int addrSpace) {
-    return new PointerType(context, addrSpace);
+    return new PointerType(context, this, addrSpace);
   }
 
   public static Type getPrimitiveType(Context context, TypeID typeID) {
