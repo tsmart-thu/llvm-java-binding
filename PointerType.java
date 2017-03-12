@@ -19,11 +19,26 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-/**
- * @author guangchen on 01/03/2017.
- */
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+/** @author guangchen on 01/03/2017. */
 public class PointerType extends SequentialType {
-    protected PointerType(Context context, TypeID id) {
-        super(context, id);
-    }
+  private int addressSpace;
+
+  protected PointerType(Context context, int addressSpace) {
+    super(context, TypeID.PointerTyID);
+    this.addressSpace = addressSpace;
+  }
+
+  public static PointerType get(Type elementType, int addressSpace) {
+    return elementType.getPointerTo(addressSpace);
+  }
+
+  public static PointerType getUnqual(Type elementType) {
+    return get(elementType, 0);
+  }
+
+  public int getAddressSpace() {
+    return addressSpace;
+  }
 }

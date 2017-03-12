@@ -29,9 +29,7 @@ import java.util.Map;
 
 import static org.bytedeco.javacpp.LLVM.*;
 
-/**
- * @author guangchen on 03/03/2017.
- */
+/** @author guangchen on 03/03/2017. */
 public class Converter {
 
   private final Context context;
@@ -53,20 +51,19 @@ public class Converter {
 
   public Function convertValueToFunction(LLVMValueRef function) {
     List<BasicBlock> basicBlockList = new ArrayList<>();
-    for (LLVMBasicBlockRef bb = LLVMGetFirstBasicBlock(function); bb != null;
+    for (LLVMBasicBlockRef bb = LLVMGetFirstBasicBlock(function);
+        bb != null;
         bb = LLVMGetNextBasicBlock(bb)) {
       basicBlockList.add(convert(bb));
     }
     return new Function(
-        LLVMGetValueName(function).getString(),
-        getType(LLVMTypeOf(function)),
-        basicBlockList
-    );
+        LLVMGetValueName(function).getString(), getType(LLVMTypeOf(function)), basicBlockList);
   }
 
   public BasicBlock convert(LLVMBasicBlockRef bb) {
     List<Instruction> instructionList = new ArrayList<>();
-    for (LLVMValueRef inst = LLVMGetFirstInstruction(bb); inst != null;
+    for (LLVMValueRef inst = LLVMGetFirstInstruction(bb);
+        inst != null;
         inst = LLVMGetNextInstruction(inst)) {
       instructionList.add(convertValueToInstruction(inst));
     }
@@ -237,9 +234,17 @@ public class Converter {
         int size = LLVMGetIntTypeWidth(typeRef);
         return Type.getIntNTy(context, size);
       case LLVMFunctionTypeKind:
+        throw new NotImplementedException();
       case LLVMStructTypeKind:
+        throw new NotImplementedException();
       case LLVMArrayTypeKind:
+        throw new NotImplementedException();
       case LLVMPointerTypeKind:
+        {
+          Type elementType = getType(LLVMGetElementType(typeRef));
+          int addressSpace = LLVMGetPointerAddressSpace(typeRef);
+          return PointerType.get(elementType, addressSpace);
+        }
       case LLVMVectorTypeKind:
         throw new NotImplementedException();
       case LLVMMetadataTypeKind:
