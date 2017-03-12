@@ -50,6 +50,21 @@ public class FunctionType extends Type {
     return params.length;
   }
 
+  @Override
+  public boolean isFunctionVarArg() {
+    return isVarArg();
+  }
+
+  @Override
+  public Type[] getFunctionParamType() {
+    return getParams();
+  }
+
+  @Override
+  public int getFunctionNumParams() {
+    return getNumParams();
+  }
+
   public static FunctionType get(Type result, Type[] params, boolean isVarArg) {
     return new FunctionType(result, params, isVarArg);
   }

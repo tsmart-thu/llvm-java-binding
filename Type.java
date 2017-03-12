@@ -199,7 +199,7 @@ public class Type {
     throw new NotImplementedException();
   }
 
-  public Type getFunctionParamType() {
+  public Type[] getFunctionParamType() {
     throw new NotImplementedException();
   }
 
