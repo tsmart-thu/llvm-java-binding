@@ -23,8 +23,11 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** @author guangchen on 01/03/2017. */
 public class FunctionType extends Type {
-  protected FunctionType(Context context) {
-    super(context, TypeID.FunctionTyID);
+  protected FunctionType(Type result, Type[] params, boolean isVarArg) {
+    super(result.getContext(), TypeID.FunctionTyID);
+    this.returnType = result;
+    this.params = params;
+    this.isVarArg = isVarArg;
   }
 
   private boolean isVarArg;
@@ -48,7 +51,7 @@ public class FunctionType extends Type {
   }
 
   public static FunctionType get(Type result, Type[] params, boolean isVarArg) {
-    return new FunctionType(result.getContext());
+    return new FunctionType(result, params, isVarArg);
   }
 
   public static FunctionType get(Type result, boolean isVarArg) {
