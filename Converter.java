@@ -19,6 +19,7 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -233,8 +234,18 @@ public class Converter {
       case LLVMIntegerTypeKind:
         int size = LLVMGetIntTypeWidth(typeRef);
         return Type.getIntNTy(context, size);
-      case LLVMFunctionTypeKind:
-        throw new NotImplementedException();
+      case LLVMFunctionTypeKind: {
+        LLVMTypeRef returnTypeRef = LLVMGetReturnType(typeRef);
+        int paramsCount = LLVMCountParamTypes(typeRef);
+        PointerPointer<LLVMTypeRef> params = new PointerPointer<>(paramsCount);
+        LLVMGetParamTypes(typeRef, params);
+        Type[] paramsType = new Type[paramsCount];
+        for (int i = 0; i < paramsCount; i++) {
+          paramsType[i] = getType(params.get(LLVMTypeRef.class, i));
+        }
+        boolean isVarArg = LLVMIsFunctionVarArg(typeRef) != 0;
+        return FunctionType.get(getType(returnTypeRef), paramsType, isVarArg);
+      }
       case LLVMStructTypeKind:
         throw new NotImplementedException();
       case LLVMArrayTypeKind:

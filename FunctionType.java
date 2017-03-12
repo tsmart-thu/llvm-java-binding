@@ -19,11 +19,47 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-/**
- * @author guangchen on 01/03/2017.
- */
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+/** @author guangchen on 01/03/2017. */
 public class FunctionType extends Type {
-    protected FunctionType(Context context, TypeID id) {
-        super(context, id);
-    }
+  protected FunctionType(Context context) {
+    super(context, TypeID.FunctionTyID);
+  }
+
+  private boolean isVarArg;
+  private Type returnType;
+  private Type[] params;
+
+  public boolean isVarArg() {
+    return isVarArg;
+  }
+
+  public Type getReturnType() {
+    return returnType;
+  }
+
+  public Type[] getParams() {
+    return params;
+  }
+
+  public int getNumParams() {
+    return params.length;
+  }
+
+  public static FunctionType get(Type result, Type[] params, boolean isVarArg) {
+    return new FunctionType(result.getContext());
+  }
+
+  public static FunctionType get(Type result, boolean isVarArg) {
+    return get(result, new Type[] {}, isVarArg);
+  }
+
+  public static boolean isValidReturnType(Type retTy) {
+    throw new NotImplementedException();
+  }
+
+  public static boolean isValidArgumentType(Type argTy) {
+    throw new NotImplementedException();
+  }
 }
