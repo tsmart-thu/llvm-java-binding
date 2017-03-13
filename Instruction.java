@@ -20,6 +20,7 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.*;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
 
 import com.google.common.base.Optional;
 
@@ -63,7 +64,8 @@ public class Instruction extends User {
   }
 
   public boolean isTerminator() {
-    if (opCode.ordinal() >= OpCode.RET.ordinal() && opCode.ordinal() <= OpCode.UNREACHABLE
+    if (opCode.ordinal() >= OpCode.RET.ordinal()
+        && opCode.ordinal() <= OpCode.UNREACHABLE
         .ordinal()) {
       return true;
     } else {
@@ -72,7 +74,8 @@ public class Instruction extends User {
   }
 
   public boolean isBinaryOp() {
-    if (opCode.ordinal() >= OpCode.ADD.ordinal() && opCode.ordinal() <= OpCode.XOR.ordinal()) {
+    if (opCode.ordinal() >= OpCode.ADD.ordinal()
+        && opCode.ordinal() <= OpCode.XOR.ordinal()) {
       return true;
     } else {
       return false;
@@ -80,7 +83,8 @@ public class Instruction extends User {
   }
 
   public boolean isShift() {
-    if (opCode.ordinal() >= OpCode.SHL.ordinal() && opCode.ordinal() <= OpCode.ASHR.ordinal()) {
+    if (opCode.ordinal() >= OpCode.SHL.ordinal()
+        && opCode.ordinal() <= OpCode.ASHR.ordinal()) {
       return true;
     } else {
       return false;
@@ -88,7 +92,8 @@ public class Instruction extends User {
   }
 
   public boolean isCast() {
-    if (opCode.ordinal() >= OpCode.TRUNC.ordinal() && opCode.ordinal() <= OpCode.ADDRSPACECAST
+    if (opCode.ordinal() >= OpCode.TRUNC.ordinal()
+        && opCode.ordinal() <= OpCode.ADDRSPACECAST
         .ordinal()) {
       return true;
     } else {
@@ -97,7 +102,8 @@ public class Instruction extends User {
   }
 
   public boolean isFuncletPad() {
-    if (opCode == OpCode.CLEANUPPAD || opCode == OpCode.CATCHPAD) {
+    if (opCode == OpCode.CLEANUPPAD
+        || opCode == OpCode.CATCHPAD) {
       return true;
     } else {
       return false;
@@ -121,7 +127,8 @@ public class Instruction extends User {
   }
 
   public boolean isBitwiseLogicOp() {
-    if (opCode.ordinal() >= OpCode.AND.ordinal() && opCode.ordinal() <= OpCode.XOR.ordinal()) {
+    if (opCode.ordinal() >= OpCode.AND.ordinal()
+        && opCode.ordinal() <= OpCode.XOR.ordinal()) {
       return true;
     } else {
       return false;
@@ -142,55 +149,79 @@ public class Instruction extends User {
   */
 
   public boolean hasNoUnsignedWrap() {
-    assert opCode != OpCode.ADD && opCode != OpCode.SUB && opCode != OpCode.MUL
+    assert opCode != OpCode.ADD && opCode != OpCode.SUB
+        && opCode != OpCode.MUL
         && opCode != OpCode.SHL : "No nuw flag!";
     return fastMathFlags.hasNoUnsignedWrapFlag();
   }
 
   public boolean hasNoSignedWrap() {
-    assert opCode != OpCode.ADD && opCode != OpCode.SUB && opCode != OpCode.MUL
+    assert opCode != OpCode.ADD && opCode != OpCode.SUB
+        && opCode != OpCode.MUL
         && opCode != OpCode.SHL : "No nsw flag!";
     return fastMathFlags.hasNoSignedWrapFlag();
   }
 
   public boolean isExact() {
-    assert opCode != OpCode.UDIV && opCode != OpCode.SDIV && opCode != OpCode.LSHR
-        && opCode != OpCode.ASHR : "No exact flag!";
+    assert
+        opCode != OpCode.UDIV && opCode != OpCode.SDIV
+            && opCode != OpCode.LSHR
+            && opCode != OpCode.ASHR : "No exact flag!";
     return fastMathFlags.hasExactFlag();
   }
 
   public boolean hasUnsafeAlgebra() {
-    assert opCode != OpCode.FADD && opCode != OpCode.FSUB && opCode != OpCode.FMUL
-        && opCode != OpCode.FDIV && opCode != OpCode.FREM && opCode != OpCode.FCMP
-        && opCode != OpCode.CALL : "No fast-math flags!";
+    assert
+        opCode != OpCode.FADD && opCode != OpCode.FSUB
+            && opCode != OpCode.FMUL
+            && opCode != OpCode.FDIV
+            && opCode != OpCode.FREM
+            && opCode != OpCode.FCMP
+            && opCode != OpCode.CALL : "No fast-math flags!";
     return fastMathFlags.hasFastFlag();
   }
 
   public boolean hasNoNaNs() {
-    assert opCode != OpCode.FADD && opCode != OpCode.FSUB && opCode != OpCode.FMUL
-        && opCode != OpCode.FDIV && opCode != OpCode.FREM && opCode != OpCode.FCMP
-        && opCode != OpCode.CALL : "No fast-math flags!";
+    assert
+        opCode != OpCode.FADD && opCode != OpCode.FSUB
+            && opCode != OpCode.FMUL
+            && opCode != OpCode.FDIV
+            && opCode != OpCode.FREM
+            && opCode != OpCode.FCMP
+            && opCode != OpCode.CALL : "No fast-math flags!";
     return fastMathFlags.hasNoNaNFlag();
   }
 
   public boolean hasNoInfs() {
-    assert opCode != OpCode.FADD && opCode != OpCode.FSUB && opCode != OpCode.FMUL
-        && opCode != OpCode.FDIV && opCode != OpCode.FREM && opCode != OpCode.FCMP
-        && opCode != OpCode.CALL : "No fast-math flags!";
+    assert
+        opCode != OpCode.FADD && opCode != OpCode.FSUB
+            && opCode != OpCode.FMUL
+            && opCode != OpCode.FDIV
+            && opCode != OpCode.FREM
+            && opCode != OpCode.FCMP
+            && opCode != OpCode.CALL : "No fast-math flags!";
     return fastMathFlags.hasNoInfFlag();
   }
 
   public boolean hasNoSignedZeros() {
-    assert opCode != OpCode.FADD && opCode != OpCode.FSUB && opCode != OpCode.FMUL
-        && opCode != OpCode.FDIV && opCode != OpCode.FREM && opCode != OpCode.FCMP
-        && opCode != OpCode.CALL : "No fast-math flags!";
+    assert
+        opCode != OpCode.FADD && opCode != OpCode.FSUB
+            && opCode != OpCode.FMUL
+            && opCode != OpCode.FDIV
+            && opCode != OpCode.FREM
+            && opCode != OpCode.FCMP
+            && opCode != OpCode.CALL : "No fast-math flags!";
     return fastMathFlags.hasNoSignedZeroFlag();
   }
 
   public boolean hasAllowReciprocal() {
-    assert opCode != OpCode.FADD && opCode != OpCode.FSUB && opCode != OpCode.FMUL
-        && opCode != OpCode.FDIV && opCode != OpCode.FREM && opCode != OpCode.FCMP
-        && opCode != OpCode.CALL : "No fast-math flags!";
+    assert
+        opCode != OpCode.FADD && opCode != OpCode.FSUB
+            && opCode != OpCode.FMUL
+            && opCode != OpCode.FDIV
+            && opCode != OpCode.FREM
+            && opCode != OpCode.FCMP
+            && opCode != OpCode.CALL : "No fast-math flags!";
     return fastMathFlags.hasAllowReciprocalFlag();
   }
 
@@ -390,74 +421,3 @@ public class Instruction extends User {
 
 }
 
-enum OpCode {
-  RET,
-  BR,
-  SWITCH,
-  INDIRECTBR,
-  INVOKE,
-  RESUME,
-  CATCHSWITCH,
-  CATCHRET,
-  CLEANUPRET,
-  UNREACHABLE,
-
-  ADD,
-  FADD,
-  SUB,
-  FSUB,
-  MUL,
-  FMUL,
-  UDIV,
-  SDIV,
-  FDIV,
-  UREM,
-  SREM,
-  FREM,
-
-  SHL,
-  LSHR,
-  ASHR,
-  AND,
-  OR,
-  XOR,
-
-  EXTRACTELEMENT,
-  INSERTELEMENT,
-  SHUFFLEVECTOR,
-
-  EXTRACTVALUE,
-  INSERTVALUE,
-
-  ALLOCA,
-  LOAD,
-  STORE,
-  FENCE,
-  CMPXCHG,
-  ATOMICRMW,
-  GETELEMENTPTR,
-
-  TRUNC,
-  ZEXT,
-  SEXT,
-  FPTRUNC,
-  FPEXT,
-  FPTOUI,
-  FPTOSI,
-  UITOFP,
-  SITOFP,
-  PTRTOINT,
-  INTTOPTR,
-  BITCAST,
-  ADDRSPACECAST,
-
-  ICMP,
-  FCMP,
-  PHI,
-  SELECT,
-  CALL,
-  VA_ARG,
-  LANDINGPAD,
-  CATCHPAD,
-  CLEANUPPAD;
-}

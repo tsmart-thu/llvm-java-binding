@@ -19,6 +19,8 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
+
 /**
  * @author guangchen on 27/02/2017.
  */
@@ -27,5 +29,7 @@ public class InsertValueInst extends Instruction {
   public InsertValueInst(String name, Type type) {
     super(name, type);
     super.opCode = OpCode.INSERTVALUE;
+    // this instruction should not be used when analysing C
+    assert false : "Unhandled instruction: invoke";
   }
 }

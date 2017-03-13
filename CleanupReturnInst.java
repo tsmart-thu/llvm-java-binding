@@ -19,7 +19,7 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import com.sun.istack.internal.Nullable;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
 
 /**
  * @author guangchen on 27/02/2017.

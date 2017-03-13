@@ -19,6 +19,8 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
+
 /**
  * @author guangchen on 27/02/2017.
  */

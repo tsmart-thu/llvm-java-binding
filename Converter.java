@@ -30,6 +30,8 @@ import java.util.Map;
 
 import static org.bytedeco.javacpp.LLVM.*;
 
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+
 /** @author guangchen on 03/03/2017. */
 public class Converter {
 
