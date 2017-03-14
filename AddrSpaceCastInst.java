@@ -30,4 +30,16 @@ public class AddrSpaceCastInst extends CastInst {
     super(name, type);
     super.opCode = OpCode.ADDRSPACECAST;
   }
+
+  public Value getPointerOperand() {
+    return getOperand(0);
+  }
+
+  public int getSrcPointerAddressSpace() {
+    return getPointerOperand().getType().getPointerAddressSpace();
+  }
+
+  public int getDestPointerAddressSpace() {
+    return getType().getPointerAddressSpace();
+  }
 }

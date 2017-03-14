@@ -34,4 +34,17 @@ public abstract class TerminatorInst extends Instruction {
 
   @Nullable
   public abstract BasicBlock getSuccessor(int i);
+
+  public boolean isExceptional() {
+    switch (getOpcode()) {
+      case CATCHSWITCH:
+      case CATCHRET:
+      case CLEANUPRET:
+      case INVOKE:
+      case RESUME:
+        return true;
+      default:
+        return false;
+    }
+  }
 }

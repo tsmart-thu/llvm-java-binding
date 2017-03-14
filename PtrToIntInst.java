@@ -30,4 +30,12 @@ public class PtrToIntInst extends CastInst {
     super(name, type);
     super.opCode = OpCode.PTRTOINT;
   }
+
+  public Value getPointerOperand() {
+    return getOperand(0);
+  }
+
+  public int getPointerAddressSpace() {
+    return getPointerOperand().getType().getPointerAddressSpace();
+  }
 }

@@ -30,4 +30,8 @@ public class IntToPtrInst extends CastInst {
     super(name, type);
     super.opCode = OpCode.INTTOPTR;
   }
+
+  public int getPointerAddressSpace() {
+    return getType().getPointerAddressSpace();
+  }
 }

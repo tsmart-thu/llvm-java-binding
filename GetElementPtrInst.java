@@ -94,6 +94,6 @@ public class GetElementPtrInst extends Instruction {
     return isInBounds;
   }
 
-  // TODO require APInt
+  // TODO require APInt and DataLayout
   // accumulateConstantOffset
 }
