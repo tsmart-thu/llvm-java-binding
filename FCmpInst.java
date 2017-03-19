@@ -30,4 +30,25 @@ public class FCmpInst extends CmpInst {
     super(name, type);
     super.opCode = OpCode.FCMP;
   }
+
+  @Override
+  public boolean isCommutative() {
+    return isEquality() || getPredicate() == Predicate.FCMP_FALSE
+        || getPredicate() == Predicate.FCMP_TRUE || getPredicate() == Predicate.FCMP_ORD
+        || getPredicate() == Predicate.FCMP_UNO;
+  }
+
+  @Override
+  public boolean isEquality() {
+    return isEquality(getPredicate());
+  }
+
+  public static boolean isEquality(Predicate predicate) {
+    return predicate == Predicate.FCMP_OEQ || predicate == Predicate.FCMP_ONE
+        || predicate == Predicate.FCMP_UEQ || predicate == Predicate.FCMP_UNE;
+  }
+
+  public boolean isRelational() {
+    return !isEquality();
+  }
 }

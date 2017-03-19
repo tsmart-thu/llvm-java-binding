@@ -33,7 +33,7 @@ public class Instruction extends User {
   protected BasicBlock parent;
   // initialized in child class
   protected OpCode opCode;
-  protected FastMathFlags fastMathFlags;
+  protected OperatorFlags operatorFlags;
 
   // only for Converter
   public void setParent(BasicBlock block) {
@@ -41,8 +41,8 @@ public class Instruction extends User {
   }
 
   // only for Converter
-  public void setFastMathFlags(FastMathFlags flags) {
-    fastMathFlags = flags;
+  public void setOperatorFlags(OperatorFlags flags) {
+    operatorFlags = flags;
   }
 
   public BasicBlock getParent() {
@@ -152,14 +152,14 @@ public class Instruction extends User {
     assert opCode != OpCode.ADD && opCode != OpCode.SUB
         && opCode != OpCode.MUL
         && opCode != OpCode.SHL : "No nuw flag!";
-    return fastMathFlags.hasNoUnsignedWrapFlag();
+    return operatorFlags.hasNoUnsignedWrapFlag();
   }
 
   public boolean hasNoSignedWrap() {
     assert opCode != OpCode.ADD && opCode != OpCode.SUB
         && opCode != OpCode.MUL
         && opCode != OpCode.SHL : "No nsw flag!";
-    return fastMathFlags.hasNoSignedWrapFlag();
+    return operatorFlags.hasNoSignedWrapFlag();
   }
 
   public boolean isExact() {
@@ -167,7 +167,7 @@ public class Instruction extends User {
         opCode != OpCode.UDIV && opCode != OpCode.SDIV
             && opCode != OpCode.LSHR
             && opCode != OpCode.ASHR : "No exact flag!";
-    return fastMathFlags.hasExactFlag();
+    return operatorFlags.hasExactFlag();
   }
 
   public boolean hasUnsafeAlgebra() {
@@ -178,7 +178,7 @@ public class Instruction extends User {
             && opCode != OpCode.FREM
             && opCode != OpCode.FCMP
             && opCode != OpCode.CALL : "No fast-math flags!";
-    return fastMathFlags.hasFastFlag();
+    return operatorFlags.hasFastFlag();
   }
 
   public boolean hasNoNaNs() {
@@ -189,7 +189,7 @@ public class Instruction extends User {
             && opCode != OpCode.FREM
             && opCode != OpCode.FCMP
             && opCode != OpCode.CALL : "No fast-math flags!";
-    return fastMathFlags.hasNoNaNFlag();
+    return operatorFlags.hasNoNaNFlag();
   }
 
   public boolean hasNoInfs() {
@@ -200,7 +200,7 @@ public class Instruction extends User {
             && opCode != OpCode.FREM
             && opCode != OpCode.FCMP
             && opCode != OpCode.CALL : "No fast-math flags!";
-    return fastMathFlags.hasNoInfFlag();
+    return operatorFlags.hasNoInfFlag();
   }
 
   public boolean hasNoSignedZeros() {
@@ -211,7 +211,7 @@ public class Instruction extends User {
             && opCode != OpCode.FREM
             && opCode != OpCode.FCMP
             && opCode != OpCode.CALL : "No fast-math flags!";
-    return fastMathFlags.hasNoSignedZeroFlag();
+    return operatorFlags.hasNoSignedZeroFlag();
   }
 
   public boolean hasAllowReciprocal() {
@@ -222,7 +222,7 @@ public class Instruction extends User {
             && opCode != OpCode.FREM
             && opCode != OpCode.FCMP
             && opCode != OpCode.CALL : "No fast-math flags!";
-    return fastMathFlags.hasAllowReciprocalFlag();
+    return operatorFlags.hasAllowReciprocalFlag();
   }
 
   public boolean isAssociative() {

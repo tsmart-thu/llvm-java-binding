@@ -25,6 +25,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 // TODO might require refactoring inner classes
 public class InstructionProperties {
 
+  // used by all instructions and constant expressions
   public static enum OpCode {
     RET,
     BR,
@@ -97,16 +98,17 @@ public class InstructionProperties {
     CLEANUPPAD;
   }
 
-  public static class FastMathFlags {
+  // used by instructions and constant expressions with opcode ADD/SUB/MUL/SHL (nuw, nsw), UDIV/SDIV/LSHR/ASHR (exact), FADD/FSUB/FMUL/FDIV/FREM/FCMP/CALL (nnan, ninf, nsz, arcp, fast)
+  public static class OperatorFlags {
 
     private int flags = 0;
 
-    // math flags of integer type
+    // operator flags of integer type
     private static final int NUW = 1 << 0;
     private static final int NSW = 1 << 1;
     private static final int EXACT = 1 << 2;
 
-    // math flags of floating-point type
+    // operator flags of floating-point type
     private static final int NNAN = 1 << 3;
     private static final int NINF = 1 << 4;
     private static final int NSZ = 1 << 5;
@@ -195,6 +197,7 @@ public class InstructionProperties {
 
   }
 
+  // used by instructions and constant expressions with opcode CMPXCHG/ATOMICRMW/FENCE/LOAD/STORE
   public static enum AtomicOrdering {
     NOT_ATOMIC,
     UNORDERED,
@@ -205,11 +208,13 @@ public class InstructionProperties {
     SEQUENTIALLY_CONSISTENT;
   }
 
+  // used by instructions and constant expressions with opcode CMPXCHG/ATOMICRMW/FENCE/LOAD/STORE
   public static enum SynchronizationScope {
     SINGLE_THREAD,
     CROSS_THREAD;
   }
 
+  // used by instructions and constant expressions with opcode ATOMICRMW
   public static enum BinOp {
     XCHG,
     ADD,
@@ -222,5 +227,37 @@ public class InstructionProperties {
     MIN,
     UMAX,
     UMIN;
+  }
+
+  // used by instructions and constant expressions with opcode ICMP/FCMP
+  public static enum Predicate {
+    FCMP_FALSE,
+    FCMP_OEQ,
+    FCMP_OGT,
+    FCMP_OGE,
+    FCMP_OLT,
+    FCMP_OLE,
+    FCMP_ONE,
+    FCMP_ORD,
+    FCMP_UNO,
+    FCMP_UEQ,
+    FCMP_UGT,
+    FCMP_UGE,
+    FCMP_ULT,
+    FCMP_ULE,
+    FCMP_UNE,
+    FCMP_TRUE,
+    BAD_FCMP_PREDICATE,
+    ICMP_EQ,
+    ICMP_NE,
+    ICMP_UGT,
+    ICMP_UGE,
+    ICMP_ULT,
+    ICMP_ULE,
+    ICMP_SGT,
+    ICMP_SGE,
+    ICMP_SLT,
+    ICMP_SLE,
+    BAD_ICMP_PREDICATE;
   }
 }
