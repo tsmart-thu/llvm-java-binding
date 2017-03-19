@@ -236,22 +236,39 @@ public class Converter {
       case LLVMIntegerTypeKind:
         int size = LLVMGetIntTypeWidth(typeRef);
         return Type.getIntNTy(context, size);
-      case LLVMFunctionTypeKind: {
-        LLVMTypeRef returnTypeRef = LLVMGetReturnType(typeRef);
-        int paramsCount = LLVMCountParamTypes(typeRef);
-        PointerPointer<LLVMTypeRef> params = new PointerPointer<>(paramsCount);
-        LLVMGetParamTypes(typeRef, params);
-        Type[] paramsType = new Type[paramsCount];
-        for (int i = 0; i < paramsCount; i++) {
-          paramsType[i] = getType(params.get(LLVMTypeRef.class, i));
+      case LLVMFunctionTypeKind:
+        {
+          LLVMTypeRef returnTypeRef = LLVMGetReturnType(typeRef);
+          int paramsCount = LLVMCountParamTypes(typeRef);
+          PointerPointer<LLVMTypeRef> params = new PointerPointer<>(paramsCount);
+          LLVMGetParamTypes(typeRef, params);
+          Type[] paramsType = new Type[paramsCount];
+          for (int i = 0; i < paramsCount; i++) {
+            paramsType[i] = getType(params.get(LLVMTypeRef.class, i));
+          }
+          boolean isVarArg = LLVMIsFunctionVarArg(typeRef) != 0;
+          return FunctionType.get(getType(returnTypeRef), paramsType, isVarArg);
         }
-        boolean isVarArg = LLVMIsFunctionVarArg(typeRef) != 0;
-        return FunctionType.get(getType(returnTypeRef), paramsType, isVarArg);
-      }
       case LLVMStructTypeKind:
-        throw new NotImplementedException();
+        {
+          String name = LLVMGetStructName(typeRef).toString();
+          int elementsCount = LLVMCountStructElementTypes(typeRef);
+          PointerPointer<LLVMTypeRef> elems = new PointerPointer<>(elementsCount);
+          LLVMGetStructElementTypes(typeRef, elems);
+          Type[] elementType = new Type[elementsCount];
+          for (int i = 0; i < elementsCount; i++) {
+            elementType[i] = getType(elems.get(LLVMTypeRef.class, i));
+          }
+          boolean isPacked = LLVMIsPackedStruct(typeRef) != 0;
+          LLVMIsOpaqueStruct(typeRef);
+          return StructType.create(context, elementType, name, isPacked);
+        }
       case LLVMArrayTypeKind:
-        throw new NotImplementedException();
+        {
+          Type elementType = getType(LLVMGetElementType(typeRef));
+          long numElements = LLVMGetArrayLength(typeRef);
+          return ArrayType.get(elementType, numElements);
+        }
       case LLVMPointerTypeKind:
         {
           Type elementType = getType(LLVMGetElementType(typeRef));

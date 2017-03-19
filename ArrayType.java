@@ -19,11 +19,29 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-/**
- * @author guangchen on 01/03/2017.
- */
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+/** @author guangchen on 01/03/2017. */
 public class ArrayType extends SequentialType {
-    protected ArrayType(Context context, TypeID id) {
-        super(context, id);
-    }
+  private Type elementType;
+  private long numElements;
+
+  protected ArrayType(Context context, Type elementType, long numElements) {
+    super(context, TypeID.ArrayTyID);
+    this.elementType = elementType;
+    this.numElements = numElements;
+  }
+
+  public long getNumElements() {
+    return numElements;
+  }
+
+  @Override
+  public Type getElementType() {
+    return elementType;
+  }
+
+  public static ArrayType get(Type elementType, long numElements) {
+    return new ArrayType(elementType.getContext(), elementType, numElements);
+  }
 }
