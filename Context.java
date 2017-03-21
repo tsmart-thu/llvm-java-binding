@@ -34,4 +34,10 @@ public class Context {
     LLVMContextRef getContextRef() {
         return this.contextRef;
     }
+
+    @Override
+    protected void finalize() throws Throwable {
+        LLVMContextDispose(contextRef);
+        super.finalize();
+    }
 }
