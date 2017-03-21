@@ -19,6 +19,8 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import com.google.common.base.Optional;
+import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -215,24 +217,37 @@ public class Converter {
   }
 
   public Type getType(LLVMTypeRef typeRef) {
+    Type cache = context.getType(typeRef);
+    if (cache != null) {
+      return cache;
+    }
+    Type result;
     int typeKind = LLVMGetTypeKind(typeRef);
     switch (typeKind) {
       case LLVMVoidTypeKind:
-        return Type.getVoidTy(context);
+        result = Type.getVoidTy(context);
+        break;
       case LLVMHalfTypeKind:
-        return Type.getHalfTy(context);
+        result = Type.getHalfTy(context);
+        break;
       case LLVMFloatTypeKind:
-        return Type.getFloatTy(context);
+        result = Type.getFloatTy(context);
+        break;
       case LLVMDoubleTypeKind:
-        return Type.getDoubleTy(context);
+        result = Type.getDoubleTy(context);
+        break;
       case LLVMX86_FP80TypeKind:
-        return Type.getX86_FP80Ty(context);
+        result = Type.getX86_FP80Ty(context);
+        break;
       case LLVMFP128TypeKind:
-        return Type.getFP128Ty(context);
+        result = Type.getFP128Ty(context);
+        break;
       case LLVMPPC_FP128TypeKind:
-        return Type.getPPC_FP128Ty(context);
+        result = Type.getPPC_FP128Ty(context);
+        break;
       case LLVMLabelTypeKind:
-        return Type.getLabelTy(context);
+        result = Type.getLabelTy(context);
+        break;
       case LLVMIntegerTypeKind:
         int size = LLVMGetIntTypeWidth(typeRef);
         return Type.getIntNTy(context, size);
@@ -247,11 +262,19 @@ public class Converter {
             paramsType[i] = getType(params.get(LLVMTypeRef.class, i));
           }
           boolean isVarArg = LLVMIsFunctionVarArg(typeRef) != 0;
-          return FunctionType.get(getType(returnTypeRef), paramsType, isVarArg);
+          result = FunctionType.get(getType(returnTypeRef), paramsType, isVarArg);
+          break;
         }
       case LLVMStructTypeKind:
         {
-          String name = LLVMGetStructName(typeRef).toString();
+          Optional<String> name = Optional.fromNullable(LLVMGetStructName(typeRef)).transform(new com.google.common.base.Function<BytePointer, String>() {
+            @Override
+            public String apply(BytePointer input) {
+              return input.getString();
+            }
+          });
+          StructType structType = StructType.create(context, name.orNull());
+          context.putType(typeRef, structType);
           int elementsCount = LLVMCountStructElementTypes(typeRef);
           PointerPointer<LLVMTypeRef> elems = new PointerPointer<>(elementsCount);
           LLVMGetStructElementTypes(typeRef, elems);
@@ -260,31 +283,40 @@ public class Converter {
             elementType[i] = getType(elems.get(LLVMTypeRef.class, i));
           }
           boolean isPacked = LLVMIsPackedStruct(typeRef) != 0;
+          structType.setBody(elementType, isPacked);
           LLVMIsOpaqueStruct(typeRef);
-          return StructType.create(context, elementType, name, isPacked);
+          result = structType;
+          break;
         }
       case LLVMArrayTypeKind:
         {
           Type elementType = getType(LLVMGetElementType(typeRef));
           long numElements = LLVMGetArrayLength(typeRef);
-          return ArrayType.get(elementType, numElements);
+          result = ArrayType.get(elementType, numElements);
+          break;
         }
       case LLVMPointerTypeKind:
         {
           Type elementType = getType(LLVMGetElementType(typeRef));
           int addressSpace = LLVMGetPointerAddressSpace(typeRef);
-          return PointerType.get(elementType, addressSpace);
+          result = PointerType.get(elementType, addressSpace);
+          break;
         }
       case LLVMVectorTypeKind:
         throw new NotImplementedException();
       case LLVMMetadataTypeKind:
-        return Type.getMetadataTy(context);
+        result = Type.getMetadataTy(context);
+        break;
       case LLVMX86_MMXTypeKind:
-        return Type.getX86_MMXTy(context);
+        result = Type.getX86_MMXTy(context);
+        break;
       case LLVMTokenTypeKind:
-        return Type.getTokenTy(context);
+        result = Type.getTokenTy(context);
+        break;
       default:
         throw new NotImplementedException();
     }
+    context.putType(typeRef, result);
+    return result;
   }
 }

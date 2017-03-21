@@ -19,6 +19,9 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import java.util.HashMap;
+import java.util.Map;
+
 import static org.bytedeco.javacpp.LLVM.*;
 
 /**
@@ -26,6 +29,7 @@ import static org.bytedeco.javacpp.LLVM.*;
  */
 public class Context {
     private final LLVMContextRef contextRef;
+    private final Map<LLVMTypeRef, Type> typeRefTypeMap = new HashMap<>();
 
     public Context(LLVMContextRef contextRef) {
         this.contextRef = contextRef;
@@ -39,5 +43,13 @@ public class Context {
     protected void finalize() throws Throwable {
         LLVMContextDispose(contextRef);
         super.finalize();
+    }
+
+    public void putType(LLVMTypeRef typeRef, Type type) {
+        typeRefTypeMap.put(typeRef, type);
+    }
+
+    public Type getType(LLVMTypeRef typeRef) {
+        return typeRefTypeMap.get(typeRef);
     }
 }
