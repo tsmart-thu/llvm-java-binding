@@ -1,5 +1,6 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import java.util.Iterator;
 import java.util.Map;
 
 /**
@@ -20,5 +21,9 @@ public class Module {
 
     public Function getFunction(String name) {
         return functionMap.get(name);
+    }
+
+    public Iterator<Map.Entry<String, Function>> functions() {
+        return functionMap.entrySet().iterator();
     }
 }
