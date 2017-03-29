@@ -27,9 +27,9 @@ import java.util.List;
  */
 public class BasicBlock extends Value {
     private List<Instruction> instList = new ArrayList<>();
-    private Function parent;
+    private LlvmFunction parent;
 
-    public BasicBlock(String name, Type type, Function parent, List<Instruction> instList) {
+    public BasicBlock(String name, Type type, LlvmFunction parent, List<Instruction> instList) {
         super(name, type);
         this.parent = parent;
         this.instList = instList;
@@ -39,11 +39,11 @@ public class BasicBlock extends Value {
         return instList;
     }
 
-    public Function getParent() {
+    public LlvmFunction getParent() {
         return parent;
     }
 
-    public void setParent(Function parent) {
+    public void setParent(LlvmFunction parent) {
         this.parent = parent;
     }
 }

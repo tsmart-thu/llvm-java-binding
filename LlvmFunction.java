@@ -25,10 +25,10 @@ import java.util.List;
 /**
  * @author guangchen on 26/02/2017.
  */
-public class Function extends GlobalObject {
+public class LlvmFunction extends GlobalObject {
     private List<BasicBlock> basicBlockList = new ArrayList<>();
 
-    public Function(String name, Type type, List<BasicBlock> basicBlockList) {
+    public LlvmFunction(String name, Type type, List<BasicBlock> basicBlockList) {
         super(name, type);
         this.basicBlockList = basicBlockList;
         for (BasicBlock basicBlock: this.basicBlockList) {

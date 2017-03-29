@@ -43,25 +43,25 @@ public class Converter {
     this.context = context;
   }
 
-  public Module convert(LLVMModuleRef moduleRef) {
+  public LlvmModule convert(LLVMModuleRef moduleRef) {
     SizeTPointer sizeTPointer = new SizeTPointer(64);
     String moduleIdentifier = LLVMGetModuleIdentifier(moduleRef, sizeTPointer).getString();
-    Map<String, Function> functionMap = new HashMap<>();
+    Map<String, LlvmFunction> functionMap = new HashMap<>();
     for (LLVMValueRef f = LLVMGetFirstFunction(moduleRef); f != null; f = LLVMGetNextFunction(f)) {
-      Function func = convertValueToFunction(f);
+      LlvmFunction func = convertValueToFunction(f);
       functionMap.put(func.getName(), func);
     }
-    return new Module(moduleIdentifier, functionMap);
+    return new LlvmModule(moduleIdentifier, functionMap);
   }
 
-  public Function convertValueToFunction(LLVMValueRef function) {
+  public LlvmFunction convertValueToFunction(LLVMValueRef function) {
     List<BasicBlock> basicBlockList = new ArrayList<>();
     for (LLVMBasicBlockRef bb = LLVMGetFirstBasicBlock(function);
         bb != null;
         bb = LLVMGetNextBasicBlock(bb)) {
       basicBlockList.add(convert(bb));
     }
-    return new Function(
+    return new LlvmFunction(
         LLVMGetValueName(function).getString(), getType(LLVMTypeOf(function)), basicBlockList);
   }
 

@@ -21,6 +21,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import java.util.HashMap;
 import java.util.Map;
+import org.bytedeco.javacpp.LLVM;
 
 import static org.bytedeco.javacpp.LLVM.*;
 
@@ -28,28 +29,36 @@ import static org.bytedeco.javacpp.LLVM.*;
  * @author guangchen on 26/02/2017.
  */
 public class Context {
-    private final LLVMContextRef contextRef;
-    private final Map<LLVMTypeRef, Type> typeRefTypeMap = new HashMap<>();
 
-    public Context(LLVMContextRef contextRef) {
-        this.contextRef = contextRef;
-    }
+  private final LLVMContextRef contextRef;
+  private final Map<LLVMTypeRef, Type> typeRefTypeMap = new HashMap<>();
 
-    LLVMContextRef getContextRef() {
-        return this.contextRef;
-    }
+  /**
+   * Create an empty context
+   */
+  public static Context create() {
+    return new Context(LLVM.LLVMContextCreate());
+  }
 
-    @Override
-    protected void finalize() throws Throwable {
-        LLVMContextDispose(contextRef);
-        super.finalize();
-    }
+  public Context(LLVMContextRef contextRef) {
+    this.contextRef = contextRef;
+  }
 
-    public void putType(LLVMTypeRef typeRef, Type type) {
-        typeRefTypeMap.put(typeRef, type);
-    }
+  LLVMContextRef getContextRef() {
+    return this.contextRef;
+  }
 
-    public Type getType(LLVMTypeRef typeRef) {
-        return typeRefTypeMap.get(typeRef);
-    }
+  @Override
+  protected void finalize() throws Throwable {
+    LLVMContextDispose(contextRef);
+    super.finalize();
+  }
+
+  public void putType(LLVMTypeRef typeRef, Type type) {
+    typeRefTypeMap.put(typeRef, type);
+  }
+
+  public Type getType(LLVMTypeRef typeRef) {
+    return typeRefTypeMap.get(typeRef);
+  }
 }

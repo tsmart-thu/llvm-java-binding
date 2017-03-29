@@ -49,13 +49,13 @@ public class Instruction extends User {
     return parent;
   }
 
-  public Module getModule() {
+  public LlvmModule getModule() {
     // TODO get module from parent function
-    Optional<Module> module = Optional.absent();
+    Optional<LlvmModule> module = Optional.absent();
     return module.get();
   }
 
-  public Function getFunction() {
+  public LlvmFunction getFunction() {
     return getParent().getParent();
   }
 

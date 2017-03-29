@@ -6,7 +6,7 @@ import static org.bytedeco.javacpp.LLVM.*;
 
 /** @author guangchen on 24/02/2017. */
 public class IRReader {
-  public Module parseIRFile(String fileName, Context context) {
+  public LlvmModule parseIRFile(String fileName, Context context) {
     LLVMMemoryBufferRef bufferRef = new LLVMMemoryBufferRef();
     BytePointer outMessage = new BytePointer(new BytePointer());
     LLVMCreateMemoryBufferWithContentsOfFile(new BytePointer(fileName), bufferRef, outMessage);
@@ -16,7 +16,7 @@ public class IRReader {
     return converter.convert(moduleRef);
   }
 
-  public Module parseBytecodeFile(String fileName, Context context) {
+  public LlvmModule parseBytecodeFile(String fileName, Context context) {
     LLVMMemoryBufferRef bufferRef = new LLVMMemoryBufferRef();
     BytePointer outMessage = new BytePointer(new BytePointer());
     LLVMCreateMemoryBufferWithContentsOfFile(new BytePointer(fileName), bufferRef, outMessage);
