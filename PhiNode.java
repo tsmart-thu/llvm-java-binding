@@ -19,10 +19,9 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
 import com.google.common.collect.ImmutableList;
-import javafx.scene.layout.BackgroundSize;
 
 /**
  * @author guangchen on 27/02/2017.
