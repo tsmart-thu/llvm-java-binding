@@ -22,7 +22,10 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.*;
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
 
+import com.google.common.base.Functions;
+import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
+import com.google.common.collect.Iterables;
 
 public class Instruction extends User {
 
@@ -419,5 +422,12 @@ public class Instruction extends User {
     return false;
   }
 
+  @Override
+  public String toString() {
+    // TODO: operands
+    return getClass().getSimpleName();
+//    return getName() + " " + Joiner.on(" ").join(
+//        Iterables.transform(Use.makeIterable(getOperandList()), Functions.toStringFunction())
+//    );
+  }
 }
-
