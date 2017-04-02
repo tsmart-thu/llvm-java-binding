@@ -21,7 +21,6 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import com.google.common.base.Optional;
 import org.bytedeco.javacpp.BytePointer;
-import org.bytedeco.javacpp.LLVM;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -31,9 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import static org.bytedeco.javacpp.LLVM.*;
-
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static org.bytedeco.javacpp.LLVM.*;
 
 /** @author guangchen on 03/03/2017. */
 public class Converter {
@@ -310,11 +308,8 @@ public class Converter {
     } else if (LLVMIsABasicBlock(valueRef) != null) {
       return convert(LLVMValueAsBasicBlock(valueRef));
     }
-    int opcode = LLVMGetConstOpcode(valueRef);
-    LLVMDumpValue(valueRef);
-    // TODO unhandled convertion
+    assert false : "unhandled convert llvm value ref";
     return null;
-
   }
 
   public Constant convertValueToConstant(LLVMValueRef valueRef) {
