@@ -52,7 +52,7 @@ public class BranchInst extends TerminatorInst {
     if (isConditional()) {
       return 2;
     } else {
-      return 0;
+      return 1;
     }
   }
 
@@ -60,6 +60,10 @@ public class BranchInst extends TerminatorInst {
   @Nullable
   public BasicBlock getSuccessor(int i) {
     assert i >= 0 && i < getNumSuccessors() : "Successor # out of range for branch!";
-    return castOrNull(getOperand(i + 1), BasicBlock.class);
+    if (isConditional()) {
+      return castOrNull(getOperand(i + 1), BasicBlock.class);
+    } else {
+      return castOrNull(getOperand(i), BasicBlock.class);
+    }
   }
 }
