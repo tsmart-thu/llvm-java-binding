@@ -407,7 +407,7 @@ public class Instruction extends User {
   // haveSameSpecialState
 
   public boolean isUsedOutsideOfBlock(BasicBlock block) {
-    for (Use use = getOperandList(); use != null; use = use.getNext()) {
+    for (Use use = uses().get(0); use != null; use = use.getNext()) {
       Instruction inst = cast(use, Instruction.class);
       PhiNode pn = dyncast(use, PhiNode.class);
       if (pn == null) {

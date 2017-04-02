@@ -19,15 +19,15 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import java.util.ArrayList;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 import java.util.List;
 
 /**
  * @author guangchen on 26/02/2017.
  */
 public class User extends Value {
-    private final List<Use> use = new ArrayList<>();
-//
+    //
 //    User(LLVMValueRef valueRef) {
 //        super(valueRef);
 //        for (int i = 0, end = LLVMGetNumOperands(valueRef); i < end; i++) {
@@ -39,23 +39,29 @@ public class User extends Value {
 //        }
 //    }
 
+    private List<Value> operands;
+
     public User(String name, Type type) {
         super(name, type);
     }
 
     public Value getOperand(int i) {
-        return use.get(i).get();
+        return operands.get(i);
     }
 
-    public Use getOperandList() {
-        return use.get(0);
+    public void setOperands(List<Value> operands) {
+        this.operands = operands;
+    }
+
+    public List<Use> getOperandList() {
+        throw new NotImplementedException();
     }
 
     public Use getOperandUse(int i) {
-        return use.get(i);
+        throw new NotImplementedException();
     }
 
     public int getNumOperands() {
-        return use.size();
+        return operands.size();
     }
 }

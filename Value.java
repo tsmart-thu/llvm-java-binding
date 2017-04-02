@@ -19,12 +19,20 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import com.google.common.base.Function;
+import com.google.common.base.Optional;
+import com.google.common.collect.Lists;
+
+import javax.annotation.Nullable;
+import java.util.List;
+
 /**
  * @author guangchen on 26/02/2017.
  */
 public class Value {
     private final String name;
     private final Type type;
+    private List<Use> uses;
 
     public Value(String name, Type type) {
         this.name = name;
@@ -41,6 +49,29 @@ public class Value {
 
     public boolean hasName() {
         return name != null && !name.equals("");
+    }
+
+    public List<Use> uses() {
+        return this.uses;
+    }
+
+    public void setUses(final List<Use> uses) {
+        this.uses = uses;
+    }
+
+    public List<User> users() {
+        return Lists.transform(this.uses, new Function<Use, User>() {
+            @Nullable
+            @Override
+            public User apply(@Nullable Use input) {
+                return Optional.fromNullable(input).transform(new Function<Use, User>() {
+                    @Override
+                    public User apply(Use input) {
+                        return input.getUser();
+                    }
+                }).orNull();
+            }
+        });
     }
 
 }
