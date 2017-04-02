@@ -21,6 +21,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import com.google.common.base.Optional;
 import org.bytedeco.javacpp.BytePointer;
+import org.bytedeco.javacpp.LLVM;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -66,154 +67,258 @@ public class Converter {
   }
 
   public BasicBlock convert(LLVMBasicBlockRef bb) {
+    BasicBlock basicBlock = context.getBasicBlock(bb);
+    if (basicBlock != null) {
+      return basicBlock;
+    }
     List<Instruction> instructionList = new ArrayList<>();
+    basicBlock = new BasicBlock(LLVMGetValueName(LLVMBasicBlockAsValue(bb)).getString(),
+            getType(LLVMTypeOf(LLVMBasicBlockAsValue(bb))), null);
+    context.putBasicBlock(bb, basicBlock);
     for (LLVMValueRef inst = LLVMGetFirstInstruction(bb);
         inst != null;
         inst = LLVMGetNextInstruction(inst)) {
       instructionList.add(convertValueToInstruction(inst));
     }
-    return new BasicBlock(
-        LLVMGetValueName(LLVMBasicBlockAsValue(bb)).getString(),
-        getType(LLVMTypeOf(LLVMBasicBlockAsValue(bb))),
-        null,
-        instructionList);
+    basicBlock.setInstList(instructionList);
+    return basicBlock;
   }
 
   public Instruction convertValueToInstruction(LLVMValueRef inst) {
     int opcode = LLVMGetInstructionOpcode(inst);
     String name = LLVMGetValueName(inst).getString();
     Type type = getType(LLVMTypeOf(inst));
+    Instruction instruction = context.getInst(inst);
+    if (instruction != null) {
+      return instruction;
+    }
     switch (opcode) {
       case LLVMRet:
-        return new ReturnInst(name, type);
+        instruction = new ReturnInst(name, type);
+        break;
       case LLVMBr:
-        return new BranchInst(name, type);
+        instruction = new BranchInst(name, type);
+        break;
       case LLVMSwitch:
-        return new SwitchInst(name, type);
+        instruction = new SwitchInst(name, type);
+        break;
       case LLVMIndirectBr:
-        return new IndirectBrInst(name, type);
+        instruction = new IndirectBrInst(name, type);
+        break;
       case LLVMInvoke:
-        return new InvokeInst(name, type);
+        instruction = new InvokeInst(name, type);
+        break;
       case LLVMResume:
-        return new ResumeInst(name, type);
+        instruction = new ResumeInst(name, type);
+        break;
       case LLVMUnreachable:
-        return new UnreachableInst(name, type);
+        instruction = new UnreachableInst(name, type);
+        break;
       case LLVMCleanupRet:
-        return new CleanupReturnInst(name, type);
+        instruction = new CleanupReturnInst(name, type);
+        break;
       case LLVMCatchRet:
-        return new CatchReturnInst(name, type);
+        instruction = new CatchReturnInst(name, type);
+        break;
       case LLVMCatchSwitch:
-        return new CatchSwitchInst(name, type);
+        instruction = new CatchSwitchInst(name, type);
+        break;
       case LLVMAdd:
-        return new BinaryOperator(name, type, OpCode.ADD);
+        instruction = new BinaryOperator(name, type, OpCode.ADD);
+        break;
       case LLVMFAdd:
-        return new BinaryOperator(name, type, OpCode.FADD);
+        instruction = new BinaryOperator(name, type, OpCode.FADD);
+        break;
       case LLVMSub:
-        return new BinaryOperator(name, type, OpCode.SUB);
+        instruction = new BinaryOperator(name, type, OpCode.SUB);
+        break;
       case LLVMFSub:
-        return new BinaryOperator(name, type, OpCode.FSUB);
+        instruction = new BinaryOperator(name, type, OpCode.FSUB);
+        break;
       case LLVMMul:
-        return new BinaryOperator(name, type, OpCode.MUL);
+        instruction = new BinaryOperator(name, type, OpCode.MUL);
+        break;
       case LLVMFMul:
-        return new BinaryOperator(name, type, OpCode.FMUL);
+        instruction = new BinaryOperator(name, type, OpCode.FMUL);
+        break;
       case LLVMUDiv:
-        return new BinaryOperator(name, type, OpCode.UDIV);
+        instruction = new BinaryOperator(name, type, OpCode.UDIV);
+        break;
       case LLVMSDiv:
-        return new BinaryOperator(name, type, OpCode.SDIV);
+        instruction = new BinaryOperator(name, type, OpCode.SDIV);
+        break;
       case LLVMFDiv:
-        return new BinaryOperator(name, type, OpCode.FDIV);
+        instruction = new BinaryOperator(name, type, OpCode.FDIV);
+        break;
       case LLVMURem:
-        return new BinaryOperator(name, type, OpCode.UREM);
+        instruction = new BinaryOperator(name, type, OpCode.UREM);
+        break;
       case LLVMSRem:
-        return new BinaryOperator(name, type, OpCode.SREM);
+        instruction = new BinaryOperator(name, type, OpCode.SREM);
+        break;
       case LLVMFRem:
-        return new BinaryOperator(name, type, OpCode.FREM);
+        instruction = new BinaryOperator(name, type, OpCode.FREM);
+        break;
       case LLVMShl:
-        return new BinaryOperator(name, type, OpCode.SHL);
+        instruction = new BinaryOperator(name, type, OpCode.SHL);
+        break;
       case LLVMLShr:
-        return new BinaryOperator(name, type, OpCode.LSHR);
+        instruction = new BinaryOperator(name, type, OpCode.LSHR);
+        break;
       case LLVMAShr:
-        return new BinaryOperator(name, type, OpCode.ASHR);
+        instruction = new BinaryOperator(name, type, OpCode.ASHR);
+        break;
       case LLVMAnd:
-        return new BinaryOperator(name, type, OpCode.AND);
+        instruction = new BinaryOperator(name, type, OpCode.AND);
+        break;
       case LLVMOr:
-        return new BinaryOperator(name, type, OpCode.OR);
+        instruction = new BinaryOperator(name, type, OpCode.OR);
+        break;
       case LLVMXor:
-        return new BinaryOperator(name, type, OpCode.XOR);
+        instruction = new BinaryOperator(name, type, OpCode.XOR);
+        break;
       case LLVMAlloca:
-        return new AllocaInst(name, type);
+        instruction = new AllocaInst(name, type);
+        break;
       case LLVMLoad:
-        return new LoadInst(name, type);
+        instruction = new LoadInst(name, type);
+        break;
       case LLVMStore:
-        return new StoreInst(name, type);
+        instruction = new StoreInst(name, type);
+        break;
       case LLVMGetElementPtr:
-        return new GetElementPtrInst(name, type);
+        instruction = new GetElementPtrInst(name, type);
+        break;
       case LLVMFence:
-        return new FenceInst(name, type);
+        instruction = new FenceInst(name, type);
+        break;
       case LLVMAtomicCmpXchg:
-        return new AtomicCmpXchgInst(name, type);
+        instruction = new AtomicCmpXchgInst(name, type);
+        break;
       case LLVMAtomicRMW:
-        return new AtomicRMWInst(name, type);
+        instruction = new AtomicRMWInst(name, type);
+        break;
       case LLVMTrunc:
-        return new TruncInst(name, type);
+        instruction = new TruncInst(name, type);
+        break;
       case LLVMZExt:
-        return new ZExtInst(name, type);
+        instruction = new ZExtInst(name, type);
+        break;
       case LLVMSExt:
-        return new SExtInst(name, type);
+        instruction = new SExtInst(name, type);
+        break;
       case LLVMFPToUI:
-        return new FPToUIInst(name, type);
+        instruction = new FPToUIInst(name, type);
+        break;
       case LLVMFPToSI:
-        return new FPToSIInst(name, type);
+        instruction = new FPToSIInst(name, type);
+        break;
       case LLVMUIToFP:
-        return new UIToFPInst(name, type);
+        instruction = new UIToFPInst(name, type);
+        break;
       case LLVMSIToFP:
-        return new SIToFPInst(name, type);
+        instruction = new SIToFPInst(name, type);
+        break;
       case LLVMFPTrunc:
-        return new FPTruncInst(name, type);
+        instruction = new FPTruncInst(name, type);
+        break;
       case LLVMFPExt:
-        return new FPExtInst(name, type);
+        instruction = new FPExtInst(name, type);
+        break;
       case LLVMPtrToInt:
-        return new PtrToIntInst(name, type);
+        instruction = new PtrToIntInst(name, type);
+        break;
       case LLVMIntToPtr:
-        return new IntToPtrInst(name, type);
+        instruction = new IntToPtrInst(name, type);
+        break;
       case LLVMBitCast:
-        return new BitCastInst(name, type);
+        instruction = new BitCastInst(name, type);
+        break;
       case LLVMAddrSpaceCast:
-        return new AddrSpaceCastInst(name, type);
+        instruction = new AddrSpaceCastInst(name, type);
+        break;
       case LLVMCleanupPad:
-        return new CleanupPadInst(name, type);
+        instruction = new CleanupPadInst(name, type);
+        break;
       case LLVMCatchPad:
-        return new CatchPadInst(name, type);
+        instruction = new CatchPadInst(name, type);
+        break;
       case LLVMICmp:
-        return new ICmpInst(name, type);
+        instruction = new ICmpInst(name, type);
+        break;
       case LLVMFCmp:
-        return new FCmpInst(name, type);
+        instruction = new FCmpInst(name, type);
+        break;
       case LLVMPHI:
-        return new PhiNode(name, type);
+        instruction = new PhiNode(name, type);
+        break;
       case LLVMCall:
-        return new CallInst(name, type);
+        instruction = new CallInst(name, type);
+        break;
       case LLVMSelect:
-        return new SelectInst(name, type);
+        instruction = new SelectInst(name, type);
+        break;
       case LLVMUserOp1:
       case LLVMUserOp2:
         throw new IllegalArgumentException("UserOp1 / UserOp2 should not appear in ir file");
       case LLVMVAArg:
-        return new VAArgInst(name, type);
+        instruction = new VAArgInst(name, type);
+        break;
       case LLVMExtractElement:
-        return new ExtractElementInst(name, type);
+        instruction = new ExtractElementInst(name, type);
+        break;
       case LLVMInsertElement:
-        return new InsertElementInst(name, type);
+        instruction = new InsertElementInst(name, type);
+        break;
       case LLVMShuffleVector:
-        return new ShuffleVectorInst(name, type);
+        instruction = new ShuffleVectorInst(name, type);
+        break;
       case LLVMExtractValue:
-        return new ExtractValueInst(name, type);
+        instruction = new ExtractValueInst(name, type);
+        break;
       case LLVMInsertValue:
-        return new InsertValueInst(name, type);
+        instruction = new InsertValueInst(name, type);
+        break;
       case LLVMLandingPad:
-        return new LandingPadInst(name, type);
+        instruction = new LandingPadInst(name, type);
+        break;
       default:
         throw new IllegalArgumentException("Unhandled instruction: " + inst.toString());
     }
+    context.putInst(inst, instruction);
+    List<Use> uses = new ArrayList<>();
+    int i = 0;
+    for (LLVMUseRef useRef = LLVMGetFirstUse(inst); useRef != null; useRef = LLVMGetNextUse(useRef)) {
+      LLVMValueRef userRef = LLVMGetUser(useRef);
+      uses.add(new Use(instruction, convertValueToInstruction(userRef), i));
+      i++;
+    }
+    instruction.setUses(uses);
+    List<Value> operands = new ArrayList<>();
+    for (i = 0; i < LLVMGetNumOperands(inst); i ++) {
+      operands.add(convert(LLVMGetOperand(inst, i)));
+    }
+    instruction.setOperands(operands);
+    return instruction;
+  }
+
+  public Value convert(LLVMValueRef valueRef) {
+    if (LLVMIsAInstruction(valueRef) != null) {
+      return convertValueToInstruction(valueRef);
+    } else if (LLVMIsConstant(valueRef) != 0) {
+      return convertValueToConstant(valueRef);
+    } else if (LLVMIsABasicBlock(valueRef) != null) {
+      return convert(LLVMValueAsBasicBlock(valueRef));
+    }
+    int opcode = LLVMGetConstOpcode(valueRef);
+    LLVMDumpValue(valueRef);
+    // TODO unhandled convertion
+    return null;
+
+  }
+
+  public Constant convertValueToConstant(LLVMValueRef valueRef) {
+    return new Constant("", getType(LLVMTypeOf(valueRef)));
   }
 
   public Type getType(LLVMTypeRef typeRef) {

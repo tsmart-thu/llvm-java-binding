@@ -35,8 +35,17 @@ public class BasicBlock extends Value {
         this.instList = instList;
     }
 
+    public BasicBlock(String name, Type type, LlvmFunction parent) {
+        super(name, type);
+        this.parent = parent;
+    }
+
     public List<Instruction> getInstList() {
         return instList;
+    }
+
+    public void setInstList(List<Instruction> instList) {
+        this.instList = instList;
     }
 
     public LlvmFunction getParent() {

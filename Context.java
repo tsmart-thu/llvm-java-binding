@@ -32,6 +32,8 @@ public class Context {
 
   private final LLVMContextRef contextRef;
   private final Map<LLVMTypeRef, Type> typeRefTypeMap = new HashMap<>();
+  private final Map<LLVMValueRef, Instruction> valueRefInstructionMap = new HashMap<>();
+  private final Map<LLVMBasicBlockRef, BasicBlock> basicBlockRefBasicBlockMap = new HashMap<>();
 
   /**
    * Create an empty context
@@ -60,5 +62,21 @@ public class Context {
 
   public Type getType(LLVMTypeRef typeRef) {
     return typeRefTypeMap.get(typeRef);
+  }
+
+  public void putInst(LLVMValueRef valueRef, Instruction instruction) {
+    valueRefInstructionMap.put(valueRef, instruction);
+  }
+
+  public Instruction getInst(LLVMValueRef valueRef) {
+    return valueRefInstructionMap.get(valueRef);
+  }
+
+  public void putBasicBlock(LLVMBasicBlockRef bb, BasicBlock basicBlock) {
+    basicBlockRefBasicBlockMap.put(bb, basicBlock);
+  }
+
+  public BasicBlock getBasicBlock(LLVMBasicBlockRef bb) {
+    return basicBlockRefBasicBlockMap.get(bb);
   }
 }
