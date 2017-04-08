@@ -19,24 +19,54 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import cn.edu.thu.tsmart.core.cfa.llvm.AttributeList.Attribute;
+import cn.edu.thu.tsmart.core.cfa.llvm.AttributeList.AttrKind;
+import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
+import javax.annotation.Nullable;
 
 /**
  * @author guangchen on 26/02/2017.
  */
 public class LlvmFunction extends GlobalObject {
-    private List<BasicBlock> basicBlockList = new ArrayList<>();
 
-    public LlvmFunction(String name, Type type, List<BasicBlock> basicBlockList) {
-        super(name, type);
-        this.basicBlockList = basicBlockList;
-        for (BasicBlock basicBlock: this.basicBlockList) {
-            basicBlock.setParent(this);
-        }
-    }
+  private List<BasicBlock> basicBlockList = new ArrayList<>();
 
-    public List<BasicBlock> getBasicBlockList() {
-        return basicBlockList;
+  // TODO initialize in Converter
+  private AttributeList attrs;
+
+  public LlvmFunction(String name, Type type, List<BasicBlock> basicBlockList) {
+    super(name, type);
+    this.basicBlockList = basicBlockList;
+    for (BasicBlock basicBlock : this.basicBlockList) {
+      basicBlock.setParent(this);
     }
+  }
+
+  // only for Converter
+  public void setAttrs(AttributeList attrs) {
+    this.attrs = attrs;
+  }
+
+  public List<BasicBlock> getBasicBlockList() {
+    return basicBlockList;
+  }
+
+  public AttributeList getAttributes() {
+    return attrs;
+  }
+
+  public ImmutableSet<Attribute> getFnAttributes() {
+    return attrs.fnAttributes;
+  }
+
+  public boolean hasFnAttribute(AttrKind attrKind) {
+    return attrs.hasFnAttribute(attrKind);
+  }
+
+  @Nullable
+  public Attribute getFnAttribute(AttrKind attrKind) {
+    return getFnAttribute(attrKind);
+  }
 }

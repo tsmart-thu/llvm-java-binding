@@ -30,4 +30,16 @@ public class SelectInst extends Instruction {
     super(name, type);
     super.opCode = OpCode.SELECT;
   }
+
+  public Value getCondition() {
+    return getOperand(0);
+  }
+
+  public Value getTrueValue() {
+    return getOperand(1);
+  }
+
+  public Value getFalseValue() {
+    return getOperand(2);
+  }
 }

@@ -20,7 +20,7 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
 /**
- * Created by yuiyin on 2017/3/12.
+ * Created by zhch on 2017/3/12.
  */
 // TODO might require refactoring inner classes
 public class InstructionProperties {
@@ -99,7 +99,7 @@ public class InstructionProperties {
   }
 
   // used by instructions and constant expressions with opcode ADD/SUB/MUL/SHL (nuw, nsw), UDIV/SDIV/LSHR/ASHR (exact), FADD/FSUB/FMUL/FDIV/FREM/FCMP/CALL (nnan, ninf, nsz, arcp, fast)
-  public static class OperatorFlags {
+  public class OperatorFlags {
 
     private int flags = 0;
 
@@ -259,5 +259,56 @@ public class InstructionProperties {
     ICMP_SLT,
     ICMP_SLE,
     BAD_ICMP_PREDICATE;
+  }
+
+  // used by instructions and constant expressions with opcode CALL
+  public static enum TailCallKind {
+    TCK_NONE,
+    TCK_TAIL,
+    TCK_MUST_TAIL,
+    TCK_NO_TAIL;
+  }
+
+  public static enum CallingConvention {
+    C,
+    FAST,
+    COLD,
+    GHC,
+    HIPE,
+    WEBKIT_JS,
+    ANY_REG,
+    PRESERVE_MOST,
+    PRESERVE_ALL,
+    SWIFT,
+    CXX_FAST_TLS,
+    FIRST_TARGET_CC,
+    X86_STD_CALL,
+    X86_FAST_CALL,
+    ARM_APCS,
+    ARM_AAPCS,
+    ARM_AAPCS_VFP,
+    MSP430_INTR,
+    X86_THIS_CALL,
+    PTX_KERNEL,
+    PTX_DEVICE,
+    SPIR_FUNC,
+    SPIR_KERNEL,
+    INTEL_OCL_BI,
+    X86_64_SYSV,
+    X86_64_WIN64,
+    X86_VECTOR_CALL,
+    HHVM,
+    HHVM_C,
+    X86_INTR,
+    AVR_INTR,
+    AVR_SIGNAL,
+    AVR_BUILTIN,
+    AMDGPU_VS,
+    AMDGPU_GS,
+    AMDGPU_PS,
+    AMDGPU_CS,
+    AMDGPU_KERNEL,
+    X86_REG_CALL,
+    MAX_ID;
   }
 }

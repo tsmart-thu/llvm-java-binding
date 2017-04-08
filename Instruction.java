@@ -22,10 +22,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.*;
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
 
-import com.google.common.base.Functions;
-import com.google.common.base.Joiner;
 import com.google.common.base.Optional;
-import com.google.common.collect.Iterables;
 
 public class Instruction extends User {
 
@@ -36,7 +33,7 @@ public class Instruction extends User {
   protected BasicBlock parent;
   // initialized in child class
   protected OpCode opCode;
-  protected OperatorFlags operatorFlags;
+  protected InstructionProperties.OperatorFlags operatorFlags;
 
   // only for Converter
   public void setParent(BasicBlock block) {
@@ -44,7 +41,7 @@ public class Instruction extends User {
   }
 
   // only for Converter
-  public void setOperatorFlags(OperatorFlags flags) {
+  public void setOperatorFlags(InstructionProperties.OperatorFlags flags) {
     operatorFlags = flags;
   }
 

@@ -30,4 +30,8 @@ public class VAArgInst extends UnaryInstruction {
     super(name, type);
     super.opCode = OpCode.VA_ARG;
   }
+
+  public Value getPointerOperand() {
+    return getOperand(0);
+  }
 }
