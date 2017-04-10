@@ -19,8 +19,7 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import cn.edu.thu.tsmart.core.cfa.llvm.AttributeList.Attribute;
-import cn.edu.thu.tsmart.core.cfa.llvm.AttributeList.AttrKind;
+import cn.edu.thu.tsmart.core.cfa.llvm.Attribute.AttributeKind;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
@@ -58,15 +57,15 @@ public class LlvmFunction extends GlobalObject {
   }
 
   public ImmutableSet<Attribute> getFnAttributes() {
-    return attrs.fnAttributes;
+    return attrs.getFnAttributes();
   }
 
-  public boolean hasFnAttribute(AttrKind attrKind) {
+  public boolean hasFnAttribute(AttributeKind attrKind) {
     return attrs.hasFnAttribute(attrKind);
   }
 
   @Nullable
-  public Attribute getFnAttribute(AttrKind attrKind) {
+  public Attribute getFnAttribute(AttributeKind attrKind) {
     return getFnAttribute(attrKind);
   }
 }

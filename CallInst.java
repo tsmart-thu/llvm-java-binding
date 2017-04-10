@@ -22,8 +22,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.*;
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
 
-import cn.edu.thu.tsmart.core.cfa.llvm.AttributeList.Attribute;
-import cn.edu.thu.tsmart.core.cfa.llvm.AttributeList.AttrKind;
+import cn.edu.thu.tsmart.core.cfa.llvm.Attribute.AttributeKind;
 import com.google.common.collect.ImmutableSet;
 import javax.annotation.Nullable;
 
@@ -119,45 +118,45 @@ public class CallInst extends Instruction {
 
   @Nullable
   public ImmutableSet<Attribute> getParamAttributes(int index) {
-    if (index < 0 || index >= attrs.paramAttributes.size()) {
+    if (index < 0 || index >= attrs.getParamAttributes().size()) {
       return null;
     } else {
-      return attrs.paramAttributes.get(index);
+      return attrs.getParamAttributes().get(index);
     }
   }
 
   public ImmutableSet<Attribute> getRetAttributes() {
-    return attrs.retAttributes;
+    return attrs.getRetAttributes();
   }
 
   public ImmutableSet<Attribute> getFnAttributes() {
-    return attrs.fnAttributes;
+    return attrs.getRetAttributes();
   }
 
-  public boolean hasParamAttribute(int index, AttrKind attrKind) {
+  public boolean hasParamAttribute(int index, AttributeKind attrKind) {
     return attrs.hasParamAttribute(index, attrKind);
   }
 
-  public boolean hasRetAttribute(AttrKind attrKind) {
+  public boolean hasRetAttribute(AttributeKind attrKind) {
     return attrs.hasRetAttribute(attrKind);
   }
 
-  public boolean hasFnAttribute(AttrKind attrKind) {
+  public boolean hasFnAttribute(AttributeKind attrKind) {
     return attrs.hasFnAttribute(attrKind);
   }
 
   @Nullable
-  public Attribute getParamAttribute(int index, AttrKind attrKind) {
+  public Attribute getParamAttribute(int index, AttributeKind attrKind) {
     return attrs.getParamAttribute(index, attrKind);
   }
 
   @Nullable
-  public Attribute getRetAttribute(AttrKind attrKind) {
+  public Attribute getRetAttribute(AttributeKind attrKind) {
     return attrs.getRetAttribute(attrKind);
   }
 
   @Nullable
-  public Attribute getFnAttribute(AttrKind attrKind) {
+  public Attribute getFnAttribute(AttributeKind attrKind) {
     return attrs.getFnAttribute(attrKind);
   }
 
