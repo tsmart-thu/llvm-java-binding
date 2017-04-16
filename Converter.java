@@ -301,18 +301,31 @@ public class Converter {
   }
 
   public Value convert(LLVMValueRef valueRef) {
-    if (LLVMIsAInstruction(valueRef) != null) {
-      return convertValueToInstruction(valueRef);
-    } else if (LLVMIsConstant(valueRef) != 0) {
-      return convertValueToConstant(valueRef);
-    } else if (LLVMIsABasicBlock(valueRef) != null) {
-      return convert(LLVMValueAsBasicBlock(valueRef));
+    switch (LLVMGetValueKind(valueRef)) {
+      case LLVMInstructionValueKind:
+        return convertValueToInstruction(valueRef);
+      case LLVMConstantIntValueKind:
+      case LLVMConstantExprValueKind:
+        return convertValueToConstant(valueRef);
+      case LLVMBasicBlockValueKind:
+        return convert(LLVMValueAsBasicBlock(valueRef));
+      case LLVMMetadataAsValueValueKind:
+        // TODO metadata
+        return null;
+      case LLVMFunctionValueKind:
+        return convertValueToFunction(valueRef);
     }
+    System.out.println(LLVMGetValueKind(valueRef));
+    System.out.println(LLVMMetadataAsValueValueKind);
     assert false : "unhandled convert llvm value ref";
     return null;
   }
 
   public Constant convertValueToConstant(LLVMValueRef valueRef) {
+    LLVMValueRef constantInt = LLVMIsAConstantInt(valueRef);
+    if (constantInt != null) {
+
+    }
     return new Constant("", getType(LLVMTypeOf(valueRef)));
   }
 
