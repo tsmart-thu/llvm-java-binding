@@ -312,11 +312,26 @@ public class Converter {
       case LLVMMetadataAsValueValueKind:
         // TODO metadata
         return null;
+      case LLVMArgumentValueKind:
+        // TODO argument
+        return null;
+      case LLVMGlobalVariableValueKind:
+        // TODO global variable
+        return null;
+      case LLVMConstantPointerNullValueKind:
+        // TODO null
+        return null;
       case LLVMFunctionValueKind:
         return convertValueToFunction(valueRef);
+      case LLVMInlineAsmValueKind:
+        // TODO inline asm
+        return null;
+      case LLVMConstantFPValueKind:
+        // TODO constant fp
+        return null;
     }
+    LLVMDumpValue(valueRef);
     System.out.println(LLVMGetValueKind(valueRef));
-    System.out.println(LLVMMetadataAsValueValueKind);
     assert false : "unhandled convert llvm value ref";
     return null;
   }
