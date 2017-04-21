@@ -40,6 +40,7 @@ public class BinaryOperator extends Instruction {
     return visitor.visit(this);
   }
 
+  @Override
   public String toString() {
     String res = "%" + getName() + " = add nsw ";
     res +=

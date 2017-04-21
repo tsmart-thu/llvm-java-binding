@@ -116,6 +116,7 @@ public class ICmpInst extends CmpInst {
     return visitor.visit(this);
   }
 
+  @Override
   public String toString() {
     String res = "%" + getName() + " = icmp sgt ";
     res += getOperand(0).getType().toString() + " %" + getOperand(0).getName();

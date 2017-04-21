@@ -107,6 +107,7 @@ public class StoreInst extends Instruction {
     return visitor.visit(this);
   }
 
+  @Override
   public String toString() {
     String res = "store ";
     res += getOperand(0).getType().toString() + " %" + getOperand(0).getName();

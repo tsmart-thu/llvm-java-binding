@@ -108,6 +108,7 @@ public class AllocaInst extends UnaryInstruction {
     return visitor.visit(this);
   }
 
+  @Override
   public String toString() {
     String res = "%" + getName() + " = alloca ";
     res += getType().toString();

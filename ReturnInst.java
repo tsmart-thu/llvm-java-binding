@@ -60,6 +60,7 @@ public class ReturnInst extends TerminatorInst {
     return visitor.visit(this);
   }
 
+  @Override
   public String toString() {
     String res = "ret";
     if (getReturnValue() != null) {

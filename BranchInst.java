@@ -74,6 +74,7 @@ public class BranchInst extends TerminatorInst {
     return visitor.visit(this);
   }
 
+  @Override
   public String toString() {
     String res = "br ";
     if (isConditional()) {
