@@ -19,8 +19,9 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import cn.edu.thu.sse.common.util.Pair;
 import java.math.BigInteger;
-import javafx.util.Pair;
+
 
 /**
  * Created by zhch on 2017/4/10.
@@ -478,14 +479,14 @@ public class APInt {
   Pair<APInt, Boolean> sadd_ov(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = add(rhs);
-    return new Pair<>(res,
+    return Pair.of(res,
         isNonNegative() == rhs.isNonNegative() && res.isNonNegative() != isNonNegative());
   }
 
   Pair<APInt, Boolean> uadd_ov(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = add(rhs);
-    return new Pair<>(res, res.ult(rhs));
+    return Pair.of(res, res.ult(rhs));
   }
 
   APInt sub(APInt rhs) {
@@ -496,14 +497,14 @@ public class APInt {
   Pair<APInt, Boolean> ssub_ov(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = sub(rhs);
-    return new Pair<>(res,
+    return Pair.of(res,
         isNonNegative() != rhs.isNonNegative() && res.isNonNegative() != isNonNegative());
   }
 
   Pair<APInt, Boolean> usub_ov(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = sub(rhs);
-    return new Pair<>(res, res.ugt(this));
+    return Pair.of(res, res.ugt(this));
   }
 
   APInt mul(APInt rhs) {
@@ -518,14 +519,14 @@ public class APInt {
   Pair<APInt, Boolean> smul_ov(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = mul(rhs);
-    return new Pair<>(res,
+    return Pair.of(res,
         !isZero() && !rhs.isZero() && (res.sdiv(rhs).neq(this) || res.sdiv(this).neq(rhs)));
   }
 
   Pair<APInt, Boolean> umul_ov(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = mul(rhs);
-    return new Pair<>(res,
+    return Pair.of(res,
         !isZero() && !rhs.isZero() && (res.udiv(rhs).neq(this) || res.udiv(this).neq(rhs)));
   }
 
