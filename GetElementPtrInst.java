@@ -72,10 +72,12 @@ public class GetElementPtrInst extends Instruction {
     return getPointerOperand().getType();
   }
 
+  // NOTICE return type uses int to store unsigned
   public int getPointerAddressSpace() {
     return getPointerOperandType().getPointerAddressSpace();
   }
 
+  // NOTICE return type uses int to store unsigned
   public int getAddressSpace() {
     return getPointerAddressSpace();
   }

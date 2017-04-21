@@ -35,10 +35,12 @@ public class AddrSpaceCastInst extends CastInst {
     return getOperand(0);
   }
 
+  // NOTICE return type uses int to store unsigned
   public int getSrcPointerAddressSpace() {
     return getPointerOperand().getType().getPointerAddressSpace();
   }
 
+  // NOTICE return type uses int to store unsigned
   public int getDestPointerAddressSpace() {
     return getType().getPointerAddressSpace();
   }

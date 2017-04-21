@@ -42,6 +42,7 @@ public class AllocaInst extends UnaryInstruction {
   }
 
   // only for Converter
+  // NOTICE parameter type uses int to store unsigned
   public void setAlignment(int alignment) {
     this.alignment = alignment;
   }
@@ -81,6 +82,7 @@ public class AllocaInst extends UnaryInstruction {
     return allocatedType;
   }
 
+  // NOTICE return type uses int to store unsigned
   public int getAlignment() {
     return alignment;
   }

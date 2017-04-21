@@ -48,6 +48,7 @@ public class LoadInst extends UnaryInstruction {
   }
 
   // only for Converter
+  // NOTICE parameter type uses int to store unsigned
   public void setAlignment(int alignment) {
     this.alignment = alignment;
   }
@@ -66,6 +67,7 @@ public class LoadInst extends UnaryInstruction {
     return isVolatile;
   }
 
+  // NOTICE return type uses int to store unsigned
   public int getAlignment() {
     return alignment;
   }
@@ -91,6 +93,7 @@ public class LoadInst extends UnaryInstruction {
     return getOperand(0);
   }
 
+  // NOTICE return type uses int to store unsigned
   public int getPointerAddressSpace() {
     return getPointerOperand().getType().getPointerAddressSpace();
   }

@@ -87,6 +87,7 @@ public class AtomicRMWInst extends Instruction {
     return getOperand(1);
   }
 
+  // NOTICE return type uses int to store unsigned
   public int getPointerAddressSpace() {
     return getPointerOperand().getType().getPointerAddressSpace();
   }

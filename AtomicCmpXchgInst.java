@@ -100,6 +100,7 @@ public class AtomicCmpXchgInst extends Instruction {
     return getOperand(2);
   }
 
+  // NOTICE return type uses int to store unsigned
   public int getPointerAddressSpace() {
     return getPointerOperand().getType().getPointerAddressSpace();
   }

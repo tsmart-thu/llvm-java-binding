@@ -48,6 +48,7 @@ public class StoreInst extends Instruction {
   }
 
   // only for Converter
+  // NOTICE parameter type uses int to store unsigned
   public void setAlignment(int alignment) {
     this.alignment = alignment;
   }
@@ -66,6 +67,7 @@ public class StoreInst extends Instruction {
     return isVolatile;
   }
 
+  // NOTICE return type uses int to store unsigned
   public int getAlignment() {
     return alignment;
   }
@@ -95,6 +97,7 @@ public class StoreInst extends Instruction {
     return getOperand(1);
   }
 
+  // NOTICE return type uses int to store unsigned
   public int getPointerAddressSpace() {
     return getPointerOperand().getType().getPointerAddressSpace();
   }

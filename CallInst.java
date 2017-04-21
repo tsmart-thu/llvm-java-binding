@@ -60,6 +60,7 @@ public class CallInst extends Instruction {
 
   // only for Converter
   public void setNumArgs(int numArgs) {
+    assert numArgs >= 0 : "Invalid value for numArgs!";
     this.numArgs = numArgs;
   }
 

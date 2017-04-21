@@ -77,6 +77,7 @@ public class Attribute {
     return attribute;
   }
 
+  // NOTICE the 2nd parameter type uses long to store unsigned/uint_64 (regarding to attribute kind)
   public static Attribute getIntAttribute(AttributeKind attributeKind, long param) {
     assert attributeKind == AttributeKind.ALIGN || attributeKind == AttributeKind.ALIGNSTACK
         || attributeKind == AttributeKind.DEREFERENCEABLE
@@ -98,6 +99,7 @@ public class Attribute {
     return attribute;
   }
 
+  // NOTICE both the 2nd & 3rd parameter type uses long to store unsigned
   public static Attribute getAllocSizeAttribute(AttributeKind attributeKind, long param1,
       long param2) {
     assert attributeKind == AttributeKind.ALLOCSIZE : "Not allocsize attribute kind!";
@@ -153,6 +155,7 @@ public class Attribute {
         || attributeKind == AttributeKind.THUNK;
   }
 
+  // NOTICE the return type uses long to store unsigned/uint_64 (regarding to attribute kind)
   public long getValueAsInt() {
     assert isIntAttribute() : "Expected the attribute to be an integer attribute!";
     return intParam1;
@@ -163,29 +166,34 @@ public class Attribute {
     return stringParam;
   }
 
+  // NOTICE the return type uses long to store unsigned
   public long getAlignment() {
     assert attributeKind == AttributeKind.ALIGN : "getAlignment() only works for attribute align!";
     return intParam1;
   }
 
+  // NOTICE the return type uses long to store unsigned
   public long getStackAlignment() {
     assert attributeKind
         == AttributeKind.ALIGNSTACK : "getStackAlignment() only works for attribute alignstack!";
     return intParam1;
   }
 
+  // NOTICE the return type uses long to store u_int64
   public long getDereferenceableBytes() {
     assert attributeKind
         == AttributeKind.DEREFERENCEABLE : "getDereferenceableBytes() only works for attribute dereferenceable!";
     return intParam1;
   }
 
+  // NOTICE the return type uses long to store u_int64
   public long getDereferenceableOrNullBytes() {
     assert attributeKind
         == AttributeKind.DEREFERENCEABLE_OR_NULL : "getDereferenceableOrNullBytes() only works for attribute dereferenceable_or_null!";
     return intParam1;
   }
 
+  // NOTICE the return type uses long to store unsigned
   public Pair<Long, Optional<Long>> getAllocSizeArgs() {
     assert attributeKind
         == AttributeKind.ALLOCSIZE : "getAllocSizeArgs() only works for attribute allocsize!";

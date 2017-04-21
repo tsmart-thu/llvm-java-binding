@@ -31,6 +31,7 @@ public class IntToPtrInst extends CastInst {
     super.opCode = OpCode.INTTOPTR;
   }
 
+  // NOTICE return type uses int to store unsigned
   public int getPointerAddressSpace() {
     return getType().getPointerAddressSpace();
   }
