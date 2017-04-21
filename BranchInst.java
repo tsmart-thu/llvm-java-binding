@@ -73,4 +73,16 @@ public class BranchInst extends TerminatorInst {
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
   }
+
+  public String toString() {
+    String res = "br ";
+    if (isConditional()) {
+      res += getCondition().getType().toString() + " %" + getCondition().getName() + ", ";
+    }
+    res += "label %" + getSuccessor(0).getName();
+    if (isConditional()) {
+      res += ", label %" + getSuccessor(1).getName();
+    }
+    return res;
+  }
 }

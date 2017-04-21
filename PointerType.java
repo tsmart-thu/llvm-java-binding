@@ -51,4 +51,9 @@ public class PointerType extends SequentialType {
   public Type getPointerElementType() {
     return this.elementType;
   }
+
+  @Override
+  public String toString() {
+    return elementType.toString() + "*";
+  }
 }

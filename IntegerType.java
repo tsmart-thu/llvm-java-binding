@@ -21,8 +21,11 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 // import cn.edu.thu.tsmart.core.util.math.MathExtras;
 
-/** @author guangchen on 01/03/2017. */
+/**
+ * @author guangchen on 01/03/2017.
+ */
 public class IntegerType extends Type {
+
   private final int bitWidth;
 
   public IntegerType(Context context, int n) {
@@ -44,8 +47,14 @@ public class IntegerType extends Type {
   }
 
   public boolean isPowerOf2ByteWidth() {
-      int bitWidth = getBitWidth();
+    int bitWidth = getBitWidth();
 //      return (bitWidth > 7) && MathExtras.isPowerOf2_32(bitWidth);
     return false;
   }
+
+  @Override
+  public String toString() {
+    return "i" + bitWidth;
+  }
+
 }

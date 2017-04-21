@@ -102,4 +102,12 @@ public class LoadInst extends UnaryInstruction {
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
   }
+
+  public String toString() {
+    String res = "%" + getName() + " = load ";
+    res += getType().toString();
+    res += ", " + getOperand(0).getType().toString() + " %" + getOperand(0).getName();
+    res += ", align " + getAlignment();
+    return res;
+  }
 }

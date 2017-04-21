@@ -106,4 +106,12 @@ public class StoreInst extends Instruction {
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
   }
+
+  public String toString() {
+    String res = "store ";
+    res += getOperand(0).getType().toString() + " %" + getOperand(0).getName();
+    res += ", " + getOperand(1).getType().toString() + " %" + getOperand(1).getName();
+    res += ", align " + getAlignment();
+    return res;
+  }
 }

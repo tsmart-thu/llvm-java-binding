@@ -21,6 +21,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
+import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
 
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
@@ -105,5 +106,12 @@ public class AllocaInst extends UnaryInstruction {
   @Override
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
+  }
+
+  public String toString() {
+    String res = "%" + getName() + " = alloca ";
+    res += getType().toString();
+    res += ", align " + getAlignment();
+    return res;
   }
 }

@@ -59,4 +59,12 @@ public class ReturnInst extends TerminatorInst {
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
   }
+
+  public String toString() {
+    String res = "ret";
+    if (getReturnValue() != null) {
+      res += " " + getReturnValue().getType().toString() + " %" + getReturnValue().getName();
+    }
+    return res;
+  }
 }

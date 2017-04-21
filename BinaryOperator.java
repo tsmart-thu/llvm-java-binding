@@ -39,4 +39,12 @@ public class BinaryOperator extends Instruction {
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
   }
+
+  public String toString() {
+    String res = "%" + getName() + " = add nsw ";
+    res +=
+        getOperand(0).getType().toString() + " %" + getOperand(0).getName() + ", %" + getOperand(1)
+            .getName();
+    return res;
+  }
 }

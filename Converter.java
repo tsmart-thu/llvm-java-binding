@@ -19,6 +19,7 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.base.Optional;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.PointerPointer;
@@ -339,7 +340,8 @@ public class Converter {
   public Constant convertValueToConstant(LLVMValueRef valueRef) {
     LLVMValueRef constantInt = LLVMIsAConstantInt(valueRef);
     if (constantInt != null) {
-
+      // TODO temporal construction, should be corrected later
+      return new ConstantInt("", Casting.dyncast(getType(LLVMTypeOf(valueRef)), IntegerType.class));
     }
     return new Constant("", getType(LLVMTypeOf(valueRef)));
   }

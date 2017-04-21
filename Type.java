@@ -382,4 +382,8 @@ public class Type {
   public static PointerType getInt64PtrTy(Context context, int as) {
     return getIntNPtrTy(context, 64, as);
   }
+
+  public String toString() {
+    return "TYPE";
+  }
 }

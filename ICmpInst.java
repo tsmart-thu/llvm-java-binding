@@ -115,4 +115,11 @@ public class ICmpInst extends CmpInst {
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
   }
+
+  public String toString() {
+    String res = "%" + getName() + " = icmp sgt ";
+    res += getOperand(0).getType().toString() + " %" + getOperand(0).getName();
+    res += ", " + getOperand(1).getType().toString() + " %" + getOperand(1).getName();
+    return res;
+  }
 }

@@ -28,8 +28,17 @@ public class ConstantInt extends ConstantData {
 
   private APInt val;
 
-  private ConstantInt(String name, IntegerType type, APInt val) {
+  public ConstantInt(String name, IntegerType type) {
+    super(name, type);
+  }
+
+  public ConstantInt(String name, IntegerType type, APInt val) {
     super(name, type);
     this.val = val;
+  }
+
+  @Override
+  public String getName() {
+    return "CONSTANT_INT";
   }
 }
