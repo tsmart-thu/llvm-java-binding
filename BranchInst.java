@@ -19,9 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.util.Casting.*;
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static cn.edu.thu.tsmart.core.cfa.util.Casting.castOrNull;
 
+import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
+import cn.edu.thu.tsmart.core.exceptions.CPAException;
 import javax.annotation.Nullable;
 
 /**
@@ -65,5 +67,10 @@ public class BranchInst extends TerminatorInst {
     } else {
       return castOrNull(getOperand(i), BasicBlock.class);
     }
+  }
+
+  @Override
+  public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
+    return visitor.visit(this);
   }
 }

@@ -19,7 +19,10 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+
+import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
+import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -31,5 +34,10 @@ public class ExtractElementInst extends Instruction {
     super.opCode = OpCode.EXTRACTELEMENT;
     // this instruction should not be used when analysing C
     assert false : "Unhandled instruction: invoke";
+  }
+
+  @Override
+  public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
+    return visitor.visit(this);
   }
 }

@@ -19,12 +19,13 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.util.Casting.*;
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
+import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
 
 import com.google.common.base.Optional;
 
-public class Instruction extends User {
+public abstract class Instruction extends User implements IInstruction {
 
   protected Instruction(String name, Type type) {
     super(name, type);

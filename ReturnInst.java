@@ -19,8 +19,10 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
+import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
+import cn.edu.thu.tsmart.core.exceptions.CPAException;
 import javax.annotation.Nullable;
 
 /**
@@ -51,5 +53,10 @@ public class ReturnInst extends TerminatorInst {
     } else {
       return getOperand(0);
     }
+  }
+
+  @Override
+  public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
+    return visitor.visit(this);
   }
 }

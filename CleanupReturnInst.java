@@ -19,7 +19,10 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+
+import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
+import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -43,5 +46,10 @@ public class CleanupReturnInst extends TerminatorInst {
   public BasicBlock getSuccessor(int i) {
     // assert i == 0; return getUnwindDest();
     return null;
+  }
+
+  @Override
+  public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
+    return visitor.visit(this);
   }
 }

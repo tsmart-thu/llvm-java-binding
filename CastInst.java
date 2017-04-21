@@ -19,10 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode.*;
-import static cn.edu.thu.tsmart.core.cfa.util.Casting.*;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode.BITCAST;
 
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
+import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -102,5 +103,10 @@ public class CastInst extends UnaryInstruction {
 
   public Type getDestTy() {
     return getType();
+  }
+
+  @Override
+  public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
+    return visitor.visit(this);
   }
 }

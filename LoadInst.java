@@ -19,7 +19,12 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.AtomicOrdering;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.SynchronizationScope;
+
+import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
+import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -88,5 +93,10 @@ public class LoadInst extends UnaryInstruction {
 
   public int getPointerAddressSpace() {
     return getPointerOperand().getType().getPointerAddressSpace();
+  }
+
+  @Override
+  public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
+    return visitor.visit(this);
   }
 }

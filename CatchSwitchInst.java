@@ -19,8 +19,11 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.util.Casting.*;
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
+
+import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
+import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -43,5 +46,10 @@ public class CatchSwitchInst extends TerminatorInst {
   public BasicBlock getSuccessor(int i) {
     assert i >= 0 && i < getNumSuccessors() : "Successor # out of range for catchswitch!";
     return cast(getOperand(i + 1), BasicBlock.class);
+  }
+
+  @Override
+  public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
+    return visitor.visit(this);
   }
 }
