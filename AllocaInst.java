@@ -21,7 +21,6 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
-import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
 
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
