@@ -345,11 +345,11 @@ public class Converter {
 
   public Constant convertValueToConstant(LLVMValueRef valueRef) {
     LLVMValueRef constantInt = LLVMIsAConstantInt(valueRef);
-    if (constantInt != null) {
-      // TODO temporal construction, should be corrected later
-      return new ConstantInt("", Casting.dyncast(getType(LLVMTypeOf(valueRef)), IntegerType.class));
-    }
-    return new Constant("", getType(LLVMTypeOf(valueRef)));
+    assert constantInt != null : "constant int should not be null";
+    IntegerType integerType = (IntegerType) getType(LLVMTypeOf(valueRef));
+    int width = integerType.getBitWidth();
+    long value = LLVMConstIntGetZExtValue(valueRef);
+    return new ConstantInt("", integerType, new APInt(width, value, false));
   }
 
   public Type getType(LLVMTypeRef typeRef) {
