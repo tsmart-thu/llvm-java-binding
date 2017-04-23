@@ -103,12 +103,12 @@ public class LoadInst extends UnaryInstruction {
     return visitor.visit(this);
   }
 
-//  @Override
-//  public String toString() {
-//    String res = "%" + getName() + " = load ";
-//    res += getType().toString();
-//    res += ", " + getOperand(0).getType().toString() + " %" + getOperand(0).getName();
-//    res += ", align " + getAlignment();
-//    return res;
-//  }
+  @Override
+  public String toString() {
+    String res = "%" + getName() + " = load ";
+    res += getType().toString();
+    res += ", " + getOperand(0).getType().toString() + " %" + getOperand(0).getName();
+    res += ", align " + getAlignment();
+    return res;
+  }
 }
