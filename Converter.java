@@ -26,10 +26,7 @@ import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static org.bytedeco.javacpp.LLVM.*;
@@ -38,6 +35,7 @@ import static org.bytedeco.javacpp.LLVM.*;
 public class Converter {
 
   private final Context context;
+  private int unnamedValueIndex = 0;
 
   public Converter(Context context) {
     this.context = context;
@@ -86,6 +84,10 @@ public class Converter {
   public Instruction convertValueToInstruction(LLVMValueRef inst) {
     int opcode = LLVMGetInstructionOpcode(inst);
     String name = LLVMGetValueName(inst).getString();
+    if ("".equals(name)) {
+      name = "v" + unnamedValueIndex;
+      unnamedValueIndex++;
+    }
     Type type = getType(LLVMTypeOf(inst));
     Instruction instruction = context.getInst(inst);
     if (instruction != null) {
