@@ -50,6 +50,12 @@ public class Context {
     return this.contextRef;
   }
 
+  @Override
+  protected void finalize() throws Throwable {
+    dispose();
+    super.finalize();
+  }
+
   public void dispose() {
     LLVMContextDispose(contextRef);
   }
