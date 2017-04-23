@@ -107,12 +107,12 @@ public class StoreInst extends Instruction {
     return visitor.visit(this);
   }
 
-  @Override
-  public String toString() {
-    String res = "store ";
-    res += getOperand(0).getType().toString() + " %" + getOperand(0).getName();
-    res += ", " + getOperand(1).getType().toString() + " %" + getOperand(1).getName();
-    res += ", align " + getAlignment();
-    return res;
-  }
+//  @Override
+//  public String toString() {
+//    String res = "store ";
+//    res += getOperand(0).getType().toString() + " %" + getOperand(0).getName();
+//    res += ", " + getOperand(1).getType().toString() + " %" + getOperand(1).getName();
+//    res += ", align " + getAlignment();
+//    return res;
+//  }
 }
