@@ -34,7 +34,7 @@ import static org.bytedeco.javacpp.LLVM.*;
 public class Converter {
 
   private final Context context;
-  private int unnamedValueIndex = 0;
+  private int unnamedValueIndex = 1;
 
   public Converter(Context context) {
     this.context = context;
@@ -87,7 +87,7 @@ public class Converter {
     int opcode = LLVMGetInstructionOpcode(inst);
     String name = LLVMGetValueName(inst).getString();
     if ("".equals(name)) {
-      name = "v" + unnamedValueIndex;
+      name = "" + unnamedValueIndex;
       unnamedValueIndex++;
     }
     Type type = getType(LLVMTypeOf(inst));
@@ -180,8 +180,10 @@ public class Converter {
       case LLVMXor:
         instruction = new BinaryOperator(name, type, OpCode.XOR);
         break;
-      case LLVMAlloca:
-        instruction = new AllocaInst(name, type);
+      case LLVMAlloca: {
+        int alignment = LLVMGetAlignment(inst);
+        instruction = new AllocaInst(name, type, alignment);
+      }
         break;
       case LLVMLoad:
         instruction = new LoadInst(name, type);

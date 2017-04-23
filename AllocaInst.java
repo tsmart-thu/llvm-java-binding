@@ -36,9 +36,11 @@ public class AllocaInst extends UnaryInstruction {
   private boolean isUsedWithAlloca = false;
   private boolean isSwiftError = false;
 
-  public AllocaInst(String name, Type type) {
+  public AllocaInst(String name, Type type, int alignment) {
     super(name, type);
     super.opCode = OpCode.ALLOCA;
+    this.allocatedType = ((PointerType) type).getPointerElementType();
+    this.alignment = alignment;
   }
 
   // only for Converter
@@ -73,10 +75,10 @@ public class AllocaInst extends UnaryInstruction {
     return getOperand(0);
   }
 
-  @Override
-  public PointerType getType() {
-    return cast(super.getType(), PointerType.class);
-  }
+//  @Override
+//  public PointerType getType() {
+//    return cast(super.getType(), PointerType.class);
+//  }
 
   public Type getAllocatedType() {
     return allocatedType;
@@ -110,7 +112,7 @@ public class AllocaInst extends UnaryInstruction {
   @Override
   public String toString() {
     String res = "%" + getName() + " = alloca ";
-    res += getType().toString();
+    res += getAllocatedType().toString();
     res += ", align " + getAlignment();
     return res;
   }
