@@ -82,6 +82,9 @@ public class Converter {
   }
 
   public Instruction convertValueToInstruction(LLVMValueRef inst) {
+    BytePointer bytePointer = LLVMPrintValueToString(inst);
+    String originalText = bytePointer.getString();
+    LLVMDisposeMessage(bytePointer);
     int opcode = LLVMGetInstructionOpcode(inst);
     String name = LLVMGetValueName(inst).getString();
     if ("".equals(name)) {
@@ -300,6 +303,7 @@ public class Converter {
       operands.add(convert(LLVMGetOperand(inst, i)));
     }
     instruction.setOperands(operands);
+    instruction.setOriginalText(originalText);
     return instruction;
   }
 

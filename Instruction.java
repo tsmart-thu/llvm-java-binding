@@ -422,10 +422,12 @@ public abstract class Instruction extends User implements IInstruction {
 
   @Override
   public String toString() {
-    // TODO: operands
-    return getClass().getSimpleName();
-//    return getName() + " " + Joiner.on(" ").join(
-//        Iterables.transform(Use.makeIterable(getOperandList()), Functions.toStringFunction())
-//    );
+    return originalText;
+  }
+
+  private String originalText = "";
+
+  public void setOriginalText(String text) {
+    originalText = text;
   }
 }
