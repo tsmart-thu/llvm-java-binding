@@ -74,16 +74,16 @@ public class BranchInst extends TerminatorInst {
     return visitor.visit(this);
   }
 
-  @Override
-  public String toString() {
-    String res = "br ";
-    if (isConditional()) {
-      res += getCondition().getType().toString() + " %" + getCondition().getName() + ", ";
-    }
-    res += "label %" + getSuccessor(0).getName();
-    if (isConditional()) {
-      res += ", label %" + getSuccessor(1).getName();
-    }
-    return res;
-  }
+//  @Override
+//  public String toString() {
+//    String res = "br ";
+//    if (isConditional()) {
+//      res += getCondition().getType().toString() + " %" + getCondition().getName() + ", ";
+//    }
+//    res += "label %" + getSuccessor(0).getName();
+//    if (isConditional()) {
+//      res += ", label %" + getSuccessor(1).getName();
+//    }
+//    return res;
+//  }
 }

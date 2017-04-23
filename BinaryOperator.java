@@ -40,12 +40,12 @@ public class BinaryOperator extends Instruction {
     return visitor.visit(this);
   }
 
-  @Override
-  public String toString() {
-    String res = "%" + getName() + " = add nsw ";
-    res +=
-        getOperand(0).getType().toString() + " %" + getOperand(0).getName() + ", %" + getOperand(1)
-            .getName();
-    return res;
-  }
+//  @Override
+//  public String toString() {
+//    String res = "%" + getName() + " = add nsw ";
+//    res +=
+//        getOperand(0).getType().toString() + " %" + getOperand(0).getName() + ", %" + getOperand(1)
+//            .getName();
+//    return res;
+//  }
 }
