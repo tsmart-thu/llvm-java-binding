@@ -19,7 +19,6 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.base.Optional;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.PointerPointer;
@@ -312,8 +311,9 @@ public class Converter {
       case LLVMInstructionValueKind:
         return convertValueToInstruction(valueRef);
       case LLVMConstantIntValueKind:
+        return convertValueToConstantInt(valueRef);
       case LLVMConstantExprValueKind:
-        return convertValueToConstant(valueRef);
+        return null;
       case LLVMBasicBlockValueKind:
         return convert(LLVMValueAsBasicBlock(valueRef));
       case LLVMMetadataAsValueValueKind:
@@ -343,7 +343,7 @@ public class Converter {
     return null;
   }
 
-  public Constant convertValueToConstant(LLVMValueRef valueRef) {
+  public Constant convertValueToConstantInt(LLVMValueRef valueRef) {
     LLVMValueRef constantInt = LLVMIsAConstantInt(valueRef);
     assert constantInt != null : "constant int should not be null";
     IntegerType integerType = (IntegerType) getType(LLVMTypeOf(valueRef));
