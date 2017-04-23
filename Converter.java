@@ -82,7 +82,7 @@ public class Converter {
 
   public Instruction convertValueToInstruction(LLVMValueRef inst) {
     BytePointer bytePointer = LLVMPrintValueToString(inst);
-    String originalText = bytePointer.getString();
+    String originalText = bytePointer.getString().trim();
     LLVMDisposeMessage(bytePointer);
     int opcode = LLVMGetInstructionOpcode(inst);
     String name = LLVMGetValueName(inst).getString();

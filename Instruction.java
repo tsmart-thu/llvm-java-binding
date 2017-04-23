@@ -430,4 +430,5 @@ public abstract class Instruction extends User implements IInstruction {
   public void setOriginalText(String text) {
     originalText = text;
   }
+  public String getOriginalText() { return originalText; }
 }
