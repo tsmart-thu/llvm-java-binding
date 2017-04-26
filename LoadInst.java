@@ -37,9 +37,10 @@ public class LoadInst extends UnaryInstruction {
   private AtomicOrdering ordering = null;
   private SynchronizationScope synchScope = null;
 
-  public LoadInst(String name, Type type) {
+  public LoadInst(String name, Type type, int alignment) {
     super(name, type);
     super.opCode = OpCode.LOAD;
+    this.alignment = alignment;
   }
 
   // only for Converter

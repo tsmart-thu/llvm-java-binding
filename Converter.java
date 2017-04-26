@@ -76,25 +76,43 @@ public class Converter {
         inst = LLVMGetNextInstruction(inst)) {
       instructionList.add(convertValueToInstruction(inst));
     }
+    for (LLVMValueRef inst = LLVMGetFirstInstruction(bb);
+         inst != null;
+         inst = LLVMGetNextInstruction(inst)) {
+      Instruction instruction = convertValueToInstruction(inst);
+      List<Use> uses = new ArrayList<>();
+      int i = 0;
+      for (LLVMUseRef useRef = LLVMGetFirstUse(inst); useRef != null; useRef = LLVMGetNextUse(useRef)) {
+        LLVMValueRef userRef = LLVMGetUser(useRef);
+        uses.add(new Use(instruction, convertValueToInstruction(userRef), i));
+        i++;
+      }
+      instruction.setUses(uses);
+    }
     basicBlock.setInstList(instructionList);
     return basicBlock;
   }
 
   public Instruction convertValueToInstruction(LLVMValueRef inst) {
+    Instruction instruction = context.getInst(inst);
+    if (instruction != null) {
+      return instruction;
+    }
     BytePointer bytePointer = LLVMPrintValueToString(inst);
     String originalText = bytePointer.getString().trim();
     LLVMDisposeMessage(bytePointer);
     int opcode = LLVMGetInstructionOpcode(inst);
     String name = LLVMGetValueName(inst).getString();
-    if ("".equals(name)) {
+    if (needName(opcode) && "".equals(name)) {
       name = "" + unnamedValueIndex;
       unnamedValueIndex++;
     }
-    Type type = getType(LLVMTypeOf(inst));
-    Instruction instruction = context.getInst(inst);
-    if (instruction != null) {
-      return instruction;
+    if (LLVMHasMetadata(inst) != 0) {
+      LLVMValueRef dbg = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
+      LLVMDumpValue(dbg);
+
     }
+    Type type = getType(LLVMTypeOf(inst));
     switch (opcode) {
       case LLVMRet:
         instruction = new ReturnInst(name, type);
@@ -185,8 +203,10 @@ public class Converter {
         instruction = new AllocaInst(name, type, alignment);
       }
         break;
-      case LLVMLoad:
-        instruction = new LoadInst(name, type);
+      case LLVMLoad: {
+        int alignment = LLVMGetAlignment(inst);
+        instruction = new LoadInst(name, type, alignment);
+      }
         break;
       case LLVMStore:
         instruction = new StoreInst(name, type);
@@ -291,21 +311,23 @@ public class Converter {
         throw new IllegalArgumentException("Unhandled instruction: " + inst.toString());
     }
     context.putInst(inst, instruction);
-    List<Use> uses = new ArrayList<>();
-    int i = 0;
-    for (LLVMUseRef useRef = LLVMGetFirstUse(inst); useRef != null; useRef = LLVMGetNextUse(useRef)) {
-      LLVMValueRef userRef = LLVMGetUser(useRef);
-      uses.add(new Use(instruction, convertValueToInstruction(userRef), i));
-      i++;
-    }
-    instruction.setUses(uses);
     List<Value> operands = new ArrayList<>();
-    for (i = 0; i < LLVMGetNumOperands(inst); i ++) {
+    for (int i = 0; i < LLVMGetNumOperands(inst); i ++) {
       operands.add(convert(LLVMGetOperand(inst, i)));
     }
     instruction.setOperands(operands);
     instruction.setOriginalText(originalText);
     return instruction;
+  }
+
+  private boolean needName(int opcode) {
+    switch (opcode) {
+      default:
+        return true;
+      case LLVMStore:
+      case LLVMCall:
+        return false;
+    }
   }
 
   public Value convert(LLVMValueRef valueRef) {
