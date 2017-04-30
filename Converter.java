@@ -326,6 +326,7 @@ public class Converter {
         return true;
       case LLVMStore:
       case LLVMCall:
+      case LLVMBr:
         return false;
     }
   }
