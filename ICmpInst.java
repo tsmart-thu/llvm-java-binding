@@ -119,8 +119,18 @@ public class ICmpInst extends CmpInst {
   @Override
   public String toString() {
     String res = "%" + getName() + " = icmp sgt ";
-    res += getOperand(0).getType().toString() + " %" + getOperand(0).getName();
-    res += ", " + getOperand(1).getType().toString() + " %" + getOperand(1).getName();
+    Value operand1 = getOperand(0);
+    if (operand1 instanceof Constant) {
+      res += " " + operand1.toString();
+    } else {
+      res += operand1.getType().toString() + " %" + operand1.getName();
+    }
+    Value operand2 = getOperand(1);
+    if (operand2 instanceof Constant) {
+      res += ", " +operand2.toString();
+    } else {
+      res += ", " + operand2.getType().toString() + " %" + operand2.getName();
+    }
     return res;
   }
 }

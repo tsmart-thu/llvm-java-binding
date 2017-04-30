@@ -101,4 +101,9 @@ public class ConstantInt extends ConstantData {
   public String getName() {
     return "CONSTANT_INT";
   }
+
+  @Override
+  public String toString() {
+    return String.valueOf(this.val.getLimitedValue(Long.MAX_VALUE));
+  }
 }
