@@ -34,7 +34,7 @@ import static org.bytedeco.javacpp.LLVM.*;
 public class Converter {
 
   private final Context context;
-  private int unnamedValueIndex = 1;
+  private int unnamedValueIndex = 0;
 
   public Converter(Context context) {
     this.context = context;
