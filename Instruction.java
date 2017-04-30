@@ -23,6 +23,7 @@ import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
 
+import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.AtomicOrdering;
 import com.google.common.base.Optional;
 
 public abstract class Instruction extends User implements IInstruction {
@@ -284,14 +285,13 @@ public abstract class Instruction extends User implements IInstruction {
       case CATCHRET:
         return true;
       case CALL:
-        // TODO involve CallInst
-        // return !cast<CallInst>(this)->onlyReadsMemory();
+        return !dyncast(this, CallInst.class).onlyReadsMemory();
       case INVOKE:
         // TODO involve InvokeInst
         // return !cast<InvokeInst>(this)->onlyReadsMemory();
+        return false;
       case LOAD:
-        // TODO involve LoadInst
-        // return !cast<LoadInst>(this)->isUnordered();
+        return !dyncast(this, LoadInst.class).isUnordered();
       default:
         return false;
     }
@@ -308,14 +308,13 @@ public abstract class Instruction extends User implements IInstruction {
       case CATCHRET:
         return true;
       case CALL:
-        // TODO involve CallInst
-        // return !cast<CallInst>(this)->onlyReadsMemory();
+        return !dyncast(this, CallInst.class).onlyReadsMemory();
       case INVOKE:
         // TODO involve InvokeInst
         // return !cast<InvokeInst>(this)->onlyReadsMemory();
+        return false;
       case STORE:
-        // TODO involve StoreInst
-        // return !cast<StoreInst>(this)->isUnordered();
+        return !dyncast(this, StoreInst.class).isUnordered();
       default:
         return false;
     }
@@ -336,30 +335,30 @@ public abstract class Instruction extends User implements IInstruction {
       case FENCE:
         return true;
       case LOAD:
-        // TODO involve LoadInst
-        // return cast<LoadInst>(this)->getOrdering() != AtomicOrdering::NotAtomic;
+        return dyncast(this, LoadInst.class).getOrdering() != AtomicOrdering.NOT_ATOMIC;
       case STORE:
-        // TODO involve StoreInst
-        // return cast<StoreInst>(this)->getOrdering() != AtomicOrdering::NotAtomic;
+        return dyncast(this, StoreInst.class).getOrdering() != AtomicOrdering.NOT_ATOMIC;
       default:
         return false;
     }
   }
 
   public boolean mayThrow() {
-    // TODO involve CallInst
-    // if (const CallInst *CI = dyn_cast<CallInst>(this))
-    //   return !CI->doesNotThrow();
-    // TODO involve CleanupReturnInst
-    // if (const auto *CRI = dyn_cast<CleanupReturnInst>(this))
-    //   return CRI->unwindsToCaller();
-    // TODO involve CatchSwitchInst
-    // if (const auto *CatchSwitch = dyn_cast<CatchSwitchInst>(this))
-    //   return CatchSwitch->unwindsToCaller();
-    if (opCode == OpCode.RESUME) {
-      return true;
-    } else {
-      return false;
+    switch (opCode) {
+      case CALL:
+        return !dyncast(this, CallInst.class).doesNotThrow();
+      case CLEANUPRET:
+        // TODO involve CleanupReturnInst
+        // return dyn_cast<CleanupReturnInst>(this)->unwindsToCaller();
+        return false;
+      case CATCHSWITCH:
+        // TODO involve CatchSwitchInst
+        // return dyn_cast<CatchSwitchInst>(this)->unwindsToCaller();
+        return false;
+      case RESUME:
+        return true;
+      default:
+        return false;
     }
   }
 
@@ -408,14 +407,11 @@ public abstract class Instruction extends User implements IInstruction {
     for (Use use = uses().get(0); use != null; use = use.getNext()) {
       Instruction inst = cast(use, Instruction.class);
       PhiNode pn = dyncast(use, PhiNode.class);
-      if (pn == null) {
-        if (inst.getParent() != block) {
-          return true;
-        }
-        continue;
+      if (pn == null && inst.getParent() != block) {
+        return true;
+      } else if (pn != null && pn.getIncomingBlock(use.get()) != block) {
+        return true;
       }
-      // TODO check the condition pn->getIncomingBlock(U) != block
-      // if (pn->getIncomingBlock(U) != block) {return true;}
     }
     return false;
   }

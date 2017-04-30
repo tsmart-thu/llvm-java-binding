@@ -21,9 +21,12 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
+import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
 
+import cn.edu.thu.sse.common.util.Pair;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
+import javax.annotation.Nullable;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -63,8 +66,33 @@ public class SwitchInst extends TerminatorInst {
     return visitor.visit(this);
   }
 
-  // TODO require ConstantInt
-  // CaseIt
-  // findCaseValue
-  // findCaseDest
+  // return i if i-th case meets given ConstantInt; -1 if goes for default case
+  // Parameter should have same type as switch condition; otherwise always return default case
+  public int findCaseValue(ConstantInt ci) {
+    for (int i = 0; i < getNumCases(); ++ i) {
+      if (getOperand(2 * (i + 1)) == ci) {
+        return i;
+      }
+    }
+    return -1;
+  }
+
+  // return null if successor is not found, not unique, or is the default case
+  @Nullable
+  public ConstantInt findCaseDest(BasicBlock block) {
+    if (block == getDefaultDest()) {
+      return null;
+    }
+    ConstantInt ci = null;
+    for (int i = 0; i < getNumCases(); ++ i) {
+      if (getSuccessor(2 * (i + 1) + 1) == block) {
+        if (ci != null) {
+          return null;
+        } else {
+          ci = dyncast(getOperand(2 * (i + 1)), ConstantInt.class);
+        }
+      }
+    }
+    return ci;
+  }
 }

@@ -169,6 +169,18 @@ public class CallInst extends Instruction {
     return isInlineAsm;
   }
 
+  public boolean doesNotAccessMemory() {
+    return hasFnAttribute(AttributeKind.READNONE);
+  }
+
+  public boolean onlyReadsMemory() {
+    return doesNotAccessMemory() || hasFnAttribute(AttributeKind.WRITEONLY);
+  }
+
+  public boolean doesNotThrow() {
+    return hasFnAttribute(AttributeKind.NOUNWIND);
+  }
+
   @Nullable
   public LlvmFunction getCalledFunction() {
     return dyncast(getOperand(getNumOperands() - 1), LlvmFunction.class);

@@ -373,7 +373,7 @@ public class Converter {
     IntegerType integerType = (IntegerType) getType(LLVMTypeOf(valueRef));
     int width = integerType.getBitWidth();
     long value = LLVMConstIntGetZExtValue(valueRef);
-    return new ConstantInt("", integerType, new APInt(width, value, false));
+    return ConstantInt.get(integerType, new APInt(width, value, false));
   }
 
   public Type getType(LLVMTypeRef typeRef) {

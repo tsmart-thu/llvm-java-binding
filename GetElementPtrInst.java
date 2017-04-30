@@ -21,6 +21,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
+import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
@@ -90,9 +91,24 @@ public class GetElementPtrInst extends Instruction {
     return getNumOperands() > 1;
   }
 
-  // TODO require ConstantInt
-  // hasAllZeroIndices
-  // hasAllConstantIndices
+  public boolean hasAllZeroIndices() {
+    for (int i = 1; i < getNumOperands(); ++ i) {
+      ConstantInt ci = Casting.dyncast(getOperand(i), ConstantInt.class);
+      if (ci == null || !ci.isZero()) {
+        return false;
+      }
+    }
+    return true;
+  }
+
+  public boolean hasAllConstantIndices() {
+    for (int i = 1; i < getNumOperands(); ++ i) {
+      if (!ConstantInt.class.isInstance(getOperand(i))) {
+        return false;
+      }
+    }
+    return true;
+  }
 
   public boolean isInBounds() {
     return isInBounds;

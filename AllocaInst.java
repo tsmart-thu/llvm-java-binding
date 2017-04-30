@@ -21,9 +21,11 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
+import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
 
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
+import javax.annotation.Nullable;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -65,12 +67,14 @@ public class AllocaInst extends UnaryInstruction {
   }
 
   public boolean isArrayAllocation() {
-    // TODO require ConstantInt
-    // if (ConstantInt *CI = dyn_cast<ConstantInt>(getOperand(0)))
-    //   return !CI->isOne();
+    ConstantInt ci = dyncast(getOperand(0), ConstantInt.class);
+    if (ci != null) {
+      return !ci.isOne();
+    }
     return true;
   }
 
+  @Nullable
   public Value getArraySize() {
     return getOperand(0);
   }
@@ -90,8 +94,9 @@ public class AllocaInst extends UnaryInstruction {
   }
 
   public boolean isStaticAlloca() {
-    // TODO require ConstantInt
-    // if (!isa<ConstantInt>(getArraySize())) return false;
+    if (getArraySize() != null && !ConstantInt.class.isInstance(getArraySize())) {
+      return false;
+    }
     BasicBlock parent = getParent();
     return parent == parent.getParent().getBasicBlockList().get(0) && !isUsedWithInAlloca();
   }

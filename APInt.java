@@ -306,54 +306,66 @@ public class APInt {
     }
   }
 
-  public void setAllBits() {
+  public APInt setAllBits() {
+    BigInteger newVal = val;
     for (int i = 0; i < bitWidth; ++i) {
-      val = val.setBit(i);
+      newVal = newVal.setBit(i);
     }
+    return new APInt(bitWidth, newVal);
   }
 
-  public void setBit(int bitPosition) {
+  public APInt setBit(int bitPosition) {
     assert bitPosition >= 0 && bitPosition < bitWidth : "Invalid bitPosition";
-    val = val.setBit(bitPosition);
+    BigInteger newVal = val.setBit(bitPosition);
+    return new APInt(bitWidth, newVal);
   }
 
-  public void setSignBit() {
-    val = val.setBit(bitWidth - 1);
+  public APInt setSignBit() {
+    BigInteger newVal = val.setBit(bitWidth - 1);
+    return new APInt(bitWidth, newVal);
   }
 
-  public void clearAllBits() {
+  public APInt clearAllBits() {
+    BigInteger newVal = val;
     for (int i = 0; i < bitWidth; ++i) {
-      val = val.clearBit(i);
+      newVal = newVal.clearBit(i);
     }
+    return new APInt(bitWidth, newVal);
   }
 
-  public void clearBit(int bitPosition) {
+  public APInt clearBit(int bitPosition) {
     assert bitPosition >= 0 && bitPosition < bitWidth : "Invalid bitPosition";
-    val = val.clearBit(bitPosition);
+    BigInteger newVal = val.clearBit(bitPosition);
+    return new APInt(bitWidth, newVal);
   }
 
-  public void flipAllBits() {
+  public APInt flipAllBits() {
+    BigInteger newVal = val;
     for (int i = 0; i < bitWidth; ++i) {
-      val = val.flipBit(i);
+      newVal = newVal.flipBit(i);
     }
+    return new APInt(bitWidth, newVal);
   }
 
-  public void flipBit(int bitPosition) {
+  public APInt flipBit(int bitPosition) {
     assert bitPosition >= 0 && bitPosition < bitWidth : "Invalid bitPosition";
-    val = val.flipBit(bitPosition);
+    BigInteger newVal = val.flipBit(bitPosition);
+    return new APInt(bitWidth, newVal);
   }
 
-  public void insertBits(APInt subBits, int bitPosition) {
+  public APInt insertBits(APInt subBits, int bitPosition) {
     int subBitWidth = subBits.getBitWidth();
     assert subBitWidth > 0 && bitPosition >= 0
         && bitPosition + subBitWidth <= bitWidth : "Illegal bit insertion";
+    BigInteger newVal = val;
     for (int i = 0; i < subBitWidth; ++i) {
       if (subBits.getValue().testBit(i)) {
-        val = val.setBit(bitPosition + i);
+        newVal = newVal.setBit(bitPosition + i);
       } else {
-        val = val.clearBit(bitPosition + i);
+        newVal = newVal.clearBit(bitPosition + i);
       }
     }
+    return new APInt(bitWidth, newVal);
   }
 
   public APInt extractBits(int numBits, int bitPosition) {
@@ -405,7 +417,7 @@ public class APInt {
 
   // APInt sqrt()
 
-  APInt abs() {
+  public APInt abs() {
     BigInteger newVal = val;
     if (isNegative()) {
       newVal = BigInteger.ONE.shiftLeft(bitWidth).subtract(val);
@@ -413,7 +425,7 @@ public class APInt {
     return new APInt(bitWidth, newVal);
   }
 
-  APInt ashr(int shiftAmt) {
+  public APInt ashr(int shiftAmt) {
     assert shiftAmt >= 0 : "Illegal arithmetic shift right";
     BigInteger newVal = val;
     for (int i = 0; i < shiftAmt; ++i) {
@@ -425,89 +437,113 @@ public class APInt {
     return new APInt(bitWidth, newVal);
   }
 
-  APInt ashr(APInt shiftAmt) {
+  public APInt ashr(APInt shiftAmt) {
     return ashr((int) shiftAmt.getLimitedValue(bitWidth));
   }
 
-  APInt lshr(int shiftAmt) {
+  public APInt lshr(int shiftAmt) {
     assert shiftAmt >= 0 : "Illegal logical shift right";
     BigInteger newVal = val.shiftRight(shiftAmt);
     return new APInt(bitWidth, newVal);
   }
 
-  APInt lshr(APInt shiftAmt) {
+  public APInt lshr(APInt shiftAmt) {
     return lshr((int) shiftAmt.getLimitedValue(bitWidth));
   }
 
-  APInt shl(int shiftAmt) {
+  public APInt shl(int shiftAmt) {
     assert shiftAmt >= 0 : "Illegal shift left";
     BigInteger newVal = val.shiftLeft(shiftAmt);
     return new APInt(bitWidth, newVal);
   }
 
-  APInt shl(APInt shiftAmt) {
+  public APInt shl(APInt shiftAmt) {
     return shl((int) shiftAmt.getLimitedValue(bitWidth));
   }
 
-  APInt and(APInt rhs) {
+  public Pair<APInt, Boolean> sshl_ov(APInt shiftAmt) {
+    boolean overflow = shiftAmt.uge(new APInt(bitWidth, getBitWidth() + ""));
+    if (overflow) {
+      return Pair.of(new APInt(bitWidth, "0"), true);
+    } else {
+      if (isNonNegative()) {
+        overflow = shiftAmt.uge(new APInt(bitWidth, countLeadingZeros() + ""));
+      } else {
+        overflow = shiftAmt.uge(new APInt(bitWidth, countLeadingOnes() + ""));
+      }
+      return Pair.of(shl(shiftAmt), overflow);
+    }
+  }
+
+  public Pair<APInt, Boolean> ushl_ov(APInt shiftAmt) {
+    boolean overflow = shiftAmt.uge(new APInt(bitWidth, getBitWidth() + ""));
+    if (overflow) {
+      return Pair.of(new APInt(bitWidth, "0"), true);
+    } else {
+      overflow = shiftAmt.ugt(new APInt(bitWidth, countLeadingZeros() + ""));
+      return Pair.of(shl(shiftAmt), overflow);
+    }
+  }
+
+  public APInt and(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     return new APInt(bitWidth, val.and(rhs.getValue()));
   }
 
-  APInt or(APInt rhs) {
+  public APInt or(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     return new APInt(bitWidth, val.or(rhs.getValue()));
   }
 
-  APInt xor(APInt rhs) {
+  public APInt xor(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     return new APInt(bitWidth, val.xor(rhs.getValue()));
   }
 
-  APInt add(APInt rhs) {
-    assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
-    return new APInt(bitWidth, val.add(rhs.getValue()).clearBit(bitWidth));
-  }
-
-  APInt minus() {
+  public APInt minus() {
     APInt res = new APInt(bitWidth, val);
     res.flipAllBits();
     res = res.add(new APInt(bitWidth, "1"));
     return res;
   }
 
-  Pair<APInt, Boolean> sadd_ov(APInt rhs) {
+  public APInt add(APInt rhs) {
+    assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
+    return new APInt(bitWidth, val.add(rhs.getValue()).clearBit(bitWidth));
+  }
+
+  public Pair<APInt, Boolean> sadd_ov(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = add(rhs);
     return Pair.of(res,
         isNonNegative() == rhs.isNonNegative() && res.isNonNegative() != isNonNegative());
   }
 
-  Pair<APInt, Boolean> uadd_ov(APInt rhs) {
+  public Pair<APInt, Boolean> uadd_ov(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = add(rhs);
     return Pair.of(res, res.ult(rhs));
   }
 
-  APInt sub(APInt rhs) {
+  public APInt sub(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     return new APInt(bitWidth, val.subtract(rhs.getValue()).clearBit(bitWidth));
   }
 
-  Pair<APInt, Boolean> ssub_ov(APInt rhs) {
+  public Pair<APInt, Boolean> ssub_ov(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = sub(rhs);
     return Pair.of(res,
         isNonNegative() != rhs.isNonNegative() && res.isNonNegative() != isNonNegative());
   }
 
-  Pair<APInt, Boolean> usub_ov(APInt rhs) {
+  public Pair<APInt, Boolean> usub_ov(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = sub(rhs);
     return Pair.of(res, res.ugt(this));
   }
 
-  APInt mul(APInt rhs) {
+  public APInt mul(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = new APInt(bitWidth, val.multiply(rhs.getValue()));
     for (int i = bitWidth; i < bitWidth + bitWidth; ++i) {
@@ -516,26 +552,26 @@ public class APInt {
     return res;
   }
 
-  Pair<APInt, Boolean> smul_ov(APInt rhs) {
+  public Pair<APInt, Boolean> smul_ov(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = mul(rhs);
     return Pair.of(res,
         !isZero() && !rhs.isZero() && (res.sdiv(rhs).neq(this) || res.sdiv(this).neq(rhs)));
   }
 
-  Pair<APInt, Boolean> umul_ov(APInt rhs) {
+  public Pair<APInt, Boolean> umul_ov(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     APInt res = mul(rhs);
     return Pair.of(res,
         !isZero() && !rhs.isZero() && (res.udiv(rhs).neq(this) || res.udiv(this).neq(rhs)));
   }
 
-  APInt udiv(APInt rhs) {
+  public APInt udiv(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     return new APInt(bitWidth, val.divide(rhs.getValue()));
   }
 
-  APInt sdiv(APInt rhs) {
+  public APInt sdiv(APInt rhs) {
     assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
     if (isNegative()) {
       if (rhs.isNegative()) {
@@ -547,6 +583,30 @@ public class APInt {
       return udiv(rhs.minus()).minus();
     } else {
       return udiv(rhs);
+    }
+  }
+
+  public Pair<APInt, Boolean> sdiv_ov(APInt rhs) {
+    return Pair.of(sdiv(rhs), isMinSignedValue() && rhs.isAllOnesValue());
+  }
+
+  public APInt urem(APInt rhs) {
+    assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
+    return new APInt(bitWidth, val.remainder(rhs.getValue()));
+  }
+
+  public APInt srem(APInt rhs) {
+    assert bitWidth == rhs.getBitWidth() : "Bit widths must be the same";
+    if (isNegative()) {
+      if (rhs.isNegative()) {
+        return minus().urem(rhs.minus()).minus();
+      } else {
+        return minus().urem((rhs)).minus();
+      }
+    } else if (rhs.isNegative()) {
+      return urem(rhs.minus());
+    } else {
+      return urem(rhs);
     }
   }
 
@@ -574,9 +634,40 @@ public class APInt {
     }
   }
 
+  public int countLeadingZeros() {
+    return bitWidth - val.bitLength();
+  }
+
+  public int countLeadingOnes() {
+    int i = 0;
+    while (val.testBit(bitWidth - i - 1)) {
+      ++ i;
+    }
+    return i;
+  }
+
   // NOTICE return type uses long to store u_int64
   public long getZExtValue() {
     assert bitWidth <= 64 : "Too many bits for uint64_t";
     return val.longValue();
+  }
+
+  public long getSExtValue() {
+    assert bitWidth <= 64 : "Too many bits for uint64_t";
+    BigInteger newVal = val;
+    if (isNegative()) {
+      for (int i = bitWidth; i < 64; ++ i) {
+        newVal = newVal.setBit(i);
+      }
+    }
+    return newVal.longValue();
+  }
+
+  @Override
+  public boolean equals(Object obj) {
+    if (obj.getClass() != APInt.class) {
+      return false;
+    }
+    return bitWidth == ((APInt)obj).getBitWidth() && eq(((APInt)obj));
   }
 }
