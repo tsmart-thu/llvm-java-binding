@@ -27,7 +27,7 @@ import java.util.HashMap;
 public class ConstantInt extends ConstantData {
 
   private APInt val;
-  private static HashMap<APInt, ConstantInt> instances;
+  private static HashMap<APInt, ConstantInt> instances = new HashMap<>();
 
   private ConstantInt(String name, IntegerType type) {
     super(name, type);
