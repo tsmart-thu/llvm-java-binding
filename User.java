@@ -41,6 +41,8 @@ public class User extends Value {
 
     private List<Value> operands;
 
+    public User() {}
+
     public User(String name, Type type) {
         super(name, type);
     }

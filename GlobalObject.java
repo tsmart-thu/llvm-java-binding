@@ -23,6 +23,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 26/02/2017.
  */
 public class GlobalObject extends GlobalValue {
+    public GlobalObject() {
+    }
+
     public GlobalObject(String name, Type type) {
         super(name, type);
     }

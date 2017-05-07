@@ -30,9 +30,11 @@ import java.util.List;
  * @author guangchen on 26/02/2017.
  */
 public class Value {
-    private final String name;
-    private final Type type;
+    private String name;
+    private Type type;
     private List<Use> uses;
+
+    public Value() {}
 
     public Value(String name, Type type) {
         this.name = name;

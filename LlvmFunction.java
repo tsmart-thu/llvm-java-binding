@@ -35,6 +35,8 @@ public class LlvmFunction extends GlobalObject {
   // TODO initialize in Converter
   private AttributeList attrs;
 
+  public LlvmFunction() {}
+
   public LlvmFunction(String name, Type type, List<BasicBlock> basicBlockList) {
     super(name, type);
     this.basicBlockList = basicBlockList;
