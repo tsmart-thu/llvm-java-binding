@@ -72,6 +72,7 @@ public class Converter {
       BasicBlock block = new BasicBlock();
       context.putBasicBlock(bb, block);
     }
+    // convert
     List<BasicBlock> basicBlockList = new ArrayList<>();
     for (Map.Entry<LLVMBasicBlockRef, BasicBlock> pair : context.getBasicBlockMap().entrySet()) {
       LLVMBasicBlockRef ref = pair.getKey();
@@ -79,16 +80,20 @@ public class Converter {
       convertValueToBasicBlock(ref, block);
       basicBlockList.add(block);
     }
+    // set
+    value.setBasicBlockList(basicBlockList);
   }
 
   private void convertValueToBasicBlock(LLVMBasicBlockRef ref, BasicBlock block) {
-    BasicBlock basicBlock = new BasicBlock(LLVMGetValueName(LLVMBasicBlockAsValue(ref)).getString(),
-            getType(LLVMTypeOf(LLVMBasicBlockAsValue(ref))), null);
+    block.setName(LLVMGetValueName(LLVMBasicBlockAsValue(ref)).getString());
+    block.setType(getType(LLVMTypeOf(LLVMBasicBlockAsValue(ref))));
     List<Instruction> instructionList = new ArrayList<>();
     for (LLVMValueRef inst = LLVMGetFirstInstruction(ref);
          inst != null;
          inst = LLVMGetNextInstruction(inst)) {
-      instructionList.add(convertValueToInstruction(inst));
+      Instruction instruction = convertValueToInstruction(inst);
+      instructionList.add(instruction);
+      context.putInst(inst, instruction);
     }
     for (LLVMValueRef inst = LLVMGetFirstInstruction(ref);
          inst != null;
@@ -98,12 +103,12 @@ public class Converter {
       int i = 0;
       for (LLVMUseRef useRef = LLVMGetFirstUse(inst); useRef != null; useRef = LLVMGetNextUse(useRef)) {
         LLVMValueRef userRef = LLVMGetUser(useRef);
-        uses.add(new Use(instruction, convertValueToInstruction(userRef), i));
+        uses.add(new Use(instruction, context.getInst(userRef), i));
         i++;
       }
       instruction.setUses(uses);
     }
-    basicBlock.setInstList(instructionList);
+    block.setInstList(instructionList);
   }
 
   public Instruction convertValueToInstruction(LLVMValueRef inst) {

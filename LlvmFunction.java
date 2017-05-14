@@ -54,6 +54,10 @@ public class LlvmFunction extends GlobalObject {
     return basicBlockList;
   }
 
+  public void setBasicBlockList(List<BasicBlock> basicBlockList) {
+    this.basicBlockList = basicBlockList;
+  }
+
   public AttributeList getAttributes() {
     return attrs;
   }
