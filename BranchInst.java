@@ -63,7 +63,8 @@ public class BranchInst extends TerminatorInst {
   public BasicBlock getSuccessor(int i) {
     assert i >= 0 && i < getNumSuccessors() : "Successor # out of range for branch!";
     if (isConditional()) {
-      return castOrNull(getOperand(i + 1), BasicBlock.class);
+      // note: successor order is reverse from operand order
+      return castOrNull(getOperand(getNumSuccessors() - i), BasicBlock.class);
     } else {
       return castOrNull(getOperand(i), BasicBlock.class);
     }
