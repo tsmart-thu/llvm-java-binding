@@ -29,6 +29,8 @@ public class BasicBlock extends Value {
     private List<Instruction> instList = new ArrayList<>();
     private LlvmFunction parent;
 
+    public BasicBlock() {}
+
     public BasicBlock(String name, Type type, LlvmFunction parent, List<Instruction> instList) {
         super(name, type);
         this.parent = parent;

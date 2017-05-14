@@ -20,7 +20,9 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import com.google.common.base.Optional;
+import javafx.util.Pair;
 import org.bytedeco.javacpp.BytePointer;
+import org.bytedeco.javacpp.LLVM;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
@@ -44,39 +46,51 @@ public class Converter {
     SizeTPointer sizeTPointer = new SizeTPointer(64);
     String moduleIdentifier = LLVMGetModuleIdentifier(moduleRef, sizeTPointer).getString();
     Map<String, LlvmFunction> functionMap = new HashMap<>();
+    // first create
     for (LLVMValueRef f = LLVMGetFirstFunction(moduleRef); f != null; f = LLVMGetNextFunction(f)) {
-      LlvmFunction func = convertValueToFunction(f);
-      functionMap.put(func.getName(), func);
+      LlvmFunction func = new LlvmFunction();
+      context.putFunction(f, func);
+    }
+    for (Map.Entry<LLVMValueRef, LlvmFunction> pair : context.getFunctionMap().entrySet()) {
+      LlvmFunction value = pair.getValue();
+      convertValueToFunction(pair.getKey(), value);
+      functionMap.put(value.getName(), value);
     }
     return new LlvmModule(moduleIdentifier, functionMap);
   }
 
-  public LlvmFunction convertValueToFunction(LLVMValueRef function) {
-    List<BasicBlock> basicBlockList = new ArrayList<>();
-    for (LLVMBasicBlockRef bb = LLVMGetFirstBasicBlock(function);
-        bb != null;
-        bb = LLVMGetNextBasicBlock(bb)) {
-      basicBlockList.add(convert(bb));
+  private void convertValueToFunction(LLVMValueRef key, LlvmFunction value) {
+    // set name
+    value.setName(LLVMGetValueName(key).getString());
+    // set type
+    value.setType(getType(LLVMTypeOf(key)));
+    // set basicBlockList
+    // first create
+    for (LLVMBasicBlockRef bb = LLVMGetFirstBasicBlock(key);
+         bb != null;
+         bb = LLVMGetNextBasicBlock(bb)) {
+      BasicBlock block = new BasicBlock();
+      context.putBasicBlock(bb, block);
     }
-    return new LlvmFunction(
-        LLVMGetValueName(function).getString(), getType(LLVMTypeOf(function)), basicBlockList);
+    List<BasicBlock> basicBlockList = new ArrayList<>();
+    for (Map.Entry<LLVMBasicBlockRef, BasicBlock> pair : context.getBasicBlockMap().entrySet()) {
+      LLVMBasicBlockRef ref = pair.getKey();
+      BasicBlock block = pair.getValue();
+      convertValueToBasicBlock(ref, block);
+      basicBlockList.add(block);
+    }
   }
 
-  public BasicBlock convert(LLVMBasicBlockRef bb) {
-    BasicBlock basicBlock = context.getBasicBlock(bb);
-    if (basicBlock != null) {
-      return basicBlock;
-    }
+  private void convertValueToBasicBlock(LLVMBasicBlockRef ref, BasicBlock block) {
+    BasicBlock basicBlock = new BasicBlock(LLVMGetValueName(LLVMBasicBlockAsValue(ref)).getString(),
+            getType(LLVMTypeOf(LLVMBasicBlockAsValue(ref))), null);
     List<Instruction> instructionList = new ArrayList<>();
-    basicBlock = new BasicBlock(LLVMGetValueName(LLVMBasicBlockAsValue(bb)).getString(),
-            getType(LLVMTypeOf(LLVMBasicBlockAsValue(bb))), null);
-    context.putBasicBlock(bb, basicBlock);
-    for (LLVMValueRef inst = LLVMGetFirstInstruction(bb);
-        inst != null;
-        inst = LLVMGetNextInstruction(inst)) {
+    for (LLVMValueRef inst = LLVMGetFirstInstruction(ref);
+         inst != null;
+         inst = LLVMGetNextInstruction(inst)) {
       instructionList.add(convertValueToInstruction(inst));
     }
-    for (LLVMValueRef inst = LLVMGetFirstInstruction(bb);
+    for (LLVMValueRef inst = LLVMGetFirstInstruction(ref);
          inst != null;
          inst = LLVMGetNextInstruction(inst)) {
       Instruction instruction = convertValueToInstruction(inst);
@@ -90,7 +104,6 @@ public class Converter {
       instruction.setUses(uses);
     }
     basicBlock.setInstList(instructionList);
-    return basicBlock;
   }
 
   public Instruction convertValueToInstruction(LLVMValueRef inst) {
@@ -109,7 +122,7 @@ public class Converter {
     }
     if (LLVMHasMetadata(inst) != 0) {
       LLVMValueRef dbg = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
-      LLVMDumpValue(dbg);
+//      LLVMDumpValue(dbg);
 
     }
     Type type = getType(LLVMTypeOf(inst));
@@ -340,7 +353,7 @@ public class Converter {
       case LLVMConstantExprValueKind:
         return null;
       case LLVMBasicBlockValueKind:
-        return convert(LLVMValueAsBasicBlock(valueRef));
+        return context.getBasicBlock(LLVMValueAsBasicBlock(valueRef));
       case LLVMMetadataAsValueValueKind:
         // TODO metadata
         return null;
@@ -354,7 +367,7 @@ public class Converter {
         // TODO null
         return null;
       case LLVMFunctionValueKind:
-        return convertValueToFunction(valueRef);
+        return context.getFunction(valueRef);
       case LLVMInlineAsmValueKind:
         // TODO inline asm
         return null;

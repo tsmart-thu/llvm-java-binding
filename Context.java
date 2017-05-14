@@ -34,6 +34,7 @@ public class Context {
   private final Map<LLVMTypeRef, Type> typeRefTypeMap = new HashMap<>();
   private final Map<LLVMValueRef, Instruction> valueRefInstructionMap = new HashMap<>();
   private final Map<LLVMBasicBlockRef, BasicBlock> basicBlockRefBasicBlockMap = new HashMap<>();
+  private final Map<LLVMValueRef, LlvmFunction> functionMap = new HashMap<>();
 
   /**
    * Create an empty context
@@ -60,6 +61,10 @@ public class Context {
     LLVMContextDispose(contextRef);
   }
 
+  public Map<LLVMValueRef, LlvmFunction> getFunctionMap() {
+    return functionMap;
+  }
+
   public void putType(LLVMTypeRef typeRef, Type type) {
     typeRefTypeMap.put(typeRef, type);
   }
@@ -72,6 +77,10 @@ public class Context {
     valueRefInstructionMap.put(valueRef, instruction);
   }
 
+  public void putFunction(LLVMValueRef valueRef, LlvmFunction function) {
+    functionMap.put(valueRef, function);
+  }
+
   public Instruction getInst(LLVMValueRef valueRef) {
     return valueRefInstructionMap.get(valueRef);
   }
@@ -82,5 +91,13 @@ public class Context {
 
   public BasicBlock getBasicBlock(LLVMBasicBlockRef bb) {
     return basicBlockRefBasicBlockMap.get(bb);
+  }
+
+  public LlvmFunction getFunction(LLVMValueRef valueRef) {
+    return functionMap.get(valueRef);
+  }
+
+  public Map<LLVMBasicBlockRef, BasicBlock> getBasicBlockMap() {
+    return this.basicBlockRefBasicBlockMap;
   }
 }
