@@ -21,6 +21,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
+import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
@@ -76,12 +77,21 @@ public class BinaryOperator extends Instruction {
     return "";
   }
 
+  private String getOperandString(int i) {
+    Value value = getOperand(i);
+    Constant constant = Casting.dyncast(value, Constant.class);
+    if (constant != null) {
+      return constant.toString();
+    } else {
+      return "%" + value.getName();
+    }
+  }
+
   @Override
   public String toString() {
     String res = "%" + getName() + " = " + operatorToString()  + " nsw ";
     res +=
-        getOperand(0).getType().toString() + " %" + getOperand(0).getName() + ", %" + getOperand(1)
-            .getName();
+        getType().toString() + " " + getOperandString(0) + ", " + getOperandString(1);
     return res;
   }
 }
