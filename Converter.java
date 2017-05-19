@@ -203,19 +203,21 @@ public class Converter {
     value.setType(getType(LLVMTypeOf(key)));
     // set basicBlockList
     // first create
+    List<BasicBlock> basicBlockList = new ArrayList<>();
+    List<LLVMBasicBlockRef> basicBlockRefs = new ArrayList<>();
     for (LLVMBasicBlockRef bb = LLVMGetFirstBasicBlock(key);
          bb != null;
          bb = LLVMGetNextBasicBlock(bb)) {
       BasicBlock block = new BasicBlock();
+      basicBlockList.add(block);
+      basicBlockRefs.add(bb);
       context.putBasicBlock(bb, block);
     }
     // convert
-    List<BasicBlock> basicBlockList = new ArrayList<>();
-    for (Map.Entry<LLVMBasicBlockRef, BasicBlock> pair : context.getBasicBlockMap().entrySet()) {
-      LLVMBasicBlockRef ref = pair.getKey();
-      BasicBlock block = pair.getValue();
+    for (int i = 0; i < basicBlockList.size(); i ++) {
+      LLVMBasicBlockRef ref = basicBlockRefs.get(i);
+      BasicBlock block = basicBlockList.get(i);
       convertValueToBasicBlock(ref, block);
-      basicBlockList.add(block);
     }
     // set
     value.setBasicBlockList(basicBlockList);
