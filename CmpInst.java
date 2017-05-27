@@ -27,7 +27,7 @@ import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
 public abstract class CmpInst extends Instruction {
 
   // TODO initialize in Converter when constructing child classes
-  private Predicate predicate = null;
+  protected Predicate predicate = null;
 
   protected CmpInst(String name, Type type) {
     super(name, type);

@@ -296,7 +296,7 @@ public class Converter {
         instruction = new CatchPadInst(name, type);
         break;
       case LLVMICmp:
-        instruction = new ICmpInst(name, type);
+        instruction = new ICmpInst(name, type, getICmpPredicate(inst));
         break;
       case LLVMFCmp:
         instruction = new FCmpInst(name, type);
@@ -345,6 +345,33 @@ public class Converter {
     instruction.setOperands(operands);
     instruction.setOriginalText(originalText);
     return instruction;
+  }
+
+  private InstructionProperties.Predicate getICmpPredicate(LLVMValueRef inst) {
+    int i = LLVMGetICmpPredicate(inst);
+    switch (i) {
+      case LLVMIntEQ:
+        return InstructionProperties.Predicate.ICMP_EQ;
+      case LLVMIntNE:
+        return InstructionProperties.Predicate.ICMP_NE;
+      case LLVMIntUGT:
+        return InstructionProperties.Predicate.ICMP_UGT;
+      case LLVMIntUGE:
+        return InstructionProperties.Predicate.ICMP_UGE;
+      case LLVMIntULT:
+        return InstructionProperties.Predicate.ICMP_ULT;
+      case LLVMIntULE:
+        return InstructionProperties.Predicate.ICMP_ULE;
+      case LLVMIntSGT:
+        return InstructionProperties.Predicate.ICMP_SGT;
+      case LLVMIntSGE:
+        return InstructionProperties.Predicate.ICMP_SGE;
+      case LLVMIntSLT:
+        return InstructionProperties.Predicate.ICMP_SLT;
+      case LLVMIntSLE:
+        return InstructionProperties.Predicate.ICMP_SLE;
+    }
+    return null;
   }
 
   private boolean needName(int opcode) {

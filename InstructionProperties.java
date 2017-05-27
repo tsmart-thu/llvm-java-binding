@@ -231,34 +231,46 @@ public class InstructionProperties {
 
   // used by instructions and constant expressions with opcode ICMP/FCMP
   public static enum Predicate {
-    FCMP_FALSE,
-    FCMP_OEQ,
-    FCMP_OGT,
-    FCMP_OGE,
-    FCMP_OLT,
-    FCMP_OLE,
-    FCMP_ONE,
-    FCMP_ORD,
-    FCMP_UNO,
-    FCMP_UEQ,
-    FCMP_UGT,
-    FCMP_UGE,
-    FCMP_ULT,
-    FCMP_ULE,
-    FCMP_UNE,
-    FCMP_TRUE,
-    BAD_FCMP_PREDICATE,
-    ICMP_EQ,
-    ICMP_NE,
-    ICMP_UGT,
-    ICMP_UGE,
-    ICMP_ULT,
-    ICMP_ULE,
-    ICMP_SGT,
-    ICMP_SGE,
-    ICMP_SLT,
-    ICMP_SLE,
-    BAD_ICMP_PREDICATE;
+    FCMP_FALSE("false"),
+    FCMP_OEQ("oeq"),
+    FCMP_OGT("ogt"),
+    FCMP_OGE("oge"),
+    FCMP_OLT("olt"),
+    FCMP_OLE("ole"),
+    FCMP_ONE("one"),
+    FCMP_ORD("ord"),
+    FCMP_UNO("uno"),
+    FCMP_UEQ("ueq"),
+    FCMP_UGT("ugt"),
+    FCMP_UGE("uge"),
+    FCMP_ULT("ult"),
+    FCMP_ULE("ule"),
+    FCMP_UNE("une"),
+    FCMP_TRUE("true"),
+    BAD_FCMP_PREDICATE("bad"),
+    ICMP_EQ("eq"),
+    ICMP_NE("ne"),
+    ICMP_UGT("ugt"),
+    ICMP_UGE("uge"),
+    ICMP_ULT("ult"),
+    ICMP_ULE("ule"),
+    ICMP_SGT("sgt"),
+    ICMP_SGE("sge"),
+    ICMP_SLT("slt"),
+    ICMP_SLE("sle"),
+    BAD_ICMP_PREDICATE("bad");
+
+    private String s;
+
+    Predicate(String s) {
+      this.s = s;
+    }
+
+
+    @Override
+    public String toString() {
+      return s;
+    }
   }
 
   // used by instructions and constant expressions with opcode CALL

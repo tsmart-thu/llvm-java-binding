@@ -30,9 +30,10 @@ import cn.edu.thu.tsmart.core.exceptions.CPAException;
  */
 public class ICmpInst extends CmpInst {
 
-  public ICmpInst(String name, Type type) {
+  public ICmpInst(String name, Type type, Predicate predicate) {
     super(name, type);
     super.opCode = OpCode.ICMP;
+    super.predicate = predicate;
   }
 
   @Override
@@ -118,7 +119,7 @@ public class ICmpInst extends CmpInst {
 
   @Override
   public String toString() {
-    String res = "%" + getName() + " = icmp sgt ";
+    String res = "%" + getName() + " = icmp " + getPredicate().toString() + " ";
     Value operand1 = getOperand(0);
     if (operand1 instanceof Constant) {
       res += " " + operand1.toString();
