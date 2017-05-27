@@ -19,14 +19,13 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import cn.edu.thu.tsmart.core.cfa.util.Formatter;
+import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
+import cn.edu.thu.tsmart.core.exceptions.CPAException;
+
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
-
-import cn.edu.thu.sse.common.util.Pair;
-import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
-import cn.edu.thu.tsmart.core.exceptions.CPAException;
-import javax.annotation.Nullable;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -58,7 +57,7 @@ public class SwitchInst extends TerminatorInst {
   @Override
   public BasicBlock getSuccessor(int i) {
     assert i >= 0 && i < getNumSuccessors() : "Successor # out of range for switch!";
-    return cast(getOperand(i + 1), BasicBlock.class);
+    return cast(getOperand(2 * i + 1), BasicBlock.class);
   }
 
   @Override
@@ -78,14 +77,13 @@ public class SwitchInst extends TerminatorInst {
   }
 
   // return null if successor is not found, not unique, or is the default case
-  @Nullable
   public ConstantInt findCaseDest(BasicBlock block) {
     if (block == getDefaultDest()) {
       return null;
     }
     ConstantInt ci = null;
     for (int i = 0; i < getNumCases(); ++ i) {
-      if (getSuccessor(2 * (i + 1) + 1) == block) {
+      if (getSuccessor(i + 1) == block) {
         if (ci != null) {
           return null;
         } else {
@@ -94,5 +92,21 @@ public class SwitchInst extends TerminatorInst {
       }
     }
     return ci;
+  }
+
+  @Override
+  public String toString() {
+    String res = "switch ";
+    res += getCondition().getType().toString() + " ";
+    res += Formatter.asOperand(getCondition());
+    res += ", label %" + getDefaultDest().getName();
+    res += "[\n";
+    for (int i = 1; i < getNumCases(); i++) {
+      BasicBlock basicBlock = getSuccessor(i);
+      ConstantInt constantInt = findCaseDest(basicBlock);
+      res += "  " + constantInt.getType().toString() + " " + constantInt.toString() + ", label %" + basicBlock.getName() + "\n";
+    }
+    res += "]";
+    return super.toString();
   }
 }
