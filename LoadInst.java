@@ -23,6 +23,7 @@ import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.AtomicOrderi
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.SynchronizationScope;
 
+import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
@@ -110,12 +111,7 @@ public class LoadInst extends UnaryInstruction {
     res += getType().toString();
     Value operand = getOperand(0);
     res += ", " + operand.getType().toString();
-    if (operand instanceof Instruction) {
-      res += " %";
-    } else if (operand instanceof GlobalVariable) {
-      res += " @";
-    }
-    res += operand.getName();
+    res += " " + Formatter.asOperand(operand);
     res += ", align " + getAlignment();
     return res;
   }
