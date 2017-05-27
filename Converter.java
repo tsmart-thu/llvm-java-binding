@@ -20,144 +20,7 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
-import static org.bytedeco.javacpp.LLVM.LLVMAShr;
-import static org.bytedeco.javacpp.LLVM.LLVMAdd;
-import static org.bytedeco.javacpp.LLVM.LLVMAddrSpaceCast;
-import static org.bytedeco.javacpp.LLVM.LLVMAlloca;
-import static org.bytedeco.javacpp.LLVM.LLVMAnd;
-import static org.bytedeco.javacpp.LLVM.LLVMArgumentValueKind;
-import static org.bytedeco.javacpp.LLVM.LLVMArrayTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMAtomicCmpXchg;
-import static org.bytedeco.javacpp.LLVM.LLVMAtomicRMW;
-import static org.bytedeco.javacpp.LLVM.LLVMBasicBlockAsValue;
-import static org.bytedeco.javacpp.LLVM.LLVMBasicBlockRef;
-import static org.bytedeco.javacpp.LLVM.LLVMBasicBlockValueKind;
-import static org.bytedeco.javacpp.LLVM.LLVMBitCast;
-import static org.bytedeco.javacpp.LLVM.LLVMBr;
-import static org.bytedeco.javacpp.LLVM.LLVMCall;
-import static org.bytedeco.javacpp.LLVM.LLVMCatchPad;
-import static org.bytedeco.javacpp.LLVM.LLVMCatchRet;
-import static org.bytedeco.javacpp.LLVM.LLVMCatchSwitch;
-import static org.bytedeco.javacpp.LLVM.LLVMCleanupPad;
-import static org.bytedeco.javacpp.LLVM.LLVMCleanupRet;
-import static org.bytedeco.javacpp.LLVM.LLVMConstIntGetZExtValue;
-import static org.bytedeco.javacpp.LLVM.LLVMConstantExprValueKind;
-import static org.bytedeco.javacpp.LLVM.LLVMConstantFPValueKind;
-import static org.bytedeco.javacpp.LLVM.LLVMConstantIntValueKind;
-import static org.bytedeco.javacpp.LLVM.LLVMConstantPointerNullValueKind;
-import static org.bytedeco.javacpp.LLVM.LLVMCountParamTypes;
-import static org.bytedeco.javacpp.LLVM.LLVMCountStructElementTypes;
-import static org.bytedeco.javacpp.LLVM.LLVMDisposeMessage;
-import static org.bytedeco.javacpp.LLVM.LLVMDoubleTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMDumpValue;
-import static org.bytedeco.javacpp.LLVM.LLVMExtractElement;
-import static org.bytedeco.javacpp.LLVM.LLVMExtractValue;
-import static org.bytedeco.javacpp.LLVM.LLVMFAdd;
-import static org.bytedeco.javacpp.LLVM.LLVMFCmp;
-import static org.bytedeco.javacpp.LLVM.LLVMFDiv;
-import static org.bytedeco.javacpp.LLVM.LLVMFMul;
-import static org.bytedeco.javacpp.LLVM.LLVMFP128TypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMFPExt;
-import static org.bytedeco.javacpp.LLVM.LLVMFPToSI;
-import static org.bytedeco.javacpp.LLVM.LLVMFPToUI;
-import static org.bytedeco.javacpp.LLVM.LLVMFPTrunc;
-import static org.bytedeco.javacpp.LLVM.LLVMFRem;
-import static org.bytedeco.javacpp.LLVM.LLVMFSub;
-import static org.bytedeco.javacpp.LLVM.LLVMFence;
-import static org.bytedeco.javacpp.LLVM.LLVMFloatTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMFunctionTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMFunctionValueKind;
-import static org.bytedeco.javacpp.LLVM.LLVMGetAlignment;
-import static org.bytedeco.javacpp.LLVM.LLVMGetArrayLength;
-import static org.bytedeco.javacpp.LLVM.LLVMGetElementPtr;
-import static org.bytedeco.javacpp.LLVM.LLVMGetElementType;
-import static org.bytedeco.javacpp.LLVM.LLVMGetFirstBasicBlock;
-import static org.bytedeco.javacpp.LLVM.LLVMGetFirstFunction;
-import static org.bytedeco.javacpp.LLVM.LLVMGetFirstInstruction;
-import static org.bytedeco.javacpp.LLVM.LLVMGetFirstUse;
-import static org.bytedeco.javacpp.LLVM.LLVMGetInstructionOpcode;
-import static org.bytedeco.javacpp.LLVM.LLVMGetIntTypeWidth;
-import static org.bytedeco.javacpp.LLVM.LLVMGetMDKindID;
-import static org.bytedeco.javacpp.LLVM.LLVMGetMetadata;
-import static org.bytedeco.javacpp.LLVM.LLVMGetModuleIdentifier;
-import static org.bytedeco.javacpp.LLVM.LLVMGetNextBasicBlock;
-import static org.bytedeco.javacpp.LLVM.LLVMGetNextFunction;
-import static org.bytedeco.javacpp.LLVM.LLVMGetNextInstruction;
-import static org.bytedeco.javacpp.LLVM.LLVMGetNextUse;
-import static org.bytedeco.javacpp.LLVM.LLVMGetNumOperands;
-import static org.bytedeco.javacpp.LLVM.LLVMGetOperand;
-import static org.bytedeco.javacpp.LLVM.LLVMGetParamTypes;
-import static org.bytedeco.javacpp.LLVM.LLVMGetPointerAddressSpace;
-import static org.bytedeco.javacpp.LLVM.LLVMGetReturnType;
-import static org.bytedeco.javacpp.LLVM.LLVMGetStructElementTypes;
-import static org.bytedeco.javacpp.LLVM.LLVMGetStructName;
-import static org.bytedeco.javacpp.LLVM.LLVMGetTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMGetUser;
-import static org.bytedeco.javacpp.LLVM.LLVMGetValueKind;
-import static org.bytedeco.javacpp.LLVM.LLVMGetValueName;
-import static org.bytedeco.javacpp.LLVM.LLVMGlobalVariableValueKind;
-import static org.bytedeco.javacpp.LLVM.LLVMHalfTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMHasMetadata;
-import static org.bytedeco.javacpp.LLVM.LLVMICmp;
-import static org.bytedeco.javacpp.LLVM.LLVMIndirectBr;
-import static org.bytedeco.javacpp.LLVM.LLVMInlineAsmValueKind;
-import static org.bytedeco.javacpp.LLVM.LLVMInsertElement;
-import static org.bytedeco.javacpp.LLVM.LLVMInsertValue;
-import static org.bytedeco.javacpp.LLVM.LLVMInstructionValueKind;
-import static org.bytedeco.javacpp.LLVM.LLVMIntToPtr;
-import static org.bytedeco.javacpp.LLVM.LLVMIntegerTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMInvoke;
-import static org.bytedeco.javacpp.LLVM.LLVMIsAConstantInt;
-import static org.bytedeco.javacpp.LLVM.LLVMIsFunctionVarArg;
-import static org.bytedeco.javacpp.LLVM.LLVMIsOpaqueStruct;
-import static org.bytedeco.javacpp.LLVM.LLVMIsPackedStruct;
-import static org.bytedeco.javacpp.LLVM.LLVMLShr;
-import static org.bytedeco.javacpp.LLVM.LLVMLabelTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMLandingPad;
-import static org.bytedeco.javacpp.LLVM.LLVMLoad;
-import static org.bytedeco.javacpp.LLVM.LLVMMetadataAsValueValueKind;
-import static org.bytedeco.javacpp.LLVM.LLVMMetadataTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMModuleRef;
-import static org.bytedeco.javacpp.LLVM.LLVMMul;
-import static org.bytedeco.javacpp.LLVM.LLVMOr;
-import static org.bytedeco.javacpp.LLVM.LLVMPHI;
-import static org.bytedeco.javacpp.LLVM.LLVMPPC_FP128TypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMPointerTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMPrintValueToString;
-import static org.bytedeco.javacpp.LLVM.LLVMPtrToInt;
-import static org.bytedeco.javacpp.LLVM.LLVMResume;
-import static org.bytedeco.javacpp.LLVM.LLVMRet;
-import static org.bytedeco.javacpp.LLVM.LLVMSDiv;
-import static org.bytedeco.javacpp.LLVM.LLVMSExt;
-import static org.bytedeco.javacpp.LLVM.LLVMSIToFP;
-import static org.bytedeco.javacpp.LLVM.LLVMSRem;
-import static org.bytedeco.javacpp.LLVM.LLVMSelect;
-import static org.bytedeco.javacpp.LLVM.LLVMShl;
-import static org.bytedeco.javacpp.LLVM.LLVMShuffleVector;
-import static org.bytedeco.javacpp.LLVM.LLVMStore;
-import static org.bytedeco.javacpp.LLVM.LLVMStructTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMSub;
-import static org.bytedeco.javacpp.LLVM.LLVMSwitch;
-import static org.bytedeco.javacpp.LLVM.LLVMTokenTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMTrunc;
-import static org.bytedeco.javacpp.LLVM.LLVMTypeOf;
-import static org.bytedeco.javacpp.LLVM.LLVMTypeRef;
-import static org.bytedeco.javacpp.LLVM.LLVMUDiv;
-import static org.bytedeco.javacpp.LLVM.LLVMUIToFP;
-import static org.bytedeco.javacpp.LLVM.LLVMURem;
-import static org.bytedeco.javacpp.LLVM.LLVMUnreachable;
-import static org.bytedeco.javacpp.LLVM.LLVMUseRef;
-import static org.bytedeco.javacpp.LLVM.LLVMUserOp1;
-import static org.bytedeco.javacpp.LLVM.LLVMUserOp2;
-import static org.bytedeco.javacpp.LLVM.LLVMVAArg;
-import static org.bytedeco.javacpp.LLVM.LLVMValueAsBasicBlock;
-import static org.bytedeco.javacpp.LLVM.LLVMValueRef;
-import static org.bytedeco.javacpp.LLVM.LLVMVectorTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMVoidTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMX86_FP80TypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMX86_MMXTypeKind;
-import static org.bytedeco.javacpp.LLVM.LLVMXor;
-import static org.bytedeco.javacpp.LLVM.LLVMZExt;
+import static org.bytedeco.javacpp.LLVM.*;
 
 import com.google.common.base.Optional;
 import java.util.ArrayList;
@@ -183,6 +46,13 @@ public class Converter {
     SizeTPointer sizeTPointer = new SizeTPointer(64);
     String moduleIdentifier = LLVMGetModuleIdentifier(moduleRef, sizeTPointer).getString();
     Map<String, LlvmFunction> functionMap = new HashMap<>();
+    // create globals
+    for (LLVMValueRef g = LLVMGetFirstGlobal(moduleRef); g != null; g = LLVMGetNextGlobal(g)) {
+      String name = LLVMGetValueName(g).getString();
+      Type type = getType(LLVMTypeOf(g));
+      GlobalVariable variable = new GlobalVariable(name, type);
+      context.putGlobalVariable(g, variable);
+    }
     // first create
     for (LLVMValueRef f = LLVMGetFirstFunction(moduleRef); f != null; f = LLVMGetNextFunction(f)) {
       LlvmFunction func = new LlvmFunction();
@@ -484,6 +354,7 @@ public class Converter {
       case LLVMStore:
       case LLVMCall:
       case LLVMBr:
+      case LLVMSwitch:
         return false;
     }
   }
@@ -505,8 +376,7 @@ public class Converter {
         // TODO argument
         return null;
       case LLVMGlobalVariableValueKind:
-        // TODO global variable
-        return null;
+        return context.getGlobalVariable(valueRef);
       case LLVMConstantPointerNullValueKind:
         // TODO null
         return null;
@@ -523,6 +393,12 @@ public class Converter {
     System.out.println(LLVMGetValueKind(valueRef));
     assert false : "unhandled convert llvm value ref";
     return null;
+  }
+
+  private GlobalVariable convertValueToGlobalVariable(LLVMValueRef valueRef) {
+    String name = LLVMGetValueName(valueRef).getString();
+    Type type = getType(LLVMTypeOf(valueRef));
+    return new GlobalVariable(name, type);
   }
 
   public Constant convertValueToConstantInt(LLVMValueRef valueRef) {

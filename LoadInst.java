@@ -108,7 +108,14 @@ public class LoadInst extends UnaryInstruction {
   public String toString() {
     String res = "%" + getName() + " = load ";
     res += getType().toString();
-    res += ", " + getOperand(0).getType().toString() + " %" + getOperand(0).getName();
+    Value operand = getOperand(0);
+    res += ", " + operand.getType().toString();
+    if (operand instanceof Instruction) {
+      res += " %";
+    } else if (operand instanceof GlobalVariable) {
+      res += " @";
+    }
+    res += operand.getName();
     res += ", align " + getAlignment();
     return res;
   }
