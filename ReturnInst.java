@@ -21,6 +21,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
+import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 import javax.annotation.Nullable;
@@ -64,7 +65,7 @@ public class ReturnInst extends TerminatorInst {
   public String toString() {
     String res = "ret";
     if (getReturnValue() != null) {
-      res += " " + getReturnValue().getType().toString() + " %" + getReturnValue().getName();
+      res += " " + getReturnValue().getType().toString() + " " + Formatter.asOperand(getReturnValue());
     }
     return res;
   }
