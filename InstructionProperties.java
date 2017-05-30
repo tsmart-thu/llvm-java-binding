@@ -99,8 +99,7 @@ public class InstructionProperties {
   }
 
   // used by instructions and constant expressions with opcode ADD/SUB/MUL/SHL (nuw, nsw), UDIV/SDIV/LSHR/ASHR (exact), FADD/FSUB/FMUL/FDIV/FREM/FCMP/CALL (nnan, ninf, nsz, arcp, fast)
-  public class OperatorFlags {
-
+  public static class OperatorFlags {
     private int flags = 0;
 
     // operator flags of integer type

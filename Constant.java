@@ -22,11 +22,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 /**
  * @author guangchen on 26/02/2017.
  */
-public class Constant extends User {
-  public Constant() {
-  }
+public abstract class Constant extends User {
 
-  public Constant(String name, Type type) {
+  protected Constant(String name, Type type) {
     super(name, type);
   }
 }

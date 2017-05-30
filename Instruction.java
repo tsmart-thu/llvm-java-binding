@@ -20,6 +20,7 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlags;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
 
@@ -43,7 +44,7 @@ public abstract class Instruction extends User implements IInstruction {
   }
 
   // only for Converter
-  public void setOperatorFlags(InstructionProperties.OperatorFlags flags) {
+  public void setOperatorFlags(OperatorFlags flags) {
     operatorFlags = flags;
   }
 

@@ -34,7 +34,7 @@ public class AttributeList {
   private final ImmutableSet<Attribute> retAttributes;
   private final ImmutableSet<Attribute> fnAttributes;
 
-  private static ArrayList<AttributeList> instances;
+  private static ArrayList<AttributeList> instances = new ArrayList<>();
 
   private AttributeList(ImmutableList<ImmutableSet<Attribute>> paramAttributes,
       ImmutableSet<Attribute> retAttributes, ImmutableSet<Attribute> fnAttributes) {

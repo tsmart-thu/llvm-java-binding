@@ -35,7 +35,6 @@ public class BinaryOperator extends Instruction {
     super.opCode = opcode;
   }
 
-
   @Override
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);

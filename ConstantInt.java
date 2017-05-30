@@ -29,10 +29,6 @@ public class ConstantInt extends ConstantData {
   private APInt val;
   private static HashMap<APInt, ConstantInt> instances = new HashMap<>();
 
-  private ConstantInt(String name, IntegerType type) {
-    super(name, type);
-  }
-
   private ConstantInt(String name, IntegerType type, APInt val) {
     super(name, type);
     this.val = val;

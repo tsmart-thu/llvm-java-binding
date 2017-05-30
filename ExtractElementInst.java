@@ -33,7 +33,7 @@ public class ExtractElementInst extends Instruction {
     super(name, type);
     super.opCode = OpCode.EXTRACTELEMENT;
     // this instruction should not be used when analysing C
-    assert false : "Unhandled instruction: invoke";
+    assert false : "Unhandled instruction: extractelement";
   }
 
   @Override

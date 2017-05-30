@@ -36,7 +36,7 @@ public class Attribute {
   private long intParam2 = -1;
   private String stringParam = "";
 
-  private static ArrayList<Attribute> instances;
+  private static ArrayList<Attribute> instances = new ArrayList<>();
 
   private Attribute(AttributeKind attributeKind) {
     this.attributeKind = attributeKind;
