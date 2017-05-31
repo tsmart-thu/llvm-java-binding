@@ -24,6 +24,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  */
 public abstract class Constant extends User {
 
+  public Constant() {
+  }
+
   protected Constant(String name, Type type) {
     super(name, type);
   }
