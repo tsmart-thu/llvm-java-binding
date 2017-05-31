@@ -172,19 +172,19 @@ public class Converter {
         instruction = new CatchSwitchInst(name, type);
         break;
       case LLVMAdd:
-        instruction = new BinaryOperator(name, type, OpCode.ADD);
+        instruction = new BinaryOperator(name, type, OpCode.ADD, true, false);
         break;
       case LLVMFAdd:
         instruction = new BinaryOperator(name, type, OpCode.FADD);
         break;
       case LLVMSub:
-        instruction = new BinaryOperator(name, type, OpCode.SUB);
+        instruction = new BinaryOperator(name, type, OpCode.SUB, true, false);
         break;
       case LLVMFSub:
         instruction = new BinaryOperator(name, type, OpCode.FSUB);
         break;
       case LLVMMul:
-        instruction = new BinaryOperator(name, type, OpCode.MUL);
+        instruction = new BinaryOperator(name, type, OpCode.MUL, true, false);
         break;
       case LLVMFMul:
         instruction = new BinaryOperator(name, type, OpCode.FMUL);
