@@ -670,4 +670,9 @@ public class APInt {
     }
     return bitWidth == ((APInt)obj).getBitWidth() && eq(((APInt)obj));
   }
+
+  @Override
+  public String toString() {
+    return bitWidth / 8 + "byte" + val.toString();
+  }
 }
