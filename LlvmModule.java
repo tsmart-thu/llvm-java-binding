@@ -1,5 +1,6 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -8,10 +9,12 @@ import java.util.Map;
 public class LlvmModule {
     private final String moduleIdentifier;
     private final Map<String, LlvmFunction> functionMap;
+    private final List<GlobalVariable> globalList;
 
-    public LlvmModule(String moduleIdentifier, Map<String, LlvmFunction> functionMap) {
+    public LlvmModule(String moduleIdentifier, Map<String, LlvmFunction> functionMap, List<GlobalVariable> globalList) {
         this.moduleIdentifier = moduleIdentifier;
         this.functionMap = functionMap;
+        this.globalList = globalList;
     }
 
     public String getModuleIdentifier() {
@@ -28,5 +31,9 @@ public class LlvmModule {
 
     public Iterable<LlvmFunction> functions() {
         return functionMap.values();
+    }
+
+    public List<GlobalVariable> getGlobalList() {
+        return globalList;
     }
 }

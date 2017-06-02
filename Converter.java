@@ -47,11 +47,13 @@ public class Converter {
     String moduleIdentifier = LLVMGetModuleIdentifier(moduleRef, sizeTPointer).getString();
     Map<String, LlvmFunction> functionMap = new HashMap<>();
     // create globals
+    List<GlobalVariable> globalList = new ArrayList<>();
     for (LLVMValueRef g = LLVMGetFirstGlobal(moduleRef); g != null; g = LLVMGetNextGlobal(g)) {
       String name = LLVMGetValueName(g).getString();
       Type type = getType(LLVMTypeOf(g));
       GlobalVariable variable = new GlobalVariable(name, type);
       context.putGlobalVariable(g, variable);
+      globalList.add(variable);
     }
     // first create
     for (LLVMValueRef f = LLVMGetFirstFunction(moduleRef); f != null; f = LLVMGetNextFunction(f)) {
@@ -63,7 +65,7 @@ public class Converter {
       convertValueToFunction(pair.getKey(), value);
       functionMap.put(value.getName(), value);
     }
-    return new LlvmModule(moduleIdentifier, functionMap);
+    return new LlvmModule(moduleIdentifier, functionMap, globalList);
   }
 
   private void convertValueToFunction(LLVMValueRef key, LlvmFunction value) {
