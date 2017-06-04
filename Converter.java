@@ -69,6 +69,8 @@ public class Converter {
   }
 
   private void convertValueToFunction(LLVMValueRef key, LlvmFunction value) {
+    // reset counter
+    this.unnamedValueIndex = 0;
     // set name
     value.setName(LLVMGetValueName(key).getString());
     // set type
