@@ -85,6 +85,8 @@ public class BinaryOperator extends Instruction {
         return "or";
       case XOR:
         return "xor";
+      case SREM:
+        return "srem";
     }
     return "";
   }
