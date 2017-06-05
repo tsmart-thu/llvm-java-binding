@@ -673,6 +673,7 @@ public class APInt {
 
   @Override
   public String toString() {
-    return bitWidth / 8 + "byte" + val.toString();
+    long byteSize = bitWidth > 8 ? bitWidth / 8 : 1;
+    return byteSize + "byte" + val.toString();
   }
 }
