@@ -28,22 +28,24 @@ import java.math.BigInteger;
  */
 public class APInt {
 
-  private BigInteger val;
-  private int bitWidth;
+  private final BigInteger val;
+  private final int bitWidth;
 
   public APInt(int numBits, String val) {
     assert numBits > 0 : "Require positive numBits!";
 
     this.bitWidth = numBits;
-    this.val = new BigInteger(val);
+    BigInteger bi = new BigInteger(val);
 
     if (val.startsWith("-") && !val.equals("-0")) {
-      assert this.val.compareTo(BigInteger.ONE.shiftLeft(numBits - 1).negate())
+      assert bi.compareTo(BigInteger.ONE.shiftLeft(numBits - 1).negate())
           >= 0 : "Require larger numBits!";
-      this.val = BigInteger.ONE.shiftLeft(numBits).add(this.val);
+      bi = BigInteger.ONE.shiftLeft(numBits).add(bi);
     } else {
-      assert this.val.compareTo(BigInteger.ONE.shiftLeft(numBits)) < 0 : "numBits is too small!";
+      assert bi.compareTo(BigInteger.ONE.shiftLeft(numBits)) < 0 : "numBits is too small!";
     }
+
+    this.val = bi;
   }
 
   // NOTICE the 2nd parameter type uses long to store u_int64
@@ -52,18 +54,20 @@ public class APInt {
 
     this.bitWidth = numBits;
     String sVal = Long.toString(val);
-    this.val = new BigInteger(sVal);
+    BigInteger bi = new BigInteger(sVal);
 
     if (val >= 0) {
-      assert this.val.compareTo(BigInteger.ONE.shiftLeft(numBits)) < 0 : "numBits is too small!";
+      assert bi.compareTo(BigInteger.ONE.shiftLeft(numBits)) < 0 : "numBits is too small!";
     } else if (!isSigned) {
       assert numBits >= 64 : "Require larger numBits!";
-      this.val = BigInteger.ONE.shiftLeft(64).add(this.val);
+      bi = BigInteger.ONE.shiftLeft(64).add(bi);
     } else {
-      assert this.val.compareTo(BigInteger.ONE.shiftLeft(numBits - 1).negate())
+      assert bi.compareTo(BigInteger.ONE.shiftLeft(numBits - 1).negate())
           >= 0 : "Require larger numBits!";
-      this.val = BigInteger.ONE.shiftLeft(numBits).add(this.val);
+      bi = BigInteger.ONE.shiftLeft(numBits).add(bi);
     }
+
+    this.val = bi;
   }
 
   public APInt(int numBits, BigInteger val) {
