@@ -22,6 +22,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static org.bytedeco.javacpp.LLVM.*;
 
+import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.base.Optional;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -51,7 +52,8 @@ public class Converter {
     for (LLVMValueRef g = LLVMGetFirstGlobal(moduleRef); g != null; g = LLVMGetNextGlobal(g)) {
       String name = LLVMGetValueName(g).getString();
       Type type = getType(LLVMTypeOf(g));
-      GlobalVariable variable = new GlobalVariable(name, type);
+      Constant init = Casting.cast(convert(LLVMGetInitializer(g)), Constant.class);
+      GlobalVariable variable = new GlobalVariable(name, type, init);
       context.putGlobalVariable(g, variable);
       globalList.add(variable);
     }
@@ -239,8 +241,10 @@ public class Converter {
         instruction = new LoadInst(name, type, alignment);
       }
         break;
-      case LLVMStore:
-        instruction = new StoreInst(name, type);
+      case LLVMStore: {
+        int alignment = LLVMGetAlignment(inst);
+        instruction = new StoreInst(name, type, alignment);
+      }
         break;
       case LLVMGetElementPtr:
         instruction = new GetElementPtrInst(name, type);
@@ -410,7 +414,7 @@ public class Converter {
         return context.getGlobalVariable(valueRef);
       case LLVMConstantPointerNullValueKind:
         // TODO null
-        return null;
+        return new ConstantPointerNull(getType(LLVMTypeOf(valueRef)));
       case LLVMFunctionValueKind:
         return context.getFunction(valueRef);
       case LLVMInlineAsmValueKind:
@@ -424,12 +428,6 @@ public class Converter {
     System.out.println(LLVMGetValueKind(valueRef));
     assert false : "unhandled convert llvm value ref";
     return null;
-  }
-
-  private GlobalVariable convertValueToGlobalVariable(LLVMValueRef valueRef) {
-    String name = LLVMGetValueName(valueRef).getString();
-    Type type = getType(LLVMTypeOf(valueRef));
-    return new GlobalVariable(name, type);
   }
 
   public Constant convertValueToConstantInt(LLVMValueRef valueRef) {
