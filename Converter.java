@@ -424,7 +424,7 @@ public class Converter {
         return context.getBasicBlock(LLVMValueAsBasicBlock(valueRef));
       case LLVMMetadataAsValueValueKind:
         // TODO metadata
-        return null;
+        throw new NotImplementedException();
       case LLVMArgumentValueKind:
         // TODO argument
         return convertValueToArgument(valueRef);
@@ -437,10 +437,12 @@ public class Converter {
         return context.getFunction(valueRef);
       case LLVMInlineAsmValueKind:
         // TODO inline asm
-        return null;
+        throw new NotImplementedException();
       case LLVMConstantFPValueKind:
         // TODO constant fp
-        return null;
+        throw new NotImplementedException();
+      case LLVMConstantAggregateZeroValueKind:
+        return new ConstantAggregateZero();
     }
     LLVMDumpValue(valueRef);
     System.out.println(LLVMGetValueKind(valueRef));
