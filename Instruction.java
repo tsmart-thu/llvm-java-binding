@@ -150,26 +150,32 @@ public abstract class Instruction extends User implements IInstruction {
   / extractProfTotalWeight
   / getDebugLoc
   */
+  
+  protected OperatorFlags getOperatorFlags() {
+    return this.operatorFlags;
+  }
+
+  protected boolean canHasWrapFlag() {
+    return opCode == OpCode.ADD || opCode == OpCode.SUB
+            || opCode == OpCode.MUL
+            || opCode == OpCode.SHL;
+  }
 
   public boolean hasNoUnsignedWrap() {
-    assert opCode != OpCode.ADD && opCode != OpCode.SUB
-        && opCode != OpCode.MUL
-        && opCode != OpCode.SHL : "No nuw flag!";
+    assert canHasWrapFlag() : "No nuw flag!";
     return operatorFlags.hasNoUnsignedWrapFlag();
   }
 
   public boolean hasNoSignedWrap() {
-    assert opCode != OpCode.ADD && opCode != OpCode.SUB
-        && opCode != OpCode.MUL
-        && opCode != OpCode.SHL : "No nsw flag!";
+    assert canHasWrapFlag() : "No nsw flag!";
     return operatorFlags.hasNoSignedWrapFlag();
   }
 
   public boolean isExact() {
     assert
-        opCode != OpCode.UDIV && opCode != OpCode.SDIV
-            && opCode != OpCode.LSHR
-            && opCode != OpCode.ASHR : "No exact flag!";
+        opCode == OpCode.UDIV || opCode == OpCode.SDIV
+            || opCode == OpCode.LSHR
+            || opCode == OpCode.ASHR : "No exact flag!";
     return operatorFlags.hasExactFlag();
   }
 
@@ -183,48 +189,33 @@ public abstract class Instruction extends User implements IInstruction {
             && opCode != OpCode.CALL : "No fast-math flags!";
     return operatorFlags.hasFastFlag();
   }
+  
+  protected boolean canHasFastMathFlag() {
+    return opCode == OpCode.FADD || opCode == OpCode.FSUB
+            || opCode == OpCode.FMUL
+            || opCode == OpCode.FDIV
+            || opCode == OpCode.FREM
+            || opCode == OpCode.FCMP
+            || opCode == OpCode.CALL;
+  }
 
   public boolean hasNoNaNs() {
-    assert
-        opCode != OpCode.FADD && opCode != OpCode.FSUB
-            && opCode != OpCode.FMUL
-            && opCode != OpCode.FDIV
-            && opCode != OpCode.FREM
-            && opCode != OpCode.FCMP
-            && opCode != OpCode.CALL : "No fast-math flags!";
+    assert canHasWrapFlag() : "No fast-math flags!";
     return operatorFlags.hasNoNaNFlag();
   }
 
   public boolean hasNoInfs() {
-    assert
-        opCode != OpCode.FADD && opCode != OpCode.FSUB
-            && opCode != OpCode.FMUL
-            && opCode != OpCode.FDIV
-            && opCode != OpCode.FREM
-            && opCode != OpCode.FCMP
-            && opCode != OpCode.CALL : "No fast-math flags!";
+    assert canHasWrapFlag() : "No fast-math flags!";
     return operatorFlags.hasNoInfFlag();
   }
 
   public boolean hasNoSignedZeros() {
-    assert
-        opCode != OpCode.FADD && opCode != OpCode.FSUB
-            && opCode != OpCode.FMUL
-            && opCode != OpCode.FDIV
-            && opCode != OpCode.FREM
-            && opCode != OpCode.FCMP
-            && opCode != OpCode.CALL : "No fast-math flags!";
+    assert canHasWrapFlag(): "No fast-math flags!";
     return operatorFlags.hasNoSignedZeroFlag();
   }
 
   public boolean hasAllowReciprocal() {
-    assert
-        opCode != OpCode.FADD && opCode != OpCode.FSUB
-            && opCode != OpCode.FMUL
-            && opCode != OpCode.FDIV
-            && opCode != OpCode.FREM
-            && opCode != OpCode.FCMP
-            && opCode != OpCode.CALL : "No fast-math flags!";
+    assert canHasWrapFlag(): "No fast-math flags!";
     return operatorFlags.hasAllowReciprocalFlag();
   }
 
