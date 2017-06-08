@@ -50,12 +50,6 @@ public class StoreInst extends Instruction {
   }
 
   // only for Converter
-  // NOTICE parameter type uses int to store unsigned
-  public void setAlignment(int alignment) {
-    this.alignment = alignment;
-  }
-
-  // only for Converter
   public void setOrdering(AtomicOrdering ordering) {
     this.ordering = ordering;
   }
