@@ -19,6 +19,7 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlags;
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.base.Optional;
 import org.bytedeco.javacpp.BytePointer;
@@ -182,20 +183,32 @@ public class Converter {
       case LLVMCatchSwitch:
         instruction = new CatchSwitchInst(name, type);
         break;
-      case LLVMAdd:
-        instruction = new BinaryOperator(name, type, OpCode.ADD, true, false);
+      case LLVMAdd: {
+        instruction = new BinaryOperator(name, type, OpCode.ADD);
+        OperatorFlags flag = new OperatorFlags();
+        flag.setUnsignedWrapFlag();
+        instruction.setOperatorFlags(flag);
+      }
         break;
       case LLVMFAdd:
         instruction = new BinaryOperator(name, type, OpCode.FADD);
         break;
-      case LLVMSub:
-        instruction = new BinaryOperator(name, type, OpCode.SUB, true, false);
+      case LLVMSub: {
+        instruction = new BinaryOperator(name, type, OpCode.SUB);
+        OperatorFlags flag = new OperatorFlags();
+        flag.setUnsignedWrapFlag();
+        instruction.setOperatorFlags(flag);
+      }
         break;
       case LLVMFSub:
         instruction = new BinaryOperator(name, type, OpCode.FSUB);
         break;
-      case LLVMMul:
-        instruction = new BinaryOperator(name, type, OpCode.MUL, true, false);
+      case LLVMMul: {
+        instruction = new BinaryOperator(name, type, OpCode.MUL);
+        OperatorFlags flag = new OperatorFlags();
+        flag.setUnsignedWrapFlag();
+        instruction.setOperatorFlags(flag);
+      }
         break;
       case LLVMFMul:
         instruction = new BinaryOperator(name, type, OpCode.FMUL);
