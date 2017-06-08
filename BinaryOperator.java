@@ -103,4 +103,12 @@ public class BinaryOperator extends Instruction {
         getType().toString() + " " + Formatter.asOperand(getOperand(0)) + ", " + Formatter.asOperand(getOperand(1));
     return res;
   }
+
+  public boolean isNsw() {
+    return nsw;
+  }
+
+  public boolean isNuw() {
+    return nuw;
+  }
 }
