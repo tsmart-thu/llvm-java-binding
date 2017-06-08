@@ -21,6 +21,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.bytedeco.javacpp.LLVM;
 
 import static org.bytedeco.javacpp.LLVM.*;
@@ -31,7 +34,7 @@ import static org.bytedeco.javacpp.LLVM.*;
 public class Context {
 
   private final LLVMContextRef contextRef;
-  private final Map<LLVMTypeRef, Type> typeRefTypeMap = new HashMap<>();
+  private final BiMap<LLVMTypeRef, Type> typeRefTypeMap = HashBiMap.create();
   private final Map<LLVMValueRef, Instruction> valueRefInstructionMap = new HashMap<>();
   private final Map<LLVMBasicBlockRef, BasicBlock> basicBlockRefBasicBlockMap = new HashMap<>();
   private final Map<LLVMValueRef, LlvmFunction> functionMap = new HashMap<>();
@@ -72,6 +75,10 @@ public class Context {
 
   public Type getType(LLVMTypeRef typeRef) {
     return typeRefTypeMap.get(typeRef);
+  }
+
+  public LLVMTypeRef getTypeRef(Type type) {
+    return this.typeRefTypeMap.inverse().get(type);
   }
 
   public void putInst(LLVMValueRef valueRef, Instruction instruction) {

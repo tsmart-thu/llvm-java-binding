@@ -19,19 +19,20 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
-import static org.bytedeco.javacpp.LLVM.*;
-
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.base.Optional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static org.bytedeco.javacpp.LLVM.*;
 
 /** @author guangchen on 03/03/2017. */
 public class Converter {
@@ -67,7 +68,10 @@ public class Converter {
       convertValueToFunction(pair.getKey(), value);
       functionMap.put(value.getName(), value);
     }
-    return new LlvmModule(moduleIdentifier, functionMap, globalList);
+    // DataLayout
+    LLVMTargetDataRef targetDataRef = LLVMGetModuleDataLayout(moduleRef);
+    DataLayout dataLayout = new DataLayout(context, targetDataRef);
+    return new LlvmModule(context, moduleIdentifier, functionMap, globalList, dataLayout);
   }
 
   private void convertValueToFunction(LLVMValueRef key, LlvmFunction value) {
@@ -126,7 +130,7 @@ public class Converter {
     block.setInstList(instructionList);
   }
 
-  public Instruction convertValueToInstruction(LLVMValueRef inst) {
+  private Instruction convertValueToInstruction(LLVMValueRef inst) {
     Instruction instruction = context.getInst(inst);
     if (instruction != null) {
       return instruction;
