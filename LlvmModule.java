@@ -7,14 +7,18 @@ import java.util.Map;
  * @author guangchen on 24/02/2017.
  */
 public class LlvmModule {
+    private final Context context;
     private final String moduleIdentifier;
     private final Map<String, LlvmFunction> functionMap;
     private final List<GlobalVariable> globalList;
+    private final DataLayout dataLayout;
 
-    public LlvmModule(String moduleIdentifier, Map<String, LlvmFunction> functionMap, List<GlobalVariable> globalList) {
+    public LlvmModule(Context context, String moduleIdentifier, Map<String, LlvmFunction> functionMap, List<GlobalVariable> globalList, DataLayout dataLayout) {
+        this.context = context;
         this.moduleIdentifier = moduleIdentifier;
         this.functionMap = functionMap;
         this.globalList = globalList;
+        this.dataLayout = dataLayout;
     }
 
     public String getModuleIdentifier() {
@@ -35,5 +39,13 @@ public class LlvmModule {
 
     public List<GlobalVariable> getGlobalList() {
         return globalList;
+    }
+
+    public DataLayout getDataLayout() {
+        return dataLayout;
+    }
+
+    public Context getContext() {
+        return context;
     }
 }
