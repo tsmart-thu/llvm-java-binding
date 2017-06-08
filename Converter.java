@@ -71,6 +71,7 @@ public class Converter {
     // DataLayout
     LLVMTargetDataRef targetDataRef = LLVMGetModuleDataLayout(moduleRef);
     DataLayout dataLayout = new DataLayout(context, targetDataRef);
+    context.setDataLayout(dataLayout);
     return new LlvmModule(context, moduleIdentifier, functionMap, globalList, dataLayout);
   }
 

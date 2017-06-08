@@ -392,4 +392,8 @@ public class Type {
   public String toString() {
     return "TYPE";
   }
+
+  public long sizeInBytes() {
+    return context.getDataLayout().getTypeStoreSize(this);
+  }
 }
