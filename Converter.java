@@ -427,7 +427,7 @@ public class Converter {
         return null;
       case LLVMArgumentValueKind:
         // TODO argument
-        return null;
+        return convertValueToArgument(valueRef);
       case LLVMGlobalVariableValueKind:
         return context.getGlobalVariable(valueRef);
       case LLVMConstantPointerNullValueKind:
@@ -446,6 +446,10 @@ public class Converter {
     System.out.println(LLVMGetValueKind(valueRef));
     assert false : "unhandled convert llvm value ref";
     return null;
+  }
+
+  private Value convertValueToArgument(LLVMValueRef valueRef) {
+    return new Argument(LLVMGetValueName(valueRef).getString(), getType(LLVMTypeOf(valueRef)));
   }
 
   public Constant convertValueToConstantInt(LLVMValueRef valueRef) {
