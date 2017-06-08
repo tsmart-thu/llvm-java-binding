@@ -30,20 +30,9 @@ import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
  */
 public class BinaryOperator extends Instruction {
 
-  private boolean nsw = false;
-  private boolean nuw = false;
-
   public BinaryOperator(String name, Type type, OpCode opcode) {
     super(name, type);
     super.opCode = opcode;
-  }
-
-  public BinaryOperator(String name, Type type, OpCode opcode, boolean nsw, boolean nuw) {
-    super(name, type);
-    super.opCode = opcode;
-    assert !nsw || !nuw : "nsw and nuw cannot both be true";
-    this.nsw = nsw;
-    this.nuw = nuw;
   }
 
   @Override
@@ -94,21 +83,13 @@ public class BinaryOperator extends Instruction {
   @Override
   public String toString() {
     String res = "%" + getName() + " = " + operatorToString()  + " ";
-    if (nsw) {
+    if (hasNoSignedWrap()) {
       res += "nsw ";
-    } else if (nuw) {
+    } else if (hasNoUnsignedWrap()) {
       res += "nuw ";
     }
     res +=
         getType().toString() + " " + Formatter.asOperand(getOperand(0)) + ", " + Formatter.asOperand(getOperand(1));
     return res;
-  }
-
-  public boolean isNsw() {
-    return nsw;
-  }
-
-  public boolean isNuw() {
-    return nuw;
   }
 }
