@@ -23,6 +23,7 @@ import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
 /**
@@ -83,10 +84,9 @@ public class BinaryOperator extends Instruction {
   @Override
   public String toString() {
     String res = "%" + getName() + " = " + operatorToString()  + " ";
-    if (hasNoSignedWrap()) {
-      res += "nsw ";
-    } else if (hasNoUnsignedWrap()) {
-      res += "nuw ";
+    OperatorFlags operatorFlags = getOperatorFlags();
+    if (operatorFlags != null) {
+      res += operatorFlags.toString() + " ";
     }
     res +=
         getType().toString() + " " + Formatter.asOperand(getOperand(0)) + ", " + Formatter.asOperand(getOperand(1));
