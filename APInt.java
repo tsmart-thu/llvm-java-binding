@@ -319,7 +319,7 @@ public class APInt {
   }
 
   public APInt setBit(int bitPosition) {
-    assert bitPosition >= 0 && bitPosition < bitWidth : "Invalid bitPosition";
+    assert bitPosition >= 0 : "Invalid bitPosition";
     BigInteger newVal = val.setBit(bitPosition);
     return new APInt(bitWidth, newVal);
   }
@@ -338,7 +338,7 @@ public class APInt {
   }
 
   public APInt clearBit(int bitPosition) {
-    assert bitPosition >= 0 && bitPosition < bitWidth : "Invalid bitPosition";
+    assert bitPosition >= 0 : "Invalid bitPosition";
     BigInteger newVal = val.clearBit(bitPosition);
     return new APInt(bitWidth, newVal);
   }
@@ -352,7 +352,7 @@ public class APInt {
   }
 
   public APInt flipBit(int bitPosition) {
-    assert bitPosition >= 0 && bitPosition < bitWidth : "Invalid bitPosition";
+    assert bitPosition >= 0 : "Invalid bitPosition";
     BigInteger newVal = val.flipBit(bitPosition);
     return new APInt(bitWidth, newVal);
   }
