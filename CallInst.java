@@ -28,6 +28,7 @@ import cn.edu.thu.tsmart.core.cfa.llvm.Attribute.AttributeKind;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 import com.google.common.collect.ImmutableSet;
+import java.util.List;
 import javax.annotation.Nullable;
 
 /**
@@ -46,6 +47,13 @@ public class CallInst extends Instruction {
   public CallInst(String name, Type type) {
     super(name, type);
     super.opCode = OpCode.CALL;
+  }
+
+  // FIXME chenguang
+  @Override
+  public void setOperands(List<Value> operands) {
+    super.setOperands(operands);
+    setNumArgs(operands.size() - 1);
   }
 
   // only for Converter
