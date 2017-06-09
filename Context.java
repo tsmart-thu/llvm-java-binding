@@ -39,6 +39,7 @@ public class Context {
   private final Map<LLVMBasicBlockRef, BasicBlock> basicBlockRefBasicBlockMap = new HashMap<>();
   private final Map<LLVMValueRef, LlvmFunction> functionMap = new HashMap<>();
   private final Map<LLVMValueRef, GlobalVariable> globalVariableMap = new HashMap<>();
+  private final Map<LLVMValueRef, Argument> argumentMap = new HashMap<>();
   private DataLayout dataLayout;
 
   /**
@@ -124,5 +125,13 @@ public class Context {
 
   public DataLayout getDataLayout() {
     return dataLayout;
+  }
+
+  public void putArgument(LLVMValueRef valueRef, Argument argument) {
+    this.argumentMap.put(valueRef, argument);
+  }
+
+  public Argument getArgument(LLVMValueRef valueRef) {
+    return this.argumentMap.get(valueRef);
   }
 }
