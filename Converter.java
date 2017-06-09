@@ -22,6 +22,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlags;
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.base.Optional;
+import com.google.common.base.Preconditions;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
@@ -83,6 +84,12 @@ public class Converter {
     value.setName(LLVMGetValueName(key).getString());
     // set type
     value.setType(getType(LLVMTypeOf(key)));
+    // set argument
+    List<Argument> argumentList = new ArrayList<>();
+    for (LLVMValueRef arg = LLVMGetFirstParam(key); arg != null; arg = LLVMGetNextParam(arg)) {
+      argumentList.add(convertValueToArgument(arg));
+    }
+    value.setArgumentList(argumentList);
     // set basicBlockList
     // first create
     List<BasicBlock> basicBlockList = new ArrayList<>();
@@ -186,7 +193,7 @@ public class Converter {
       case LLVMAdd: {
         instruction = new BinaryOperator(name, type, OpCode.ADD);
         OperatorFlags flag = new OperatorFlags();
-        flag.setUnsignedWrapFlag();
+        flag.setNoSignedWrapFlag();
         instruction.setOperatorFlags(flag);
       }
         break;
@@ -196,7 +203,7 @@ public class Converter {
       case LLVMSub: {
         instruction = new BinaryOperator(name, type, OpCode.SUB);
         OperatorFlags flag = new OperatorFlags();
-        flag.setUnsignedWrapFlag();
+        flag.setNoSignedWrapFlag();
         instruction.setOperatorFlags(flag);
       }
         break;
@@ -206,18 +213,24 @@ public class Converter {
       case LLVMMul: {
         instruction = new BinaryOperator(name, type, OpCode.MUL);
         OperatorFlags flag = new OperatorFlags();
-        flag.setUnsignedWrapFlag();
+        flag.setNoSignedWrapFlag();
         instruction.setOperatorFlags(flag);
       }
         break;
       case LLVMFMul:
         instruction = new BinaryOperator(name, type, OpCode.FMUL);
         break;
-      case LLVMUDiv:
+      case LLVMUDiv: {
         instruction = new BinaryOperator(name, type, OpCode.UDIV);
+        OperatorFlags flag = new OperatorFlags();
+        instruction.setOperatorFlags(flag);
+      }
         break;
-      case LLVMSDiv:
+      case LLVMSDiv: {
         instruction = new BinaryOperator(name, type, OpCode.SDIV);
+        OperatorFlags flag = new OperatorFlags();
+        instruction.setOperatorFlags(flag);
+      }
         break;
       case LLVMFDiv:
         instruction = new BinaryOperator(name, type, OpCode.FDIV);
@@ -425,9 +438,11 @@ public class Converter {
       case LLVMMetadataAsValueValueKind:
         // TODO metadata
         throw new NotImplementedException();
-      case LLVMArgumentValueKind:
-        // TODO argument
-        return convertValueToArgument(valueRef);
+      case LLVMArgumentValueKind: {
+        Argument argument = context.getArgument(valueRef);
+        Preconditions.checkNotNull(argument, "argument not created");
+        return argument;
+      }
       case LLVMGlobalVariableValueKind:
         return context.getGlobalVariable(valueRef);
       case LLVMConstantPointerNullValueKind:
@@ -450,8 +465,10 @@ public class Converter {
     return null;
   }
 
-  private Value convertValueToArgument(LLVMValueRef valueRef) {
-    return new Argument(LLVMGetValueName(valueRef).getString(), getType(LLVMTypeOf(valueRef)));
+  private Argument convertValueToArgument(LLVMValueRef valueRef) {
+    Argument argument = new Argument(LLVMGetValueName(valueRef).getString(), getType(LLVMTypeOf(valueRef)));
+    context.putArgument(valueRef, argument);
+    return argument;
   }
 
   public Constant convertValueToConstantInt(LLVMValueRef valueRef) {

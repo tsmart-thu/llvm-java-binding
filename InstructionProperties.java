@@ -120,7 +120,7 @@ public class InstructionProperties {
     }
 
     // only for Converter
-    public void setUnsignedWrapFlag() {
+    public void setNoSignedWrapFlag() {
       flags = flags | NSW;
     }
 
