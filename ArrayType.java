@@ -44,4 +44,9 @@ public class ArrayType extends SequentialType {
   public static ArrayType get(Type elementType, long numElements) {
     return new ArrayType(elementType.getContext(), elementType, numElements);
   }
+
+  @Override
+  public String toString() {
+    return "[" + getNumElements() +" x " + getElementType().toString() + "]";
+  }
 }
