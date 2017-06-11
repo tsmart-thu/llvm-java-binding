@@ -20,17 +20,15 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
 /**
- * @author guangchen on 27/05/2017.
+ * @author guangchen on 04/06/2017.
  */
-public class GlobalVariable extends GlobalObject {
-    private Constant initializer;
-
-    public GlobalVariable(String name, Type type, Constant init) {
-        super(name, type);
-        this.initializer = init;
+public class ConstantPointerNull extends Constant {
+    public ConstantPointerNull(Type type) {
+        super("null", type);
     }
 
-    public Constant getInitializer() {
-        return initializer;
+    @Override
+    public String toString() {
+        return "null";
     }
 }

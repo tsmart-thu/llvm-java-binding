@@ -34,6 +34,7 @@ public class LlvmFunction extends GlobalObject {
 
   // TODO initialize in Converter
   private AttributeList attrs;
+  private List<Argument> argumentList;
 
   public LlvmFunction() {}
 
@@ -73,5 +74,13 @@ public class LlvmFunction extends GlobalObject {
   @Nullable
   public Attribute getFnAttribute(AttributeKind attrKind) {
     return getFnAttribute(attrKind);
+  }
+
+  public List<Argument> getArgumentList() {
+    return argumentList;
+  }
+
+  public void setArgumentList(List<Argument> argumentList) {
+    this.argumentList = argumentList;
   }
 }

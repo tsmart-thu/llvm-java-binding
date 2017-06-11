@@ -24,26 +24,16 @@ import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlags;
 
 /**
  * @author guangchen on 27/02/2017.
  */
 public class BinaryOperator extends Instruction {
 
-  private boolean nsw = false;
-  private boolean nuw = false;
-
   public BinaryOperator(String name, Type type, OpCode opcode) {
     super(name, type);
     super.opCode = opcode;
-  }
-
-  public BinaryOperator(String name, Type type, OpCode opcode, boolean nsw, boolean nuw) {
-    super(name, type);
-    super.opCode = opcode;
-    assert !nsw || !nuw : "nsw and nuw cannot both be true";
-    this.nsw = nsw;
-    this.nuw = nuw;
   }
 
   @Override
@@ -85,6 +75,8 @@ public class BinaryOperator extends Instruction {
         return "or";
       case XOR:
         return "xor";
+      case SREM:
+        return "srem";
     }
     return "";
   }
@@ -92,10 +84,9 @@ public class BinaryOperator extends Instruction {
   @Override
   public String toString() {
     String res = "%" + getName() + " = " + operatorToString()  + " ";
-    if (nsw) {
-      res += "nsw ";
-    } else if (nuw) {
-      res += "nuw ";
+    OperatorFlags operatorFlags = getOperatorFlags();
+    if (operatorFlags != null && !operatorFlags.toString().equals("")) {
+      res += operatorFlags.toString() + " ";
     }
     res +=
         getType().toString() + " " + Formatter.asOperand(getOperand(0)) + ", " + Formatter.asOperand(getOperand(1));

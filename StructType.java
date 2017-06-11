@@ -130,4 +130,9 @@ public class StructType extends CompositeType {
   public static StructType get(Type... type) {
     throw new NotImplementedException();
   }
+
+  @Override
+  public String toString() {
+    return "%"+this.name;
+  }
 }

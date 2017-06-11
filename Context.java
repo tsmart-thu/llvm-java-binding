@@ -21,6 +21,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import java.util.HashMap;
 import java.util.Map;
+
+import com.google.common.collect.BiMap;
+import com.google.common.collect.HashBiMap;
 import org.bytedeco.javacpp.LLVM;
 
 import static org.bytedeco.javacpp.LLVM.*;
@@ -31,11 +34,14 @@ import static org.bytedeco.javacpp.LLVM.*;
 public class Context {
 
   private final LLVMContextRef contextRef;
-  private final Map<LLVMTypeRef, Type> typeRefTypeMap = new HashMap<>();
+  private final BiMap<LLVMTypeRef, Type> typeRefTypeMap = HashBiMap.create();
+  private final Map<Type, Long> typeStoreSizeMap = new HashMap<>();
   private final Map<LLVMValueRef, Instruction> valueRefInstructionMap = new HashMap<>();
   private final Map<LLVMBasicBlockRef, BasicBlock> basicBlockRefBasicBlockMap = new HashMap<>();
   private final Map<LLVMValueRef, LlvmFunction> functionMap = new HashMap<>();
   private final Map<LLVMValueRef, GlobalVariable> globalVariableMap = new HashMap<>();
+  private final Map<LLVMValueRef, Argument> argumentMap = new HashMap<>();
+  private DataLayout dataLayout;
 
   /**
    * Create an empty context
@@ -74,6 +80,10 @@ public class Context {
     return typeRefTypeMap.get(typeRef);
   }
 
+  public LLVMTypeRef getTypeRef(Type type) {
+    return this.typeRefTypeMap.inverse().get(type);
+  }
+
   public void putInst(LLVMValueRef valueRef, Instruction instruction) {
     valueRefInstructionMap.put(valueRef, instruction);
   }
@@ -108,5 +118,25 @@ public class Context {
 
   public GlobalVariable getGlobalVariable(LLVMValueRef g) {
     return globalVariableMap.get(g);
+  }
+
+  public DataLayout getDataLayout() {
+    return dataLayout;
+  }
+
+  public void putTypeStoreSize(Type type, long storeSize) {
+    typeStoreSizeMap.put(type, storeSize);
+  }
+
+  public long getTypeStoreSize(Type type) {
+    return typeStoreSizeMap.get(type);
+  }
+
+  public void putArgument(LLVMValueRef valueRef, Argument argument) {
+    this.argumentMap.put(valueRef, argument);
+  }
+
+  public Argument getArgument(LLVMValueRef valueRef) {
+    return this.argumentMap.get(valueRef);
   }
 }

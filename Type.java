@@ -19,6 +19,7 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** @author guangchen on 01/03/2017. */
@@ -140,7 +141,7 @@ public class Type {
   }
 
   public boolean isPtrOrPtrVectorTy() {
-    throw new NotImplementedException();
+    return getScalarType().isPointerTy();
   }
 
   public boolean isVectorTy() {
@@ -184,7 +185,11 @@ public class Type {
   }
 
   public Type getScalarType() {
-    throw new NotImplementedException();
+    VectorType vectorType = Casting.dyncast(this, VectorType.class);
+    if (vectorType != null) {
+      return vectorType.getElementType();
+    }
+    return this;
   }
 
   public Type getContainedType() {
@@ -386,5 +391,9 @@ public class Type {
   @Override
   public String toString() {
     return "TYPE";
+  }
+
+  public long sizeInBytes() {
+    return context.getTypeStoreSize(this);
   }
 }

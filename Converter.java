@@ -19,30 +19,37 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
-import static org.bytedeco.javacpp.LLVM.*;
-
+import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlags;
+import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.base.Optional;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.google.common.base.Preconditions;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static org.bytedeco.javacpp.LLVM.*;
 
 /** @author guangchen on 03/03/2017. */
 public class Converter {
 
   private final Context context;
   private int unnamedValueIndex = 0;
+  private LLVMTargetDataRef targetDataRef;
 
   public Converter(Context context) {
     this.context = context;
   }
 
   public LlvmModule convert(LLVMModuleRef moduleRef) {
+    // DataLayout
+    targetDataRef = LLVMGetModuleDataLayout(moduleRef);
     SizeTPointer sizeTPointer = new SizeTPointer(64);
     String moduleIdentifier = LLVMGetModuleIdentifier(moduleRef, sizeTPointer).getString();
     Map<String, LlvmFunction> functionMap = new HashMap<>();
@@ -51,7 +58,8 @@ public class Converter {
     for (LLVMValueRef g = LLVMGetFirstGlobal(moduleRef); g != null; g = LLVMGetNextGlobal(g)) {
       String name = LLVMGetValueName(g).getString();
       Type type = getType(LLVMTypeOf(g));
-      GlobalVariable variable = new GlobalVariable(name, type);
+      Constant init = Casting.cast(convert(LLVMGetInitializer(g)), Constant.class);
+      GlobalVariable variable = new GlobalVariable(name, type, init);
       context.putGlobalVariable(g, variable);
       globalList.add(variable);
     }
@@ -65,14 +73,22 @@ public class Converter {
       convertValueToFunction(pair.getKey(), value);
       functionMap.put(value.getName(), value);
     }
-    return new LlvmModule(moduleIdentifier, functionMap, globalList);
+    return new LlvmModule(context, moduleIdentifier, functionMap, globalList);
   }
 
   private void convertValueToFunction(LLVMValueRef key, LlvmFunction value) {
+    // reset counter
+    this.unnamedValueIndex = 0;
     // set name
     value.setName(LLVMGetValueName(key).getString());
     // set type
     value.setType(getType(LLVMTypeOf(key)));
+    // set argument
+    List<Argument> argumentList = new ArrayList<>();
+    for (LLVMValueRef arg = LLVMGetFirstParam(key); arg != null; arg = LLVMGetNextParam(arg)) {
+      argumentList.add(convertValueToArgument(arg));
+    }
+    value.setArgumentList(argumentList);
     // set basicBlockList
     // first create
     List<BasicBlock> basicBlockList = new ArrayList<>();
@@ -122,7 +138,7 @@ public class Converter {
     block.setInstList(instructionList);
   }
 
-  public Instruction convertValueToInstruction(LLVMValueRef inst) {
+  private Instruction convertValueToInstruction(LLVMValueRef inst) {
     Instruction instruction = context.getInst(inst);
     if (instruction != null) {
       return instruction;
@@ -173,29 +189,47 @@ public class Converter {
       case LLVMCatchSwitch:
         instruction = new CatchSwitchInst(name, type);
         break;
-      case LLVMAdd:
-        instruction = new BinaryOperator(name, type, OpCode.ADD, true, false);
+      case LLVMAdd: {
+        instruction = new BinaryOperator(name, type, OpCode.ADD);
+        OperatorFlags flag = new OperatorFlags();
+        flag.setNoSignedWrapFlag();
+        instruction.setOperatorFlags(flag);
+      }
         break;
       case LLVMFAdd:
         instruction = new BinaryOperator(name, type, OpCode.FADD);
         break;
-      case LLVMSub:
-        instruction = new BinaryOperator(name, type, OpCode.SUB, true, false);
+      case LLVMSub: {
+        instruction = new BinaryOperator(name, type, OpCode.SUB);
+        OperatorFlags flag = new OperatorFlags();
+        flag.setNoSignedWrapFlag();
+        instruction.setOperatorFlags(flag);
+      }
         break;
       case LLVMFSub:
         instruction = new BinaryOperator(name, type, OpCode.FSUB);
         break;
-      case LLVMMul:
-        instruction = new BinaryOperator(name, type, OpCode.MUL, true, false);
+      case LLVMMul: {
+        instruction = new BinaryOperator(name, type, OpCode.MUL);
+        OperatorFlags flag = new OperatorFlags();
+        flag.setNoSignedWrapFlag();
+        instruction.setOperatorFlags(flag);
+      }
         break;
       case LLVMFMul:
         instruction = new BinaryOperator(name, type, OpCode.FMUL);
         break;
-      case LLVMUDiv:
+      case LLVMUDiv: {
         instruction = new BinaryOperator(name, type, OpCode.UDIV);
+        OperatorFlags flag = new OperatorFlags();
+        instruction.setOperatorFlags(flag);
+      }
         break;
-      case LLVMSDiv:
+      case LLVMSDiv: {
         instruction = new BinaryOperator(name, type, OpCode.SDIV);
+        OperatorFlags flag = new OperatorFlags();
+        instruction.setOperatorFlags(flag);
+      }
         break;
       case LLVMFDiv:
         instruction = new BinaryOperator(name, type, OpCode.FDIV);
@@ -237,8 +271,10 @@ public class Converter {
         instruction = new LoadInst(name, type, alignment);
       }
         break;
-      case LLVMStore:
-        instruction = new StoreInst(name, type);
+      case LLVMStore: {
+        int alignment = LLVMGetAlignment(inst);
+        instruction = new StoreInst(name, type, alignment);
+      }
         break;
       case LLVMGetElementPtr:
         instruction = new GetElementPtrInst(name, type);
@@ -306,8 +342,11 @@ public class Converter {
       case LLVMPHI:
         instruction = new PhiNode(name, type);
         break;
-      case LLVMCall:
-        instruction = new CallInst(name, type);
+      case LLVMCall: {
+        CallInst callInst = new CallInst(name, type);
+        callInst.setNumArgs(LLVMGetNumArgOperands(inst));
+        instruction = callInst;
+      }
         break;
       case LLVMSelect:
         instruction = new SelectInst(name, type);
@@ -400,23 +439,27 @@ public class Converter {
         return context.getBasicBlock(LLVMValueAsBasicBlock(valueRef));
       case LLVMMetadataAsValueValueKind:
         // TODO metadata
-        return null;
-      case LLVMArgumentValueKind:
-        // TODO argument
-        return null;
+        throw new NotImplementedException();
+      case LLVMArgumentValueKind: {
+        Argument argument = context.getArgument(valueRef);
+        Preconditions.checkNotNull(argument, "argument not created");
+        return argument;
+      }
       case LLVMGlobalVariableValueKind:
         return context.getGlobalVariable(valueRef);
       case LLVMConstantPointerNullValueKind:
         // TODO null
-        return null;
+        return new ConstantPointerNull(getType(LLVMTypeOf(valueRef)));
       case LLVMFunctionValueKind:
         return context.getFunction(valueRef);
       case LLVMInlineAsmValueKind:
         // TODO inline asm
-        return null;
+        throw new NotImplementedException();
       case LLVMConstantFPValueKind:
         // TODO constant fp
-        return null;
+        throw new NotImplementedException();
+      case LLVMConstantAggregateZeroValueKind:
+        return new ConstantAggregateZero();
     }
     LLVMDumpValue(valueRef);
     System.out.println(LLVMGetValueKind(valueRef));
@@ -424,10 +467,10 @@ public class Converter {
     return null;
   }
 
-  private GlobalVariable convertValueToGlobalVariable(LLVMValueRef valueRef) {
-    String name = LLVMGetValueName(valueRef).getString();
-    Type type = getType(LLVMTypeOf(valueRef));
-    return new GlobalVariable(name, type);
+  private Argument convertValueToArgument(LLVMValueRef valueRef) {
+    Argument argument = new Argument(LLVMGetValueName(valueRef).getString(), getType(LLVMTypeOf(valueRef)));
+    context.putArgument(valueRef, argument);
+    return argument;
   }
 
   public Constant convertValueToConstantInt(LLVMValueRef valueRef) {
@@ -540,6 +583,7 @@ public class Converter {
         throw new NotImplementedException();
     }
     context.putType(typeRef, result);
+    context.putTypeStoreSize(result, LLVMStoreSizeOfType(targetDataRef, typeRef));
     return result;
   }
 }

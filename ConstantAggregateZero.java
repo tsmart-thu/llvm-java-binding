@@ -20,17 +20,7 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
 /**
- * @author guangchen on 27/05/2017.
+ * @author guangchen on 08/06/2017.
  */
-public class GlobalVariable extends GlobalObject {
-    private Constant initializer;
-
-    public GlobalVariable(String name, Type type, Constant init) {
-        super(name, type);
-        this.initializer = init;
-    }
-
-    public Constant getInitializer() {
-        return initializer;
-    }
+public class ConstantAggregateZero extends Constant {
 }

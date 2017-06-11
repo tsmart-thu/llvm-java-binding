@@ -23,6 +23,7 @@ import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.AtomicOrderi
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.SynchronizationScope;
 
+import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
@@ -37,20 +38,15 @@ public class StoreInst extends Instruction {
   private AtomicOrdering ordering = null;
   private SynchronizationScope synchScope = null;
 
-  public StoreInst(String name, Type type) {
+  public StoreInst(String name, Type type, int alignment) {
     super(name, type);
     super.opCode = OpCode.STORE;
+    this.alignment = alignment;
   }
 
   // only for Converter
   public void setVolatile(boolean isVolatile) {
     this.isVolatile = isVolatile;
-  }
-
-  // only for Converter
-  // NOTICE parameter type uses int to store unsigned
-  public void setAlignment(int alignment) {
-    this.alignment = alignment;
   }
 
   // only for Converter
@@ -107,12 +103,16 @@ public class StoreInst extends Instruction {
     return visitor.visit(this);
   }
 
-//  @Override
-//  public String toString() {
-//    String res = "store ";
-//    res += getOperand(0).getType().toString() + " %" + getOperand(0).getName();
-//    res += ", " + getOperand(1).getType().toString() + " %" + getOperand(1).getName();
-//    res += ", align " + getAlignment();
-//    return res;
-//  }
+  @Override
+  public String toString() {
+    String res = "store ";
+    Value operand0 = getOperand(0);
+    res += operand0.getType().toString() + " ";
+    res += Formatter.asOperand(operand0);
+    Value operand1 = getOperand(1);
+    res += ", " + operand1.getType().toString() + " ";
+    res += Formatter.asOperand(operand1);
+    res += ", align " + getAlignment();
+    return res;
+  }
 }

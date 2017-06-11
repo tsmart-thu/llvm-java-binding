@@ -120,7 +120,7 @@ public class InstructionProperties {
     }
 
     // only for Converter
-    public void setUnsignedWrapFlag() {
+    public void setNoSignedWrapFlag() {
       flags = flags | NSW;
     }
 
@@ -194,6 +194,23 @@ public class InstructionProperties {
       return (flags & FAST) != 0;
     }
 
+    @Override
+    public String toString() {
+      if (hasNoSignedWrapFlag()) {
+        return "nsw";
+      } else if (hasNoUnsignedWrapFlag()) {
+        return "nuw";
+      } else if (hasExactFlag()) {
+        return "exact";
+      } else if (hasNoNaNFlag()) {
+        return "nonan";
+      } else if (hasNoInfFlag()) {
+        return "noinf";
+      } else if (hasNoSignedZeroFlag()) {
+        return "nsz";
+      }
+      return "";
+    }
   }
 
   // used by instructions and constant expressions with opcode CMPXCHG/ATOMICRMW/FENCE/LOAD/STORE
