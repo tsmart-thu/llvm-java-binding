@@ -41,12 +41,15 @@ public class Converter {
 
   private final Context context;
   private int unnamedValueIndex = 0;
+  private LLVMTargetDataRef targetDataRef;
 
   public Converter(Context context) {
     this.context = context;
   }
 
   public LlvmModule convert(LLVMModuleRef moduleRef) {
+    // DataLayout
+    targetDataRef = LLVMGetModuleDataLayout(moduleRef);
     SizeTPointer sizeTPointer = new SizeTPointer(64);
     String moduleIdentifier = LLVMGetModuleIdentifier(moduleRef, sizeTPointer).getString();
     Map<String, LlvmFunction> functionMap = new HashMap<>();
@@ -70,11 +73,7 @@ public class Converter {
       convertValueToFunction(pair.getKey(), value);
       functionMap.put(value.getName(), value);
     }
-    // DataLayout
-    LLVMTargetDataRef targetDataRef = LLVMGetModuleDataLayout(moduleRef);
-    DataLayout dataLayout = new DataLayout(context, targetDataRef);
-    context.setDataLayout(dataLayout);
-    return new LlvmModule(context, moduleIdentifier, functionMap, globalList, dataLayout);
+    return new LlvmModule(context, moduleIdentifier, functionMap, globalList);
   }
 
   private void convertValueToFunction(LLVMValueRef key, LlvmFunction value) {
@@ -581,6 +580,7 @@ public class Converter {
         throw new NotImplementedException();
     }
     context.putType(typeRef, result);
+    context.putTypeStoreSize(result, LLVMStoreSizeOfType(targetDataRef, typeRef));
     return result;
   }
 }

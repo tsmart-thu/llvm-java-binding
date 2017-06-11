@@ -35,6 +35,7 @@ public class Context {
 
   private final LLVMContextRef contextRef;
   private final BiMap<LLVMTypeRef, Type> typeRefTypeMap = HashBiMap.create();
+  private final Map<Type, Long> typeStoreSizeMap = new HashMap<>();
   private final Map<LLVMValueRef, Instruction> valueRefInstructionMap = new HashMap<>();
   private final Map<LLVMBasicBlockRef, BasicBlock> basicBlockRefBasicBlockMap = new HashMap<>();
   private final Map<LLVMValueRef, LlvmFunction> functionMap = new HashMap<>();
@@ -119,12 +120,16 @@ public class Context {
     return globalVariableMap.get(g);
   }
 
-  public void setDataLayout(DataLayout dataLayout) {
-    this.dataLayout = dataLayout;
-  }
-
   public DataLayout getDataLayout() {
     return dataLayout;
+  }
+
+  public void putTypeStoreSize(Type type, long storeSize) {
+    typeStoreSizeMap.put(type, storeSize);
+  }
+
+  public long getTypeStoreSize(Type type) {
+    return typeStoreSizeMap.get(type);
   }
 
   public void putArgument(LLVMValueRef valueRef, Argument argument) {
