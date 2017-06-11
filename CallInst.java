@@ -49,13 +49,6 @@ public class CallInst extends Instruction {
     super.opCode = OpCode.CALL;
   }
 
-  // FIXME chenguang
-  @Override
-  public void setOperands(List<Value> operands) {
-    super.setOperands(operands);
-    setNumArgs(operands.size() - 1);
-  }
-
   // only for Converter
   public void setFunctionType(FunctionType functionType) {
     this.functionType = functionType;

@@ -342,8 +342,11 @@ public class Converter {
       case LLVMPHI:
         instruction = new PhiNode(name, type);
         break;
-      case LLVMCall:
-        instruction = new CallInst(name, type);
+      case LLVMCall: {
+        CallInst callInst = new CallInst(name, type);
+        callInst.setNumArgs(LLVMGetNumArgOperands(inst));
+        instruction = callInst;
+      }
         break;
       case LLVMSelect:
         instruction = new SelectInst(name, type);
