@@ -134,13 +134,13 @@ public class SwitchInst extends TerminatorInst {
     res += getDecisionValue().getType().toString() + " ";
     res += Formatter.asOperand(getDecisionValue());
     res += ", label %" + getDefaultDest().getName();
-    res += "[\n";
+    res += " [\n";
     for (int i = 1; i <= getNumCases(); i++) {
       BasicBlock basicBlock = getSuccessor(i);
       ConstantInt constantInt = findCaseDest(basicBlock);
       res += "    " + constantInt.getType().toString() + " " + constantInt.toString() + ", label %" + basicBlock.getName() + "\n";
     }
-    res += "]";
+    res += "  ]";
     return res;
   }
 }
