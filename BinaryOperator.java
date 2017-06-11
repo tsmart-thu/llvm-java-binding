@@ -23,8 +23,8 @@ import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlags;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -85,7 +85,7 @@ public class BinaryOperator extends Instruction {
   public String toString() {
     String res = "%" + getName() + " = " + operatorToString()  + " ";
     OperatorFlags operatorFlags = getOperatorFlags();
-    if (operatorFlags != null) {
+    if (operatorFlags != null && !operatorFlags.toString().equals("")) {
       res += operatorFlags.toString() + " ";
     }
     res +=
