@@ -130,11 +130,12 @@ public class GetElementPtrInst extends Instruction {
     if (isInBounds()) {
       res += "inbounds ";
     }
-    res += getResultElementType().toString() + ", ";
-    res += getOperand(0).getType().toString() + " ";
-    res += Formatter.asOperand(getOperand(0)) + ", ";
-    res += getOperand(1).getType().toString() + " ";
-    res += Formatter.asOperand(getOperand(1));
+    res += getSourceElementType().toString();
+    for (int i = 0; i < getNumOperands(); i ++) {
+      res += ", ";
+      res += getOperand(i).getType().toString() + " ";
+      res += Formatter.asOperand(getOperand(i));
+    }
     return res;
   }
 }
