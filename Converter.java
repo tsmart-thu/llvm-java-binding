@@ -583,6 +583,9 @@ public class Converter {
         throw new NotImplementedException();
     }
     context.putType(typeRef, result);
+    if (result.isFunctionTy() || result.isVoidTy()) {
+      return result;
+    }
     context.putTypeStoreSize(result, LLVMStoreSizeOfType(targetDataRef, typeRef));
     return result;
   }
