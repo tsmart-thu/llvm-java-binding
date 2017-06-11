@@ -23,6 +23,7 @@ import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
 
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
+import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
@@ -121,4 +122,19 @@ public class GetElementPtrInst extends Instruction {
 
   // TODO require APInt and DataLayout
   // accumulateConstantOffset
+
+  @Override
+  public String toString() {
+    String res = "%" + getName();
+    res += " = getelementptr ";
+    if (isInBounds()) {
+      res += "inbounds ";
+    }
+    res += getResultElementType().toString() + ", ";
+    res += getOperand(0).getType().toString() + " ";
+    res += Formatter.asOperand(getOperand(0)) + ", ";
+    res += getOperand(1).getType().toString() + " ";
+    res += Formatter.asOperand(getOperand(1));
+    return res;
+  }
 }
