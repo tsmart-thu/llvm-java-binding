@@ -19,28 +19,13 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import cn.edu.thu.tsmart.core.cfa.util.Formatter;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
-
-/**
- * @author guangchen on 27/02/2017.
- */
+/** @author guangchen on 27/02/2017. */
 public class BitCastInst extends CastInst {
 
   public BitCastInst(String name, Type type) {
     super(name, type);
     super.opCode = OpCode.BITCAST;
-  }
-
-  @Override
-  public String toString() {
-    String res = "%" + getName();
-    res += " = bitcast ";
-    res += getSrcTy().toString() + " ";
-    res += Formatter.asOperand(getOperand(0));
-    res += " to ";
-    res += getDestTy().toString();
-    return res;
   }
 }

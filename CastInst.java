@@ -22,6 +22,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode.BITCAST;
 
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
@@ -108,5 +109,16 @@ public class CastInst extends UnaryInstruction {
   @Override
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
+  }
+
+  @Override
+  public String toString() {
+    String res = "%" + getName();
+    res += " = " + getOpcode().toString() + " ";
+    res += getSrcTy().toString() + " ";
+    res += Formatter.asOperand(getOperand(0));
+    res += " to ";
+    res += getDestTy().toString();
+    return res;
   }
 }
