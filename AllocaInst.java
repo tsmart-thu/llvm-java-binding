@@ -19,13 +19,13 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
-import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
-import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
-
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
+
 import javax.annotation.Nullable;
+
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -41,7 +41,7 @@ public class AllocaInst extends UnaryInstruction {
   public AllocaInst(String name, Type type, int alignment) {
     super(name, type);
     super.opCode = OpCode.ALLOCA;
-    this.allocatedType = ((PointerType) type).getPointerElementType();
+    this.allocatedType = type.getPointerElementType();
     this.alignment = alignment;
   }
 

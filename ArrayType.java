@@ -19,8 +19,6 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /** @author guangchen on 01/03/2017. */
 public class ArrayType extends SequentialType {
   private Type elementType;
