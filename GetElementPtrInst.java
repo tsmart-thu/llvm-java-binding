@@ -20,8 +20,10 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
 
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
+import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 
@@ -56,13 +58,12 @@ public class GetElementPtrInst extends Instruction {
   }
 
   public Type getSourceElementType() {
-    return sourceElementType;
+    return cast(getOperand(0).getType().getScalarType(), PointerType.class).getElementType();
   }
 
   public Type getResultElementType() {
     // TODO require Type.getElementType()
-    // assert resultElementType == cast(getType().getScalarType().getElementType(), PointerType.class);
-    return resultElementType;
+    return cast(getType().getScalarType(), PointerType.class).getElementType();
   }
 
   public Value getPointerOperand() {
@@ -121,4 +122,20 @@ public class GetElementPtrInst extends Instruction {
 
   // TODO require APInt and DataLayout
   // accumulateConstantOffset
+
+  @Override
+  public String toString() {
+    String res = "%" + getName();
+    res += " = getelementptr ";
+    if (isInBounds()) {
+      res += "inbounds ";
+    }
+    res += getSourceElementType().toString();
+    for (int i = 0; i < getNumOperands(); i ++) {
+      res += ", ";
+      res += getOperand(i).getType().toString() + " ";
+      res += Formatter.asOperand(getOperand(i));
+    }
+    return res;
+  }
 }

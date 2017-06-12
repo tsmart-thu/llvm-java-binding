@@ -134,13 +134,13 @@ public class SwitchInst extends TerminatorInst {
     res += getCondition().getType().toString() + " ";
     res += Formatter.asOperand(getCondition());
     res += ", label %" + getDefaultDest().getName();
-    res += "[\n";
-    for (int i = 1; i < getNumCases(); i++) {
+    res += " [\n";
+    for (int i = 1; i <= getNumCases(); i++) {
       BasicBlock basicBlock = getSuccessor(i);
       ConstantInt constantInt = findCaseDest(basicBlock);
-      res += "  " + constantInt.getType().toString() + " " + constantInt.toString() + ", label %" + basicBlock.getName() + "\n";
+      res += "    " + constantInt.getType().toString() + " " + constantInt.toString() + ", label %" + basicBlock.getName() + "\n";
     }
-    res += "]";
-    return super.toString();
+    res += "  ]";
+    return res;
   }
 }

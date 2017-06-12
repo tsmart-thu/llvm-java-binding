@@ -19,11 +19,9 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
+import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
-/**
- * @author guangchen on 27/02/2017.
- */
+/** @author guangchen on 27/02/2017. */
 public class BitCastInst extends CastInst {
 
   public BitCastInst(String name, Type type) {

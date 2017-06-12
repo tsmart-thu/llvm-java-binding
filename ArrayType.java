@@ -19,8 +19,6 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import sun.reflect.generics.reflectiveObjects.NotImplementedException;
-
 /** @author guangchen on 01/03/2017. */
 public class ArrayType extends SequentialType {
   private Type elementType;
@@ -43,5 +41,10 @@ public class ArrayType extends SequentialType {
 
   public static ArrayType get(Type elementType, long numElements) {
     return new ArrayType(elementType.getContext(), elementType, numElements);
+  }
+
+  @Override
+  public String toString() {
+    return "[" + getNumElements() +" x " + getElementType().toString() + "]";
   }
 }

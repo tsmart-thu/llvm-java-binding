@@ -276,8 +276,12 @@ public class Converter {
         instruction = new StoreInst(name, type, alignment);
       }
         break;
-      case LLVMGetElementPtr:
-        instruction = new GetElementPtrInst(name, type);
+      case LLVMGetElementPtr: {
+        GetElementPtrInst getElementPtrInst = new GetElementPtrInst(name, type);
+        int isInbounds = LLVMIsInBounds(inst);
+        getElementPtrInst.setIsInBounds(isInbounds != 0);
+        instruction = getElementPtrInst;
+      }
         break;
       case LLVMFence:
         instruction = new FenceInst(name, type);
@@ -583,6 +587,9 @@ public class Converter {
         throw new NotImplementedException();
     }
     context.putType(typeRef, result);
+    if (result.isFunctionTy() || result.isVoidTy()) {
+      return result;
+    }
     context.putTypeStoreSize(result, LLVMStoreSizeOfType(targetDataRef, typeRef));
     return result;
   }
