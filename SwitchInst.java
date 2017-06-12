@@ -53,7 +53,7 @@ public class SwitchInst extends TerminatorInst {
     super.opCode = OpCode.SWITCH;
   }
 
-  public Value getDecisionValue() {
+  public Value getCondition() {
     return getOperand(0);
   }
 
@@ -131,8 +131,8 @@ public class SwitchInst extends TerminatorInst {
   @Override
   public String toString() {
     String res = "switch ";
-    res += getDecisionValue().getType().toString() + " ";
-    res += Formatter.asOperand(getDecisionValue());
+    res += getCondition().getType().toString() + " ";
+    res += Formatter.asOperand(getCondition());
     res += ", label %" + getDefaultDest().getName();
     res += "[\n";
     for (int i = 1; i < getNumCases(); i++) {
