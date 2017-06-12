@@ -522,7 +522,8 @@ public class Converter {
         break;
       case LLVMIntegerTypeKind:
         int size = LLVMGetIntTypeWidth(typeRef);
-        return Type.getIntNTy(context, size);
+        result = Type.getIntNTy(context, size);
+        break;
       case LLVMFunctionTypeKind:
         {
           LLVMTypeRef returnTypeRef = LLVMGetReturnType(typeRef);
