@@ -41,6 +41,7 @@ public class Converter {
 
   private final Context context;
   private LLVMTargetDataRef targetDataRef;
+  private int unnamedIndex = 0;
 
   public Converter(Context context) {
     this.context = context;
@@ -76,6 +77,8 @@ public class Converter {
   }
 
   private void convertValueToFunction(LLVMValueRef key, LlvmFunction value) {
+    // reset counter
+    this.unnamedIndex = 0;
     // set name
     value.setName(LLVMGetValueName(key).getString());
     // set type
@@ -109,7 +112,12 @@ public class Converter {
   }
 
   private void convertValueToBasicBlock(LLVMBasicBlockRef ref, BasicBlock block) {
-    block.setName(LLVMGetValueName(LLVMBasicBlockAsValue(ref)).getString());
+    String name = LLVMGetValueName(LLVMBasicBlockAsValue(ref)).getString();
+    if ("".equals(name)) {
+      name = "" + unnamedIndex;
+      unnamedIndex ++;
+    }
+    block.setName(name);
     block.setType(getType(LLVMTypeOf(LLVMBasicBlockAsValue(ref))));
     List<Instruction> instructionList = new ArrayList<>();
     for (LLVMValueRef inst = LLVMGetFirstInstruction(ref);
@@ -145,9 +153,9 @@ public class Converter {
     LLVMDisposeMessage(bytePointer);
     int opcode = LLVMGetInstructionOpcode(inst);
     String name = LLVMGetValueName(inst).getString();
-    if (needName(opcode) && "".equals(name)) {
-      int i = originalText.indexOf(" ");
-      name = originalText.substring(1, i);
+    if (needName(originalText) && "".equals(name)) {
+      name = "" + unnamedIndex;
+      unnamedIndex ++;
     }
     if (LLVMHasMetadata(inst) != 0) {
       LLVMValueRef dbg = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
@@ -189,7 +197,7 @@ public class Converter {
       case LLVMAdd: {
         instruction = new BinaryOperator(name, type, OpCode.ADD);
         OperatorFlags flag = new OperatorFlags();
-        flag.setNoSignedWrapFlag();
+        parseFlag(originalText, flag);
         instruction.setOperatorFlags(flag);
       }
         break;
@@ -209,7 +217,7 @@ public class Converter {
       case LLVMMul: {
         instruction = new BinaryOperator(name, type, OpCode.MUL);
         OperatorFlags flag = new OperatorFlags();
-        flag.setNoSignedWrapFlag();
+        parseFlag(originalText, flag);
         instruction.setOperatorFlags(flag);
       }
         break;
@@ -389,6 +397,12 @@ public class Converter {
     return instruction;
   }
 
+  private void parseFlag(String originalText, OperatorFlags flag) {
+    if (originalText.contains("nsw")) {
+      flag.setNoSignedWrapFlag();
+    }
+  }
+
   private InstructionProperties.Predicate getICmpPredicate(LLVMValueRef inst) {
     int i = LLVMGetICmpPredicate(inst);
     switch (i) {
@@ -416,16 +430,8 @@ public class Converter {
     return null;
   }
 
-  private boolean needName(int opcode) {
-    switch (opcode) {
-      default:
-        return true;
-      case LLVMStore:
-      case LLVMCall:
-      case LLVMBr:
-      case LLVMSwitch:
-        return false;
-    }
+  private boolean needName(String text) {
+    return text.startsWith("%");
   }
 
   public Value convert(LLVMValueRef valueRef) {
@@ -471,7 +477,12 @@ public class Converter {
   }
 
   private Argument convertValueToArgument(LLVMValueRef valueRef) {
-    Argument argument = new Argument(LLVMGetValueName(valueRef).getString(), getType(LLVMTypeOf(valueRef)));
+    String name = LLVMGetValueName(valueRef).getString();
+    if (name.equals("")) {
+      name = "" + this.unnamedIndex;
+      unnamedIndex ++;
+    }
+    Argument argument = new Argument(name, getType(LLVMTypeOf(valueRef)));
     context.putArgument(valueRef, argument);
     return argument;
   }
