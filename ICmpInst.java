@@ -130,7 +130,7 @@ public class ICmpInst extends CmpInst {
     if (operand2 instanceof Constant) {
       res += ", " +operand2.toString();
     } else {
-      res += ", " + operand2.getType().toString() + " %" + operand2.getName();
+      res += ", " + "%" + operand2.getName();
     }
     return res;
   }
