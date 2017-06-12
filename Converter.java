@@ -40,7 +40,6 @@ import static org.bytedeco.javacpp.LLVM.*;
 public class Converter {
 
   private final Context context;
-  private int unnamedValueIndex = 0;
   private LLVMTargetDataRef targetDataRef;
 
   public Converter(Context context) {
@@ -77,8 +76,6 @@ public class Converter {
   }
 
   private void convertValueToFunction(LLVMValueRef key, LlvmFunction value) {
-    // reset counter
-    this.unnamedValueIndex = 0;
     // set name
     value.setName(LLVMGetValueName(key).getString());
     // set type
@@ -149,8 +146,8 @@ public class Converter {
     int opcode = LLVMGetInstructionOpcode(inst);
     String name = LLVMGetValueName(inst).getString();
     if (needName(opcode) && "".equals(name)) {
-      name = "" + unnamedValueIndex;
-      unnamedValueIndex++;
+      int i = originalText.indexOf(" ");
+      name = originalText.substring(1, i);
     }
     if (LLVMHasMetadata(inst) != 0) {
       LLVMValueRef dbg = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
