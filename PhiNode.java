@@ -21,9 +21,14 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
+import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
+import com.google.common.base.Joiner;
 import com.google.common.collect.ImmutableList;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -40,8 +45,8 @@ public class PhiNode extends Instruction {
 
   // only for Converter
   public void setIncomingBlocks(ImmutableList<BasicBlock> list) {
-    assert list.size()
-        == getNumIncomingValues() : "Number of incoming blocks is not consistent with PHI values!";
+//    assert list.size()
+//        == getNumIncomingValues() : "Number of incoming blocks is not consistent with PHI values!";
     this.incomingBlocks = list;
   }
 
@@ -125,5 +130,26 @@ public class PhiNode extends Instruction {
   @Override
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
+  }
+
+  @Override
+  public String toString() {
+    String res = "%" + getName() + " = ";
+    res += getOpcode().toString();
+    res += " " + getType().toString() + " ";
+    List<String> opStr = new ArrayList<>();
+    for (int i = 0; i < getNumIncomingValues(); i++) {
+      String item = "[ ";
+      String valueStr = Formatter.asOperand(getOperand(i));
+      if (valueStr.equals("1")) {
+        valueStr = "true";
+      }
+      item += valueStr + ", ";
+      item += "%" + getIncomingBlock(i).getName();
+      item += " ]";
+      opStr.add(item);
+    }
+    res += Joiner.on(", ").join(opStr);
+    return res;
   }
 }

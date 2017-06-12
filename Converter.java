@@ -23,6 +23,7 @@ import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlags;
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
+import com.google.common.collect.ImmutableList;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
@@ -348,8 +349,16 @@ public class Converter {
       case LLVMFCmp:
         instruction = new FCmpInst(name, type);
         break;
-      case LLVMPHI:
-        instruction = new PhiNode(name, type);
+      case LLVMPHI: {
+        PhiNode phiNode = new PhiNode(name, type);
+        int size = LLVMCountIncoming(inst);
+        List<BasicBlock> inComingBlocks = new ArrayList<>(size);
+        for (int i = 0; i < size; i++) {
+          inComingBlocks.add(i, context.getBasicBlock(LLVMGetIncomingBlock(inst, i)));
+        }
+        phiNode.setIncomingBlocks(ImmutableList.copyOf(inComingBlocks));
+        instruction = phiNode;
+      }
         break;
       case LLVMCall: {
         CallInst callInst = new CallInst(name, type);
