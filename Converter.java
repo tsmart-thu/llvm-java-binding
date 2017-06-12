@@ -464,6 +464,8 @@ public class Converter {
         throw new NotImplementedException();
       case LLVMConstantAggregateZeroValueKind:
         return new ConstantAggregateZero();
+      case LLVMConstantDataArrayValueKind:
+        return new ConstantDataArray();
     }
     LLVMDumpValue(valueRef);
     System.out.println(LLVMGetValueKind(valueRef));
