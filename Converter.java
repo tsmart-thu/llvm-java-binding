@@ -475,7 +475,7 @@ public class Converter {
         // TODO constant fp
         throw new NotImplementedException();
       case LLVMConstantAggregateZeroValueKind:
-        return new ConstantAggregateZero();
+        return new ConstantAggregateZero(getType(LLVMTypeOf(valueRef)));
       case LLVMConstantDataArrayValueKind:
         return new ConstantDataArray();
     }

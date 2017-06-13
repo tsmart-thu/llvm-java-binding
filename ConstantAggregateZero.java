@@ -19,8 +19,25 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-/**
- * @author guangchen on 08/06/2017.
- */
+import cn.edu.thu.tsmart.core.cfa.util.Casting;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
+/** @author guangchen on 08/06/2017. */
 public class ConstantAggregateZero extends Constant {
+  public ConstantAggregateZero(Type type) {
+    super("", type);
+  }
+
+  long getNumElements() {
+    Type type = getType();
+    VectorType vectorType = Casting.dyncast(type, VectorType.class);
+    if (vectorType != null) {
+      throw new NotImplementedException();
+    }
+    ArrayType arrayType = Casting.dyncast(type, ArrayType.class);
+    if (arrayType != null) {
+      return arrayType.getNumElements();
+    }
+    return type.getStructNumElements();
+  }
 }
