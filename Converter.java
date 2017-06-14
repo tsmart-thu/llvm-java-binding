@@ -471,6 +471,7 @@ public class Converter {
       case LLVMConstantDataArrayValueKind:
       case LLVMFunctionValueKind:
       case LLVMGlobalVariableValueKind:
+      case LLVMConstantArrayValueKind:
         return convertValueToConstant(valueRef);
       case LLVMBasicBlockValueKind:
         return context.getBasicBlock(LLVMValueAsBasicBlock(valueRef));
@@ -512,6 +513,8 @@ public class Converter {
         return context.getFunction(valueRef);
       case LLVMGlobalVariableValueKind:
         return context.getGlobalVariable(valueRef);
+      case LLVMConstantArrayValueKind:
+        return new ConstantArray();
       default:
         assert false : "unhandled value kind:" + valueKind;
     }
