@@ -215,6 +215,7 @@ public class Attribute {
   }
 
   public static enum AttributeKind {
+    // parameter attribute
     ZEROEXT,
     SIGNEXT,
     INREG,
@@ -232,6 +233,7 @@ public class Attribute {
     SWIFTSELF,
     SWIFTERROR,
 
+    // function attribute
     ALIGNSTACK,
     ALLOCSIZE,
     ALWAYSINLINE,
