@@ -390,6 +390,9 @@ public class Type {
 
   @Override
   public String toString() {
+    if (isVoidTy()) {
+      return "void";
+    }
     return "TYPE";
   }
 
