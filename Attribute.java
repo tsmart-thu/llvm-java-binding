@@ -25,6 +25,8 @@ import com.google.common.primitives.UnsignedInteger;
 import com.google.common.primitives.UnsignedLong;
 import java.util.ArrayList;
 
+import static org.bytedeco.javacpp.LLVM.*;
+
 /**
  * Created by zhch on 2017/4/9.
  */
@@ -216,61 +218,71 @@ public class Attribute {
 
   public static enum AttributeKind {
     // parameter attribute
-    ZEROEXT,
-    SIGNEXT,
-    INREG,
-    BYVAL,
-    INALLOCA,
-    SRET,
-    ALIGN,
-    NOALIAS,
-    NOCAPTURE,
-    NEST,
-    RETURNED,
-    NONNULL,
-    DEREFERENCEABLE,
-    DEREFERENCEABLE_OR_NULL,
-    SWIFTSELF,
-    SWIFTERROR,
+    ZEROEXT(LLVMZExtAttribute),
+    SIGNEXT(LLVMSExtAttribute),
+    INREG(LLVMInRegAttribute),
+    BYVAL(LLVMByValAttribute),
+    INALLOCA(0),
+    SRET(LLVMStructRetAttribute),
+    ALIGN(LLVMAlignment),
+    NOALIAS(LLVMNoAliasAttribute),
+    NOCAPTURE(LLVMNoCaptureAttribute),
+    NEST(LLVMNestAttribute),
+    RETURNED(0),
+    NONNULL(0),
+    DEREFERENCEABLE(0),
+    DEREFERENCEABLE_OR_NULL(0),
+    SWIFTSELF(0),
+    SWIFTERROR(0),
 
     // function attribute
-    ALIGNSTACK,
-    ALLOCSIZE,
-    ALWAYSINLINE,
-    BUILTIN,
-    COLD,
-    CONVERGENT,
-    INACCESSIBLEMEMONLY,
-    INACCESSIBLEMEMONLY_OR_ARGMEMONLY,
-    INLINEHINT,
-    JUMPTABLE,
-    MINSIZE,
-    NAKED,
-    NOBUILTIN,
-    NODUPLICATE,
-    NOIMPLICITFLOAT,
-    NOINLINE,
-    NONLAZYBIND,
-    NOREDZONE,
-    NORETURN,
-    NORECURSE,
-    NOUNWIND,
-    OPTNONE,
-    OPTSIZE,
-    PATCHABLE_FUNCTION,
-    READNONE,
-    READONLY,
-    WRITEONLY,
-    ARGMEMONLY,
-    RETURNS_TWICE,
-    SAFESTACK,
-    SANITIZE_ADDRESS,
-    SANITIZE_MEMORY,
-    SANITIZE_THREAD,
-    SSP,
-    SSPREQ,
-    SSPSTRONG,
-    THUNK,
-    UWTABLE;
+    ALIGNSTACK(LLVMStackAlignment),
+    ALLOCSIZE(0),
+    ALWAYSINLINE(LLVMAlwaysInlineAttribute),
+    BUILTIN(0),
+    COLD(0),
+    CONVERGENT(0),
+    INACCESSIBLEMEMONLY(0),
+    INACCESSIBLEMEMONLY_OR_ARGMEMONLY(0),
+    INLINEHINT(LLVMInlineHintAttribute),
+    JUMPTABLE(0),
+    MINSIZE(0),
+    NAKED(LLVMNakedAttribute),
+    NOBUILTIN(0),
+    NODUPLICATE(0),
+    NOIMPLICITFLOAT(LLVMNoImplicitFloatAttribute),
+    NOINLINE(LLVMNoInlineAttribute),
+    NONLAZYBIND(LLVMNonLazyBind),
+    NOREDZONE(LLVMNoRedZoneAttribute),
+    NORETURN(LLVMNoReturnAttribute),
+    NORECURSE(0),
+    NOUNWIND(LLVMNoUnwindAttribute),
+    OPTNONE(0),
+    OPTSIZE(LLVMOptimizeForSizeAttribute),
+    PATCHABLE_FUNCTION(0),
+    READNONE(LLVMReadNoneAttribute),
+    READONLY(LLVMReadOnlyAttribute),
+    WRITEONLY(0),
+    ARGMEMONLY(0),
+    RETURNS_TWICE(LLVMReturnsTwice),
+    SAFESTACK(0),
+    SANITIZE_ADDRESS(0),
+    SANITIZE_MEMORY(0),
+    SANITIZE_THREAD(0),
+    SSP(LLVMStackProtectAttribute),
+    SSPREQ(LLVMStackProtectReqAttribute),
+    SSPSTRONG(0),
+    THUNK(0),
+    UWTABLE(LLVMUWTable);
+
+    private final int value;
+
+    AttributeKind(int llvmKindValue) {
+      this.value = llvmKindValue;
+    }
+
+    public int getValue() {
+      return value;
+    }
   }
 }
