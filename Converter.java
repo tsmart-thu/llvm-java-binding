@@ -61,7 +61,7 @@ public class Converter {
     for (LLVMValueRef g = LLVMGetFirstGlobal(moduleRef); g != null; g = LLVMGetNextGlobal(g)) {
       String name = LLVMGetValueName(g).getString();
       Type type = getType(LLVMTypeOf(g));
-      Constant init = Casting.cast(convert(LLVMGetInitializer(g)), Constant.class);
+      Constant init = Casting.castOrNull(convert(LLVMGetInitializer(g)), Constant.class);
       GlobalVariable variable = new GlobalVariable(name, type, init);
       context.putGlobalVariable(g, variable);
       globalList.add(variable);
@@ -447,6 +447,9 @@ public class Converter {
   }
 
   public Value convert(LLVMValueRef valueRef) {
+    if (valueRef == null) {
+      return null;
+    }
     switch (LLVMGetValueKind(valueRef)) {
       case LLVMInstructionValueKind:
         return convertValueToInstruction(valueRef);
@@ -467,7 +470,6 @@ public class Converter {
       case LLVMGlobalVariableValueKind:
         return context.getGlobalVariable(valueRef);
       case LLVMConstantPointerNullValueKind:
-        // TODO null
         return new ConstantPointerNull(getType(LLVMTypeOf(valueRef)));
       case LLVMFunctionValueKind:
         return context.getFunction(valueRef);
