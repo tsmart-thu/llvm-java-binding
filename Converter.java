@@ -37,9 +37,7 @@ import java.util.Map;
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static org.bytedeco.javacpp.LLVM.*;
 
-/**
- * @author guangchen on 03/03/2017.
- */
+/** @author guangchen on 03/03/2017. */
 public class Converter {
 
   private final Context context;
@@ -136,7 +134,8 @@ public class Converter {
       Instruction instruction = convertValueToInstruction(inst);
       List<Use> uses = new ArrayList<>();
       int i = 0;
-      for (LLVMUseRef useRef = LLVMGetFirstUse(inst); useRef != null;
+      for (LLVMUseRef useRef = LLVMGetFirstUse(inst);
+          useRef != null;
           useRef = LLVMGetNextUse(useRef)) {
         LLVMValueRef userRef = LLVMGetUser(useRef);
         uses.add(new Use(instruction, context.getInst(userRef), i));
@@ -163,7 +162,7 @@ public class Converter {
     }
     if (LLVMHasMetadata(inst) != 0) {
       LLVMValueRef dbg = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
-//      LLVMDumpValue(dbg);
+      //      LLVMDumpValue(dbg);
 
     }
     Type type = getType(LLVMTypeOf(inst));
@@ -198,48 +197,53 @@ public class Converter {
       case LLVMCatchSwitch:
         instruction = new CatchSwitchInst(name, type);
         break;
-      case LLVMAdd: {
-        instruction = new BinaryOperator(name, type, OpCode.ADD);
-        OperatorFlags flag = new OperatorFlags();
-        parseFlag(originalText, flag);
-        instruction.setOperatorFlags(flag);
-      }
-      break;
+      case LLVMAdd:
+        {
+          instruction = new BinaryOperator(name, type, OpCode.ADD);
+          OperatorFlags flag = new OperatorFlags();
+          parseFlag(originalText, flag);
+          instruction.setOperatorFlags(flag);
+        }
+        break;
       case LLVMFAdd:
         instruction = new BinaryOperator(name, type, OpCode.FADD);
         break;
-      case LLVMSub: {
-        instruction = new BinaryOperator(name, type, OpCode.SUB);
-        OperatorFlags flag = new OperatorFlags();
-        flag.setNoSignedWrapFlag();
-        instruction.setOperatorFlags(flag);
-      }
-      break;
+      case LLVMSub:
+        {
+          instruction = new BinaryOperator(name, type, OpCode.SUB);
+          OperatorFlags flag = new OperatorFlags();
+          flag.setNoSignedWrapFlag();
+          instruction.setOperatorFlags(flag);
+        }
+        break;
       case LLVMFSub:
         instruction = new BinaryOperator(name, type, OpCode.FSUB);
         break;
-      case LLVMMul: {
-        instruction = new BinaryOperator(name, type, OpCode.MUL);
-        OperatorFlags flag = new OperatorFlags();
-        parseFlag(originalText, flag);
-        instruction.setOperatorFlags(flag);
-      }
-      break;
+      case LLVMMul:
+        {
+          instruction = new BinaryOperator(name, type, OpCode.MUL);
+          OperatorFlags flag = new OperatorFlags();
+          parseFlag(originalText, flag);
+          instruction.setOperatorFlags(flag);
+        }
+        break;
       case LLVMFMul:
         instruction = new BinaryOperator(name, type, OpCode.FMUL);
         break;
-      case LLVMUDiv: {
-        instruction = new BinaryOperator(name, type, OpCode.UDIV);
-        OperatorFlags flag = new OperatorFlags();
-        instruction.setOperatorFlags(flag);
-      }
-      break;
-      case LLVMSDiv: {
-        instruction = new BinaryOperator(name, type, OpCode.SDIV);
-        OperatorFlags flag = new OperatorFlags();
-        instruction.setOperatorFlags(flag);
-      }
-      break;
+      case LLVMUDiv:
+        {
+          instruction = new BinaryOperator(name, type, OpCode.UDIV);
+          OperatorFlags flag = new OperatorFlags();
+          instruction.setOperatorFlags(flag);
+        }
+        break;
+      case LLVMSDiv:
+        {
+          instruction = new BinaryOperator(name, type, OpCode.SDIV);
+          OperatorFlags flag = new OperatorFlags();
+          instruction.setOperatorFlags(flag);
+        }
+        break;
       case LLVMFDiv:
         instruction = new BinaryOperator(name, type, OpCode.FDIV);
         break;
@@ -270,28 +274,32 @@ public class Converter {
       case LLVMXor:
         instruction = new BinaryOperator(name, type, OpCode.XOR);
         break;
-      case LLVMAlloca: {
-        int alignment = LLVMGetAlignment(inst);
-        instruction = new AllocaInst(name, type, alignment);
-      }
-      break;
-      case LLVMLoad: {
-        int alignment = LLVMGetAlignment(inst);
-        instruction = new LoadInst(name, type, alignment);
-      }
-      break;
-      case LLVMStore: {
-        int alignment = LLVMGetAlignment(inst);
-        instruction = new StoreInst(name, type, alignment);
-      }
-      break;
-      case LLVMGetElementPtr: {
-        GetElementPtrInst getElementPtrInst = new GetElementPtrInst(name, type);
-        int isInbounds = LLVMIsInBounds(inst);
-        getElementPtrInst.setIsInBounds(isInbounds != 0);
-        instruction = getElementPtrInst;
-      }
-      break;
+      case LLVMAlloca:
+        {
+          int alignment = LLVMGetAlignment(inst);
+          instruction = new AllocaInst(name, type, alignment);
+        }
+        break;
+      case LLVMLoad:
+        {
+          int alignment = LLVMGetAlignment(inst);
+          instruction = new LoadInst(name, type, alignment);
+        }
+        break;
+      case LLVMStore:
+        {
+          int alignment = LLVMGetAlignment(inst);
+          instruction = new StoreInst(name, type, alignment);
+        }
+        break;
+      case LLVMGetElementPtr:
+        {
+          GetElementPtrInst getElementPtrInst = new GetElementPtrInst(name, type);
+          int isInbounds = LLVMIsInBounds(inst);
+          getElementPtrInst.setIsInBounds(isInbounds != 0);
+          instruction = getElementPtrInst;
+        }
+        break;
       case LLVMFence:
         instruction = new FenceInst(name, type);
         break;
@@ -352,23 +360,25 @@ public class Converter {
       case LLVMFCmp:
         instruction = new FCmpInst(name, type);
         break;
-      case LLVMPHI: {
-        PhiNode phiNode = new PhiNode(name, type);
-        int size = LLVMCountIncoming(inst);
-        List<BasicBlock> inComingBlocks = new ArrayList<>(size);
-        for (int i = 0; i < size; i++) {
-          inComingBlocks.add(i, context.getBasicBlock(LLVMGetIncomingBlock(inst, i)));
+      case LLVMPHI:
+        {
+          PhiNode phiNode = new PhiNode(name, type);
+          int size = LLVMCountIncoming(inst);
+          List<BasicBlock> inComingBlocks = new ArrayList<>(size);
+          for (int i = 0; i < size; i++) {
+            inComingBlocks.add(i, context.getBasicBlock(LLVMGetIncomingBlock(inst, i)));
+          }
+          phiNode.setIncomingBlocks(ImmutableList.copyOf(inComingBlocks));
+          instruction = phiNode;
         }
-        phiNode.setIncomingBlocks(ImmutableList.copyOf(inComingBlocks));
-        instruction = phiNode;
-      }
-      break;
-      case LLVMCall: {
-        CallInst callInst = new CallInst(name, type);
-        callInst.setNumArgs(LLVMGetNumArgOperands(inst));
-        instruction = callInst;
-      }
-      break;
+        break;
+      case LLVMCall:
+        {
+          CallInst callInst = new CallInst(name, type);
+          callInst.setNumArgs(LLVMGetNumArgOperands(inst));
+          instruction = callInst;
+        }
+        break;
       case LLVMSelect:
         instruction = new SelectInst(name, type);
         break;
@@ -454,39 +464,57 @@ public class Converter {
       case LLVMInstructionValueKind:
         return convertValueToInstruction(valueRef);
       case LLVMConstantIntValueKind:
-        return convertValueToConstantInt(valueRef);
       case LLVMConstantExprValueKind:
-        return convertValueToConstantExpr(valueRef);
+      case LLVMConstantPointerNullValueKind:
+      case LLVMConstantFPValueKind:
+      case LLVMConstantAggregateZeroValueKind:
+      case LLVMConstantDataArrayValueKind:
+      case LLVMFunctionValueKind:
+      case LLVMGlobalVariableValueKind:
+        return convertValueToConstant(valueRef);
       case LLVMBasicBlockValueKind:
         return context.getBasicBlock(LLVMValueAsBasicBlock(valueRef));
       case LLVMMetadataAsValueValueKind:
         // TODO metadata
         throw new NotImplementedException();
-      case LLVMArgumentValueKind: {
-        Argument argument = context.getArgument(valueRef);
-        Preconditions.checkNotNull(argument, "argument not created");
-        return argument;
-      }
-      case LLVMGlobalVariableValueKind:
-        return context.getGlobalVariable(valueRef);
-      case LLVMConstantPointerNullValueKind:
-        return new ConstantPointerNull(getType(LLVMTypeOf(valueRef)));
-      case LLVMFunctionValueKind:
-        return context.getFunction(valueRef);
+      case LLVMArgumentValueKind:
+        {
+          Argument argument = context.getArgument(valueRef);
+          Preconditions.checkNotNull(argument, "argument not created");
+          return argument;
+        }
       case LLVMInlineAsmValueKind:
         // TODO inline asm
         throw new NotImplementedException();
-      case LLVMConstantFPValueKind:
-        // TODO constant fp
-        throw new NotImplementedException();
-      case LLVMConstantAggregateZeroValueKind:
-        return new ConstantAggregateZero(getType(LLVMTypeOf(valueRef)));
-      case LLVMConstantDataArrayValueKind:
-        return new ConstantDataArray();
     }
     LLVMDumpValue(valueRef);
     System.out.println(LLVMGetValueKind(valueRef));
     assert false : "unhandled convert llvm value ref";
+    return null;
+  }
+
+  private Constant convertValueToConstant(LLVMValueRef valueRef) {
+    int valueKind = LLVMGetValueKind(valueRef);
+    switch (valueKind) {
+      case LLVMConstantIntValueKind:
+        return convertValueToConstantInt(valueRef);
+      case LLVMConstantAggregateZeroValueKind:
+        return new ConstantAggregateZero(getType(LLVMTypeOf(valueRef)));
+      case LLVMConstantDataArrayValueKind:
+        return new ConstantDataArray();
+      case LLVMConstantExprValueKind:
+        return convertValueToConstantExpr(valueRef);
+      case LLVMConstantPointerNullValueKind:
+        return new ConstantPointerNull(getType(LLVMTypeOf(valueRef)));
+      case LLVMConstantFPValueKind:
+        throw new NotImplementedException();
+      case LLVMFunctionValueKind:
+        return context.getFunction(valueRef);
+      case LLVMGlobalVariableValueKind:
+        return context.getGlobalVariable(valueRef);
+      default:
+        assert false : "unhandled value kind:" + valueKind;
+    }
     return null;
   }
 
@@ -516,13 +544,14 @@ public class Converter {
       case LLVMGetElementPtr:
         List<Constant> idxList = new ArrayList<>();
         for (int i = 1; i < LLVMGetNumOperands(valueRef); i++) {
-          // FIXME index may not be ConstantInt
-          idxList.add(convertValueToConstantInt(LLVMGetOperand(valueRef, i)));
+          idxList.add(convertValueToConstant(LLVMGetOperand(valueRef, i)));
         }
-        // FIXME operand being indexed may not be GlobalVariable
-        GetElementPtrConstantExpr ce = GetElementPtrConstantExpr
-            .getInstance("", getType(LLVMTypeOf(valueRef)), ImmutableList.copyOf(idxList),
-                context.getGlobalVariable(LLVMGetOperand(valueRef, 0)));
+        GetElementPtrConstantExpr ce =
+            GetElementPtrConstantExpr.getInstance(
+                "",
+                getType(LLVMTypeOf(valueRef)),
+                ImmutableList.copyOf(idxList),
+                convertValueToConstant(LLVMGetOperand(valueRef, 0)));
         // TODO put it into context
         List<Value> operands = new ArrayList<>();
         for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
@@ -531,10 +560,19 @@ public class Converter {
         ce.setOperands(operands);
         // TODO may require setting originalText
         return ce;
-      // TODO create other constant expressions
+        // TODO create other constant expressions
+      case LLVMBitCast:
+        Type type = getType(LLVMTypeOf(valueRef));
+        return UnaryConstantExpr.getInstance(
+            LLVMGetValueName(valueRef).getString(),
+            type,
+            OpCode.BITCAST,
+            convertValueToConstant(LLVMGetOperand(valueRef, 0)),
+            type);
       default:
-        return null;
+        assert false : "unhandled constant expr type";
     }
+    return null;
   }
 
   public Type getType(LLVMTypeRef typeRef) {
@@ -573,54 +611,60 @@ public class Converter {
         int size = LLVMGetIntTypeWidth(typeRef);
         result = Type.getIntNTy(context, size);
         break;
-      case LLVMFunctionTypeKind: {
-        LLVMTypeRef returnTypeRef = LLVMGetReturnType(typeRef);
-        int paramsCount = LLVMCountParamTypes(typeRef);
-        PointerPointer<LLVMTypeRef> params = new PointerPointer<>(paramsCount);
-        LLVMGetParamTypes(typeRef, params);
-        Type[] paramsType = new Type[paramsCount];
-        for (int i = 0; i < paramsCount; i++) {
-          paramsType[i] = getType(params.get(LLVMTypeRef.class, i));
+      case LLVMFunctionTypeKind:
+        {
+          LLVMTypeRef returnTypeRef = LLVMGetReturnType(typeRef);
+          int paramsCount = LLVMCountParamTypes(typeRef);
+          PointerPointer<LLVMTypeRef> params = new PointerPointer<>(paramsCount);
+          LLVMGetParamTypes(typeRef, params);
+          Type[] paramsType = new Type[paramsCount];
+          for (int i = 0; i < paramsCount; i++) {
+            paramsType[i] = getType(params.get(LLVMTypeRef.class, i));
+          }
+          boolean isVarArg = LLVMIsFunctionVarArg(typeRef) != 0;
+          result = FunctionType.get(getType(returnTypeRef), paramsType, isVarArg);
+          break;
         }
-        boolean isVarArg = LLVMIsFunctionVarArg(typeRef) != 0;
-        result = FunctionType.get(getType(returnTypeRef), paramsType, isVarArg);
-        break;
-      }
-      case LLVMStructTypeKind: {
-        Optional<String> name = Optional.fromNullable(LLVMGetStructName(typeRef))
-            .transform(new com.google.common.base.Function<BytePointer, String>() {
-              @Override
-              public String apply(BytePointer input) {
-                return input.getString();
-              }
-            });
-        StructType structType = StructType.create(context, name.orNull());
-        context.putType(typeRef, structType);
-        int elementsCount = LLVMCountStructElementTypes(typeRef);
-        PointerPointer<LLVMTypeRef> elems = new PointerPointer<>(elementsCount);
-        LLVMGetStructElementTypes(typeRef, elems);
-        Type[] elementType = new Type[elementsCount];
-        for (int i = 0; i < elementsCount; i++) {
-          elementType[i] = getType(elems.get(LLVMTypeRef.class, i));
+      case LLVMStructTypeKind:
+        {
+          Optional<String> name =
+              Optional.fromNullable(LLVMGetStructName(typeRef))
+                  .transform(
+                      new com.google.common.base.Function<BytePointer, String>() {
+                        @Override
+                        public String apply(BytePointer input) {
+                          return input.getString();
+                        }
+                      });
+          StructType structType = StructType.create(context, name.orNull());
+          context.putType(typeRef, structType);
+          int elementsCount = LLVMCountStructElementTypes(typeRef);
+          PointerPointer<LLVMTypeRef> elems = new PointerPointer<>(elementsCount);
+          LLVMGetStructElementTypes(typeRef, elems);
+          Type[] elementType = new Type[elementsCount];
+          for (int i = 0; i < elementsCount; i++) {
+            elementType[i] = getType(elems.get(LLVMTypeRef.class, i));
+          }
+          boolean isPacked = LLVMIsPackedStruct(typeRef) != 0;
+          structType.setBody(elementType, isPacked);
+          LLVMIsOpaqueStruct(typeRef);
+          result = structType;
+          break;
         }
-        boolean isPacked = LLVMIsPackedStruct(typeRef) != 0;
-        structType.setBody(elementType, isPacked);
-        LLVMIsOpaqueStruct(typeRef);
-        result = structType;
-        break;
-      }
-      case LLVMArrayTypeKind: {
-        Type elementType = getType(LLVMGetElementType(typeRef));
-        long numElements = LLVMGetArrayLength(typeRef);
-        result = ArrayType.get(elementType, numElements);
-        break;
-      }
-      case LLVMPointerTypeKind: {
-        Type elementType = getType(LLVMGetElementType(typeRef));
-        int addressSpace = LLVMGetPointerAddressSpace(typeRef);
-        result = PointerType.get(elementType, addressSpace);
-        break;
-      }
+      case LLVMArrayTypeKind:
+        {
+          Type elementType = getType(LLVMGetElementType(typeRef));
+          long numElements = LLVMGetArrayLength(typeRef);
+          result = ArrayType.get(elementType, numElements);
+          break;
+        }
+      case LLVMPointerTypeKind:
+        {
+          Type elementType = getType(LLVMGetElementType(typeRef));
+          int addressSpace = LLVMGetPointerAddressSpace(typeRef);
+          result = PointerType.get(elementType, addressSpace);
+          break;
+        }
       case LLVMVectorTypeKind:
         throw new NotImplementedException();
       case LLVMMetadataTypeKind:
