@@ -29,7 +29,7 @@ import java.util.HashMap;
 public class UnaryConstantExpr extends ConstantExpr {
 
   private Type destTy;
-  private static HashMap<Pair<OpCode, Pair<Constant, Type>>, UnaryConstantExpr> instances;
+  private static HashMap<Pair<OpCode, Pair<Constant, Type>>, UnaryConstantExpr> instances = new HashMap<>();
 
   private UnaryConstantExpr(String name, Type type, OpCode opCode, Type destTy) {
     super(name, type, opCode);
