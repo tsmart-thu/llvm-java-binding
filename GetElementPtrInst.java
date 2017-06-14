@@ -62,7 +62,6 @@ public class GetElementPtrInst extends Instruction {
   }
 
   public Type getResultElementType() {
-    // TODO require Type.getElementType()
     return cast(getType().getScalarType(), PointerType.class).getElementType();
   }
 
