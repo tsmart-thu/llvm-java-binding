@@ -30,7 +30,7 @@ import java.util.HashMap;
 public class GetElementPtrConstantExpr extends ConstantExpr {
 
   private ImmutableList<Constant> idxList;
-  private static HashMap<Pair<Constant, IndexList>, GetElementPtrConstantExpr> instances;
+  private static HashMap<Pair<Constant, IndexList>, GetElementPtrConstantExpr> instances = new HashMap<>();
 
   private GetElementPtrConstantExpr(String name, Type type, ImmutableList<Constant> idxList) {
     super(name, type, OpCode.GETELEMENTPTR);
