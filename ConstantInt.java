@@ -100,6 +100,9 @@ public class ConstantInt extends ConstantData {
 
   @Override
   public String toString() {
-    return String.valueOf(this.val.getLimitedValue(Long.MAX_VALUE));
+    if(val.getBitWidth() == 1)
+      return String.valueOf(val.getBoolValue());
+    else
+      return String.valueOf(this.val.getLimitedValue(Long.MAX_VALUE));
   }
 }

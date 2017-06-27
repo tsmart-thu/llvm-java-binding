@@ -80,4 +80,17 @@ public class FunctionType extends Type {
   public static boolean isValidArgumentType(Type argTy) {
     throw new NotImplementedException();
   }
+
+  @Override
+  public String toString() {
+    String res = returnType + " (";
+    for(int i = 0; i < params.length; i++) {
+      res += params[i].toString();
+      if(i < params.length - 1)
+        res += ", ";
+      else
+        res += ")";
+    }
+    return res;
+  }
 }

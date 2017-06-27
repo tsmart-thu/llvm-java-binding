@@ -49,4 +49,9 @@ public class UnreachableInst extends TerminatorInst {
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
   }
+
+  @Override
+  public String toString() {
+    return "unreachable";
+  }
 }

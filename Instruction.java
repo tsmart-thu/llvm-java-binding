@@ -408,10 +408,10 @@ public abstract class Instruction extends User implements IInstruction {
     return false;
   }
 
-  @Override
-  public String toString() {
-    return originalText;
-  }
+//  @Override
+//  public String toString() {
+//    return originalText;
+//  }
 
   private String originalText = "";
 

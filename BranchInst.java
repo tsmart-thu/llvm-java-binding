@@ -22,6 +22,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.castOrNull;
 
+import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 import javax.annotation.Nullable;
@@ -79,7 +80,7 @@ public class BranchInst extends TerminatorInst {
   public String toString() {
     String res = "br ";
     if (isConditional()) {
-      res += getCondition().getType().toString() + " %" + getCondition().getName() + ", ";
+      res += getCondition().getType().toString() + " " + Formatter.asOperand(getCondition()) + ", ";
     }
     res += "label %" + getSuccessor(0).getName();
     if (isConditional()) {

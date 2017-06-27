@@ -460,6 +460,7 @@ public class Converter {
     if (valueRef == null) {
       return null;
     }
+    //System.out.println(LLVMGetValueKind(valueRef));
     switch (LLVMGetValueKind(valueRef)) {
       case LLVMInstructionValueKind:
         return convertValueToInstruction(valueRef);
@@ -472,6 +473,7 @@ public class Converter {
       case LLVMFunctionValueKind:
       case LLVMGlobalVariableValueKind:
       case LLVMConstantArrayValueKind:
+      case LLVMConstantStructValueKind:
         return convertValueToConstant(valueRef);
       case LLVMBasicBlockValueKind:
         return context.getBasicBlock(LLVMValueAsBasicBlock(valueRef));
@@ -515,10 +517,28 @@ public class Converter {
         return context.getGlobalVariable(valueRef);
       case LLVMConstantArrayValueKind:
         return new ConstantArray();
+      case LLVMConstantStructValueKind:
+        throw new NotImplementedException();
+        //return convertValueToConstantStruct(valueRef);
       default:
         assert false : "unhandled value kind:" + valueKind;
     }
     return null;
+  }
+
+  private Constant convertValueToConstantStruct(LLVMValueRef valueRef) {
+    LLVMDumpValue(valueRef);
+    int n = LLVMCountStructElementTypes(LLVMTypeOf(valueRef));
+    //LLVMTypeRef[] t = new LLVMTypeRef[n];
+    //PointerPointer<LLVMTypeRef> p = new PointerPointer<LLVMTypeRef>(t);
+    //LLVMGetStructElementTypes(LLVMTypeOf(valueRef), p);
+    Constant[] a = new ConstantData[n];
+    for(int i = 0; i < n; i++) {
+      //System.out.println(LLVMGetStructName(LLVMTypeOf(valueRef)));
+      LLVMDumpValue(LLVMConstNamedStruct(LLVMStructGetTypeAtIndex(LLVMTypeOf(valueRef), 3), valueRef, 0));
+      a[i] = convertValueToConstant(LLVMConstNamedStruct(LLVMStructGetTypeAtIndex(LLVMTypeOf(valueRef), i), valueRef, i));
+    }
+    return new ConstantStruct(a);
   }
 
   private Argument convertValueToArgument(LLVMValueRef valueRef) {
@@ -537,12 +557,13 @@ public class Converter {
     assert constantInt != null : "constant int should not be null";
     IntegerType integerType = (IntegerType) getType(LLVMTypeOf(valueRef));
     int width = integerType.getBitWidth();
-    long value = LLVMConstIntGetZExtValue(valueRef);
-    return ConstantInt.get(integerType, new APInt(width, value, false));
+    long value = LLVMConstIntGetSExtValue(valueRef);
+    return ConstantInt.get(integerType, new APInt(width, value, true));
   }
 
   private ConstantExpr convertValueToConstantExpr(LLVMValueRef valueRef) {
     int opcode = LLVMGetConstOpcode(valueRef);
+    Type type;
     switch (opcode) {
       case LLVMGetElementPtr:
         List<Constant> idxList = new ArrayList<>();
@@ -565,14 +586,24 @@ public class Converter {
         return ce;
         // TODO create other constant expressions
       case LLVMBitCast:
-        Type type = getType(LLVMTypeOf(valueRef));
+        type = getType(LLVMTypeOf(valueRef));
         return UnaryConstantExpr.getInstance(
             LLVMGetValueName(valueRef).getString(),
             type,
             OpCode.BITCAST,
             convertValueToConstant(LLVMGetOperand(valueRef, 0)),
             type);
+      case LLVMPtrToInt:
+        type = getType(LLVMTypeOf(valueRef));
+        //LLVMDumpValue(valueRef);
+        return UnaryConstantExpr.getInstance(
+            LLVMGetValueName(valueRef).getString(),
+            type,
+            OpCode.PTRTOINT,
+            convertValueToConstant(LLVMGetOperand(valueRef, 0)),
+            type);
       default:
+        System.out.println(opcode);
         assert false : "unhandled constant expr type";
     }
     return null;
