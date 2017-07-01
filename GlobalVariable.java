@@ -33,4 +33,11 @@ public class GlobalVariable extends GlobalObject {
     public Constant getInitializer() {
         return initializer;
     }
+
+    @Override
+    public String toString() {
+        String res = "@";
+        res += getName().toString();
+        return res;
+    }
 }

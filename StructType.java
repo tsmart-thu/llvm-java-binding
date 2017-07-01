@@ -133,6 +133,14 @@ public class StructType extends CompositeType {
 
   @Override
   public String toString() {
+    /*String res = "{ ";
+    for(int i = 0; i < elements.length; i++) {
+      res += elements[i].toString();
+      if(i != elements.length-1)
+        res += ", ";
+    }
+    res += " }";
+    return res;*/
     return "%"+this.name;
   }
 }

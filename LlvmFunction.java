@@ -83,4 +83,11 @@ public class LlvmFunction extends GlobalObject {
   public void setArgumentList(List<Argument> argumentList) {
     this.argumentList = argumentList;
   }
+
+  @Override
+  public String toString() {
+    String res = "@";
+    res += getName().toString();
+    return res;
+  }
 }

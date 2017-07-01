@@ -47,4 +47,18 @@ public class UnaryConstantExpr extends ConstantExpr {
       return instance;
     }
   }
+
+  @Override
+  public String toString() {
+    //String temp = "ptrtoint (%struct._TRACK_DATA* getelementptr inbounds (%struct._CDROM_TOC, %struct._CDROM_TOC* null, i32 0, i32 3, i64 0) to i64)";
+    String res = opCode.toString();
+    res += " (";
+    res += getOperand(0).getType().toString();
+    res += " ";
+    res += getOperand(0).toString();
+    res += " to ";
+    res += destTy.toString();
+    res += ")";
+    return res;
+  }
 }

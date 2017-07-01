@@ -91,6 +91,8 @@ public class FunctionType extends Type {
       else
         res += ")";
     }
+    if(params.length == 0)
+      res += "...)";
     return res;
   }
 }

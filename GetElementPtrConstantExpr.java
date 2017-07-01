@@ -49,6 +49,23 @@ public class GetElementPtrConstantExpr extends ConstantExpr {
     }
   }
 
+  @Override
+  public String toString() {
+    String res = "";
+    res += opCode.toString();
+    res += " inbounds (";
+    res += getOperand(0).getType().toString();
+    res = res.substring(0, res.length()-1);
+    for(int i = 0; i < getNumOperands(); i++) {
+      res += ", ";
+      res += getOperand(i).getType().toString();
+      res += " ";
+      res += getOperand(i).toString();
+    }
+    res += ")";
+    return res;
+  }
+
   private static class IndexList {
 
     private final ImmutableList<Constant> idxList;

@@ -66,6 +66,8 @@ public class ReturnInst extends TerminatorInst {
     String res = "ret";
     if (getReturnValue() != null) {
       res += " " + getReturnValue().getType().toString() + " " + Formatter.asOperand(getReturnValue());
+    } else {
+      res += " void";
     }
     return res;
   }
