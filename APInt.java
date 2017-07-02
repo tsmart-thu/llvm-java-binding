@@ -64,7 +64,7 @@ public class APInt {
     } else {
       assert bi.compareTo(BigInteger.ONE.shiftLeft(numBits - 1).negate())
           >= 0 : "Require larger numBits!";
-      //bi = BigInteger.ONE.shiftLeft(numBits).add(bi);
+      bi = BigInteger.ONE.shiftLeft(numBits).add(bi);
     }
 
     this.val = bi;
