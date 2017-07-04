@@ -392,6 +392,12 @@ public class Type {
   public String toString() {
     if (isVoidTy()) {
       return "void";
+    } else if(isFloatTy()) {
+      return "float";
+    } else if(isDoubleTy()) {
+      return "double";
+    } else if(isX86_FP80T()) {
+      return "x86_fp80";
     }
     return "TYPE";
   }

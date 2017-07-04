@@ -20,6 +20,7 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlags;
+import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.Predicate;
 import cn.edu.thu.tsmart.core.cfa.llvm.Type.TypeID;
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.base.Optional;
@@ -213,7 +214,8 @@ public class Converter {
         {
           instruction = new BinaryOperator(name, type, OpCode.SUB);
           OperatorFlags flag = new OperatorFlags();
-          flag.setNoSignedWrapFlag();
+          //flag.setNoSignedWrapFlag();
+          parseFlag(originalText, flag);
           instruction.setOperatorFlags(flag);
         }
         break;
@@ -359,7 +361,7 @@ public class Converter {
         instruction = new ICmpInst(name, type, getICmpPredicate(inst));
         break;
       case LLVMFCmp:
-        instruction = new FCmpInst(name, type);
+        instruction = new FCmpInst(name, type, getFCmpPredicate(inst));
         break;
       case LLVMPHI:
         {
@@ -449,6 +451,43 @@ public class Converter {
         return InstructionProperties.Predicate.ICMP_SLT;
       case LLVMIntSLE:
         return InstructionProperties.Predicate.ICMP_SLE;
+    }
+    return null;
+  }
+
+  private InstructionProperties.Predicate getFCmpPredicate(LLVMValueRef inst) {
+    int i = LLVMGetFCmpPredicate(inst);
+    switch (i) {
+      case LLVMRealPredicateFalse:
+        return Predicate.FCMP_FALSE;
+      case LLVMRealOEQ:
+        return Predicate.FCMP_OEQ;
+      case LLVMRealOGT:
+        return Predicate.FCMP_OGT;
+      case LLVMRealOGE:
+        return Predicate.FCMP_OGE;
+      case LLVMRealOLT:
+        return Predicate.FCMP_OLT;
+      case LLVMRealOLE:
+        return Predicate.FCMP_OLE;
+      case LLVMRealONE:
+        return Predicate.FCMP_ONE;
+      case LLVMRealORD:
+        return Predicate.FCMP_ORD;
+      case LLVMRealUNO:
+        return Predicate.FCMP_UNO;
+      case LLVMRealUEQ:
+        return Predicate.FCMP_UEQ;
+      case LLVMRealUGT:
+        return Predicate.FCMP_UGT;
+      case LLVMRealUGE:
+        return Predicate.FCMP_UGE;
+      case LLVMRealULT:
+        return Predicate.FCMP_ULT;
+      case LLVMRealULE:
+        return Predicate.FCMP_ULE;
+      case LLVMRealUNE:
+        return Predicate.FCMP_UNE;
     }
     return null;
   }

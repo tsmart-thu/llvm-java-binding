@@ -118,7 +118,17 @@ public class AllocaInst extends UnaryInstruction {
   public String toString() {
     String res = "%" + getName() + " = alloca ";
     res += getAllocatedType().toString();
-    res += ", align " + getAlignment();
+    for(int i = 0; i < getNumOperands(); i++) {
+      if(!getOperand(i).getName().toString().equals("CONSTANT_INT")) {
+        res += ", " + getOperand(i).getType().toString();
+        res += " %" + getOperand(i).getName().toString();
+      } else if(getAllocatedType().toString().equals("i8") && getAlignment() == 0) {
+        res += ", " + getOperand(i).getType().toString();
+        res += " " + getOperand(i);
+      }
+    }
+    if(getAlignment() != 0)
+      res += ", align " + getAlignment();
     return res;
   }
 }

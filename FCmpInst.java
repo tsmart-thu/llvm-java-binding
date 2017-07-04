@@ -30,9 +30,10 @@ import cn.edu.thu.tsmart.core.exceptions.CPAException;
  */
 public class FCmpInst extends CmpInst {
 
-  public FCmpInst(String name, Type type) {
+  public FCmpInst(String name, Type type, Predicate predicate) {
     super(name, type);
     super.opCode = OpCode.FCMP;
+    super.predicate = predicate;
   }
 
   @Override
@@ -59,5 +60,18 @@ public class FCmpInst extends CmpInst {
   @Override
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
+  }
+
+  @Override
+  public String toString() {
+    String res = "%" + getName().toString() + " = " + getOpcode().toString();
+    res += " " + getPredicate().toString();
+    res += " " + getOperand(0).getType().toString() + " ";
+    for(int i = 0; i < getNumOperands(); i++) {
+      res += "%" + getOperand(i).getName().toString();
+      if(i != getNumOperands() - 1)
+        res += ", ";
+    }
+    return res;
   }
 }

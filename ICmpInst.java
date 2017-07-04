@@ -122,7 +122,7 @@ public class ICmpInst extends CmpInst {
     String res = "%" + getName() + " = icmp " + getPredicate().toString() + " ";
     Value operand1 = getOperand(0);
     if (operand1 instanceof Constant) {
-      res += " " + operand1.toString();
+      res += operand1.getType().toString() + " " + operand1.toString();
     } else {
       res += operand1.getType().toString() + " %" + operand1.getName();
     }
