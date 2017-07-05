@@ -19,6 +19,8 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
  * @author guangchen on 26/02/2017.
  */
@@ -30,4 +32,9 @@ public abstract class Constant extends User {
   protected Constant(String name, Type type) {
     super(name, type);
   }
+
+  public Constant getAggregateElement(int index) {
+    throw new NotImplementedException();
+  }
+
 }
