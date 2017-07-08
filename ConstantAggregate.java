@@ -19,15 +19,12 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
-import java.util.List;
-
 /**
- * Created by wendy on 17-6-27.
+ * @author guangchen on 07/07/2017.
  */
-public class ConstantStruct extends ConstantAggregate {
-  public List<Constant> data;
-  public ConstantStruct(String name, Type type, List<Constant> data) {
+public class ConstantAggregate extends Constant {
+  protected ConstantAggregate() {}
+  protected ConstantAggregate(String name, Type type) {
     super(name, type);
-    this.data = data;
   }
 }

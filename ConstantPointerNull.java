@@ -31,4 +31,8 @@ public class ConstantPointerNull extends Constant {
     public String toString() {
         return "null";
     }
+
+  public static Constant get(PointerType type) {
+    return new ConstantPointerNull(type);
+  }
 }

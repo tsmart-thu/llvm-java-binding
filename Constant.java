@@ -19,6 +19,7 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -34,7 +35,40 @@ public abstract class Constant extends User {
   }
 
   public Constant getAggregateElement(int index) {
-    throw new NotImplementedException();
+    if (this instanceof ConstantAggregate) {
+      ConstantAggregate that = Casting.cast(this, ConstantAggregate.class);
+      return index < that.getNumOperands() ? (Constant) that.getOperand(index) : null;
+    }
+    if (this instanceof ConstantAggregateZero) {
+      ConstantAggregateZero that = Casting.cast(this, ConstantAggregateZero.class);
+      return index < that.getNumElements() ? that.getElementValue(index) : null;
+    }
+    assert false : "not implemented aggregate type";
+    return null;
   }
 
+  public static Constant getNullValue(Type type) {
+    switch (type.getTypeID()) {
+      case IntegerTyID:
+        return ConstantInt.get((IntegerType) type, new APInt(((IntegerType) type).getBitWidth(), "0"));
+      case HalfTyID:
+      case FloatTyID:
+      case DoubleTyID:
+      case X86_FP80TyID:
+      case FP128TyID:
+      case PPC_FP128TyID:
+        throw new NotImplementedException();
+      case PointerTyID:
+        return ConstantPointerNull.get((PointerType) type);
+      case StructTyID:
+      case ArrayTyID:
+      case VectorTyID:
+        return ConstantAggregateZero.get(type);
+      case TokenTyID:
+        throw new NotImplementedException();
+      default:
+        assert false : "Cannot create a null constant of that type!";
+    }
+    return null;
+  }
 }

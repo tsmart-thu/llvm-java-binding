@@ -558,8 +558,7 @@ public class Converter {
       case LLVMConstantArrayValueKind:
         return new ConstantArray();
       case LLVMConstantStructValueKind:
-        throw new NotImplementedException();
-        //return convertValueToConstantStruct(valueRef);
+        return convertValueToConstantStruct(valueRef);
       default:
         assert false : "unhandled value kind:" + valueKind;
     }
@@ -567,18 +566,11 @@ public class Converter {
   }
 
   private Constant convertValueToConstantStruct(LLVMValueRef valueRef) {
-    LLVMDumpValue(valueRef);
-    int n = LLVMCountStructElementTypes(LLVMTypeOf(valueRef));
-    //LLVMTypeRef[] t = new LLVMTypeRef[n];
-    //PointerPointer<LLVMTypeRef> p = new PointerPointer<LLVMTypeRef>(t);
-    //LLVMGetStructElementTypes(LLVMTypeOf(valueRef), p);
-    Constant[] a = new ConstantData[n];
-    for(int i = 0; i < n; i++) {
-      //System.out.println(LLVMGetStructName(LLVMTypeOf(valueRef)));
-      LLVMDumpValue(LLVMConstNamedStruct(LLVMStructGetTypeAtIndex(LLVMTypeOf(valueRef), 3), valueRef, 0));
-      a[i] = convertValueToConstant(LLVMConstNamedStruct(LLVMStructGetTypeAtIndex(LLVMTypeOf(valueRef), i), valueRef, i));
+    List<Constant> data = new ArrayList<>();
+    for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
+      data.add(convertValueToConstant(LLVMGetOperand(valueRef, i)));
     }
-    return new ConstantStruct(a);
+    return new ConstantStruct(LLVMGetValueName(valueRef).toString(), getType(LLVMTypeOf(valueRef)), data);
   }
 
   private Argument convertValueToArgument(LLVMValueRef valueRef) {

@@ -41,6 +41,7 @@ public class Context {
   private final Map<LLVMValueRef, LlvmFunction> functionMap = new HashMap<>();
   private final Map<LLVMValueRef, GlobalVariable> globalVariableMap = new HashMap<>();
   private final Map<LLVMValueRef, Argument> argumentMap = new HashMap<>();
+  private final Map<Type, ConstantAggregateZero> cazMap = new HashMap<>();
   private DataLayout dataLayout;
 
   /**
@@ -138,5 +139,13 @@ public class Context {
 
   public Argument getArgument(LLVMValueRef valueRef) {
     return this.argumentMap.get(valueRef);
+  }
+
+  public ConstantAggregateZero getCAZConstants(Type type) {
+    return cazMap.get(type);
+  }
+
+  public void putCAZConstants(Type type, ConstantAggregateZero entry) {
+    this.cazMap.put(type, entry);
   }
 }

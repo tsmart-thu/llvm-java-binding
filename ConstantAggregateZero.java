@@ -20,6 +20,7 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
+import com.google.common.base.Preconditions;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** @author guangchen on 08/06/2017. */
@@ -39,5 +40,31 @@ public class ConstantAggregateZero extends Constant {
       return arrayType.getNumElements();
     }
     return type.getStructNumElements();
+  }
+
+  public Constant getElementValue(int index) {
+    if (getType() instanceof SequentialType) {
+      return getSequentialElement();
+    }
+    return getStructElement(index);
+  }
+
+  public Constant getStructElement(int index) {
+    return Constant.getNullValue(getType().getStructElementType(index));
+  }
+
+  public Constant getSequentialElement() {
+    return Constant.getNullValue(getType().getSequentialElementType());
+  }
+
+  public static Constant get(Type type) {
+    Preconditions.checkArgument(type.isStructTy() || type.isArrayTy() || type.isVectorTy(), "Cannot create an aggregate zero of non-aggregate type!");
+    ConstantAggregateZero entry = type.getContext().getCAZConstants(type);
+    if (entry != null) {
+      return entry;
+    }
+    entry = new ConstantAggregateZero(type);
+    type.getContext().putCAZConstants(type, entry);
+    return entry;
   }
 }
