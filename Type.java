@@ -90,7 +90,12 @@ public class Type {
   }
 
   public boolean isFloatingPointTy() {
-    return this.typeID == TypeID.FloatTyID;
+    return getTypeID() == TypeID.HalfTyID ||
+        getTypeID() == TypeID.FloatTyID ||
+        getTypeID() == TypeID.DoubleTyID ||
+        getTypeID() == TypeID.X86_FP80TyID ||
+        getTypeID() == TypeID.FP128TyID ||
+        getTypeID() == TypeID.PPC_FP128TyID;
   }
 
   public boolean isX86_MMXTy() {
@@ -98,7 +103,7 @@ public class Type {
   }
 
   public boolean isFPOrFPVectorTy() {
-    throw new NotImplementedException();
+    return getScalarType().isFloatingPointTy();
   }
 
   public boolean isLabelTy() {
@@ -118,11 +123,15 @@ public class Type {
   }
 
   public boolean isIntegerTy(int bitWidth) {
-    throw new NotImplementedException();
+    if(isIntegerTy()) {
+      IntegerType integerType = Casting.dyncast(this, IntegerType.class);
+      return integerType.getBitWidth() == bitWidth;
+    }
+    return false;
   }
 
   public boolean isIntOrIntVectorTy() {
-    throw new NotImplementedException();
+    return getScalarType().isIntegerTy();
   }
 
   public boolean isFunctionTy() {
@@ -150,39 +159,127 @@ public class Type {
   }
 
   public boolean canLosslesslyBitCastTo(Type type) {
-    throw new NotImplementedException();
+    if(this == type)
+      return true;
+
+    if(!this.isFirstClassType() || !type.isFirstClassType())
+      return false;
+
+    if(isVectorTy()) {
+      VectorType thisType = Casting.dyncast(this, VectorType.class);
+      if(type.isVectorTy()) {
+        VectorType thatType = Casting.dyncast(type, VectorType.class);
+        return thisType.getBitWidth() == thatType.getBitWidth();
+      }
+      if(this.isX86_MMXTy() && thisType.getBitWidth() == 64)
+        return true;
+    }
+    if(this.isX86_MMXTy() && type.isVectorTy()) {
+      VectorType thatType = Casting.dyncast(type, VectorType.class);
+      if(thatType.getBitWidth() == 64)
+        return true;
+    }
+
+    if(isPointerTy() && type.isPointerTy()) {
+      PointerType PTy = Casting.dyncast(this, PointerType.class);
+      PointerType OtherPTy = Casting.dyncast(type, PointerType.class);
+      return PTy.getAddressSpace() == OtherPTy.getAddressSpace();
+    }
+
+    return false;
   }
 
   public boolean isEmptyTy() {
-    throw new NotImplementedException();
+    if(isArrayTy()) {
+      ArrayType ATy = Casting.dyncast(this, ArrayType.class);
+      long numElements = ATy.getNumElements();
+      return numElements == 0 || ATy.getElementType().isEmptyTy();
+    }
+
+    if(isStructTy()) {
+      StructType STy = Casting.dyncast(this, StructType.class);
+      long numElements = STy.getNumElements();
+      for(int i = 0; i < numElements; i++) {
+        if(!STy.getElementType(i).isEmptyTy())
+          return false;
+      }
+      return true;
+    }
+
+    return false;
   }
 
   public boolean isFirstClassType() {
-    throw new NotImplementedException();
+    return this.typeID != TypeID.FunctionTyID && this.typeID != TypeID.VoidTyID;
   }
 
   public boolean isSingleValueType() {
-    throw new NotImplementedException();
+    return isFloatingPointTy() || isX86_MMXTy() || isIntegerTy() ||
+        isPointerTy() || isVectorTy();
   }
 
   public boolean isAggregateType() {
-    throw new NotImplementedException();
+    return this.typeID == TypeID.StructTyID || this.typeID == TypeID.ArrayTyID;
   }
 
   public boolean isSized() {
-    throw new NotImplementedException();
+    if(isIntegerTy() || isFloatingPointTy() || isPointerTy() || isX86_MMXTy())
+      return true;
+
+    if(!isStructTy() && !isArrayTy() && !isVectorTy())
+      return false;
+
+    return isSizedDerivedType();
+  }
+
+  public boolean isSizedDerivedType() {
+    if(isArrayTy()) {
+      ArrayType arrayType = Casting.dyncast(this, ArrayType.class);
+      return arrayType.getElementType().isSized();
+    } else if(isVectorTy()) {
+      VectorType vectorType = Casting.dyncast(this, VectorType.class);
+      return vectorType.getElementType().isSized();
+    } else {
+      StructType structType = Casting.dyncast(this, StructType.class);
+      for(int i = 0; i < structType.getNumElements(); i++) {
+        if(!structType.getElementType(i).isSized())
+          return false;
+      }
+      return true;
+    }
   }
 
   public int getPrimitiveSizeInBits() {
-    throw new NotImplementedException();
+    if(isHalfTy()) return 16;
+    else if(isFloatTy()) return 32;
+    else if(isDoubleTy() || isX86_MMXTy()) return 64;
+    else if(isX86_FP80T()) return 80;
+    else if(isFP128Ty() || isPPC_FP128Ty()) return 128;
+    else if(isIntegerTy()){
+      IntegerType integerType = Casting.dyncast(this, IntegerType.class);
+      return integerType.getBitWidth();
+    } else if(isVectorTy()) {
+      VectorType vectorType = Casting.dyncast(this, VectorType.class);
+      return vectorType.getBitWidth();
+    }
+    return 0;
   }
 
   public int getScalarSizeInBits() {
-    throw new NotImplementedException();
+    return getScalarType().getPrimitiveSizeInBits();
   }
 
   public int getFPMantissaWidth() {
-    throw new NotImplementedException();
+    if(isVectorTy()) {
+      VectorType vectorType = Casting.dyncast(this, VectorType.class);
+      return vectorType.getElementType().getFPMantissaWidth();
+    }
+    if (isHalfTy()) return 11;
+    if (isFloatTy()) return 24;
+    if (isDoubleTy()) return 53;
+    if (isX86_FP80T()) return 64;
+    if (isFP128Ty()) return 113;
+    return -1;
   }
 
   public Type getScalarType() {
@@ -202,31 +299,59 @@ public class Type {
   }
 
   public int getIntegerBitWidth() {
-    throw new NotImplementedException();
+    if(isIntegerTy()){
+      IntegerType integerType = Casting.dyncast(this, IntegerType.class);
+      return integerType.getBitWidth();
+    }
+    return 0;
   }
 
   public Type[] getFunctionParamType() {
-    throw new NotImplementedException();
+    if(isFunctionTy()){
+      FunctionType functionType = Casting.dyncast(this, FunctionType.class);
+      return functionType.getFunctionParamType();
+    }
+    return null;
   }
 
   public int getFunctionNumParams() {
-    throw new NotImplementedException();
+    if(isFunctionTy()){
+      FunctionType functionType = Casting.dyncast(this, FunctionType.class);
+      return functionType.getFunctionNumParams();
+    }
+    return 0;
   }
 
   public boolean isFunctionVarArg() {
-    throw new NotImplementedException();
+    if(isFunctionTy()){
+      FunctionType functionType = Casting.dyncast(this, FunctionType.class);
+      return functionType.isFunctionVarArg();
+    }
+    return false;
   }
 
   public String getStructName() {
-    throw new NotImplementedException();
+    if(isStructTy()){
+      StructType structType = Casting.dyncast(this, StructType.class);
+      return structType.getStructName();
+    }
+    return "";
   }
 
   public int getStructNumElements() {
-    throw new NotImplementedException();
+    if(isStructTy()){
+      StructType structType = Casting.dyncast(this, StructType.class);
+      return structType.getNumElements();
+    }
+    return 0;
   }
 
   public Type getStructElementType(int index) {
-    return ((StructType)this).getElementType(index);
+    if(isStructTy()){
+      StructType structType = Casting.dyncast(this, StructType.class);
+      return structType.getElementType(index);
+    }
+    return null;
   }
 
   public Type getSequentialElementType() {
@@ -239,27 +364,51 @@ public class Type {
   }
 
   public long getArrayNumElements() {
-    throw new NotImplementedException();
+    if(isArrayTy()){
+      ArrayType arrayType = Casting.dyncast(this, ArrayType.class);
+      return arrayType.getNumElements();
+    }
+    return 0;
   }
 
   public Type getArrayElementType() {
-    throw new NotImplementedException();
+    if(isArrayTy()){
+      ArrayType arrayType = Casting.dyncast(this, ArrayType.class);
+      return arrayType.getElementType();
+    }
+    return null;
   }
 
   public int getVectorNumElements() {
-    throw new NotImplementedException();
+    if(isVectorTy()){
+      VectorType vectorType = Casting.dyncast(this, VectorType.class);
+      return vectorType.getNumElements();
+    }
+    return 0;
   }
 
   public Type getVectorElementType() {
-    throw new NotImplementedException();
+    if(isVectorTy()){
+      VectorType vectorType = Casting.dyncast(this, VectorType.class);
+      return vectorType.getElementType();
+    }
+    return null;
   }
 
   public Type getPointerElementType() {
-    throw new NotImplementedException();
+    if(isPointerTy()){
+      PointerType pointerType = Casting.dyncast(this, PointerType.class);
+      return pointerType.getElementType();
+    }
+    return null;
   }
 
   public int getPointerAddressSpace() {
-    throw new NotImplementedException();
+    if(isPointerTy()){
+      PointerType pointerType = Casting.dyncast(this, PointerType.class);
+      return pointerType.getAddressSpace();
+    }
+    return 0;
   }
 
   public PointerType getPointerTo(int addrSpace) {
@@ -267,7 +416,21 @@ public class Type {
   }
 
   public static Type getPrimitiveType(Context context, TypeID typeID) {
-    throw new NotImplementedException();
+    switch (typeID) {
+      case VoidTyID      : return getVoidTy(context);
+      case HalfTyID      : return getHalfTy(context);
+      case FloatTyID     : return getFloatTy(context);
+      case DoubleTyID    : return getDoubleTy(context);
+      case X86_FP80TyID  : return getX86_FP80Ty(context);
+      case FP128TyID     : return getFP128Ty(context);
+      case PPC_FP128TyID : return getPPC_FP128Ty(context);
+      case LabelTyID     : return getLabelTy(context);
+      case MetadataTyID  : return getMetadataTy(context);
+      case X86_MMXTyID   : return getX86_MMXTy(context);
+      case TokenTyID     : return getTokenTy(context);
+      default:
+        return null;
+    }
   }
 
   public static Type getVoidTy(Context context) {
@@ -343,35 +506,35 @@ public class Type {
   }
 
   public static PointerType getHalfPtrTy(Context context, int as) {
-    throw new NotImplementedException();
+    return new PointerType(context, getHalfTy(context), as);
   }
 
   public static PointerType getFloatPtrTy(Context context, int as) {
-    throw new NotImplementedException();
+    return new PointerType(context, getFloatTy(context), as);
   }
 
   public static PointerType getDoublePtrTy(Context context, int as) {
-    throw new NotImplementedException();
+    return new PointerType(context, getDoubleTy(context), as);
   }
 
   public static PointerType getX86_FP80PtrTy(Context context, int as) {
-    throw new NotImplementedException();
+    return new PointerType(context, getX86_FP80Ty(context), as);
   }
 
   public static PointerType getFP128PtrTy(Context context, int as) {
-    throw new NotImplementedException();
+    return new PointerType(context, getFP128Ty(context), as);
   }
 
   public static PointerType getPPC_FP128PtrTy(Context context, int as) {
-    throw new NotImplementedException();
+    return new PointerType(context, getPPC_FP128Ty(context), as);
   }
 
   public static PointerType getX86_MMXPtrTy(Context context, int as) {
-    throw new NotImplementedException();
+    return new PointerType(context, getX86_MMXTy(context), as);
   }
 
   public static PointerType getIntNPtrTy(Context context, int N, int as) {
-    throw new NotImplementedException();
+    return new PointerType(context, getIntNTy(context, N), as);
   }
 
   public static PointerType getInt1PtrTy(Context context, int as) {

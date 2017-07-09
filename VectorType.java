@@ -23,7 +23,18 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 01/03/2017.
  */
 public class VectorType extends SequentialType {
-    protected VectorType(Context context, TypeID id) {
-        super(context, id);
-    }
+  private Type elementType;
+  private int numElements;
+
+  protected VectorType(Context context, Type elementType, int numElements) {
+    super(context, TypeID.VectorTyID);
+    this.elementType = elementType;
+    this.numElements = numElements;
+  }
+
+  public Type getElementType() { return this.elementType; }
+
+  public int getNumElements() { return this.numElements; }
+
+  public int getBitWidth() { return numElements * elementType.getPrimitiveSizeInBits(); }
 }
