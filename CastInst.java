@@ -25,7 +25,6 @@ import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
-import com.sun.tools.corba.se.idl.constExpr.Not;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
