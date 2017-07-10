@@ -23,6 +23,7 @@ import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.Predicate;
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.collect.ImmutableList;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * Created by zhch on 2017/5/15.
@@ -71,5 +72,42 @@ public abstract class ConstantExpr extends Constant {
   public ImmutableList<Integer> getIndices() {
     assert this.getClass().isInstance(ExtractValueConstantExpr.class) || this.getClass().isInstance(InsertValueConstantExpr.class) : "getIndices from non-ExtractValueConstantExpr-nor-InsertValueConstantExpr";
     return null;
+  }
+
+  public Instruction getAsInstruction() {
+    switch (getOpcode()) {
+      case TRUNC:
+      case ZEXT:
+      case SEXT:
+      case FPTRUNC:
+      case FPEXT:
+      case UITOFP:
+      case SITOFP:
+      case FPTOSI:
+      case FPTOUI:
+      case PTRTOINT:
+      case INTTOPTR:
+      case BITCAST:
+      case ADDRSPACECAST:
+        return CastInst.create(getOpcode(), getOperand(0), getType());
+      case SELECT:
+        return SelectInst.create(getOperand(0), getOperand(1), getOperand(2));
+      case INSERTELEMENT:
+        return InsertElementInst.create(getOperand(0) ,getOperand(1) ,getOperand(2));
+      case EXTRACTELEMENT:
+        return ExtractElementInst.create(getOperand(0), getOperand(1));
+      case SHUFFLEVECTOR: {
+        ShuffleVectorInst shuffleVectorInst = new ShuffleVectorInst("", getType());
+        shuffleVectorInst.setOperands(getOperands());
+      }
+      case GETELEMENTPTR: {
+        GetElementPtrConstantExpr gep = (GetElementPtrConstantExpr) this;
+        GetElementPtrInst inst = new GetElementPtrInst("", getType());
+        inst.setIsInBounds(gep.isInBounds());
+        inst.setOperands(getOperands());
+      }
+      default:
+        throw new NotImplementedException();
+    }
   }
 }

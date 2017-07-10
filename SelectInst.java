@@ -23,6 +23,7 @@ import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -49,5 +50,9 @@ public class SelectInst extends Instruction {
   @Override
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
+  }
+
+  public static Instruction create(Value operand, Value operand1, Value operand2) {
+    throw new NotImplementedException();
   }
 }

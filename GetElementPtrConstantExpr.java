@@ -30,23 +30,29 @@ import java.util.HashMap;
 public class GetElementPtrConstantExpr extends ConstantExpr {
 
   private ImmutableList<Constant> idxList;
-  private static HashMap<Pair<Constant, IndexList>, GetElementPtrConstantExpr> instances = new HashMap<>();
+  private boolean isInBounds = false;
+  private static HashMap<Pair<Pair<Constant, IndexList>, Boolean>, GetElementPtrConstantExpr> instances = new HashMap<>();
 
-  private GetElementPtrConstantExpr(String name, Type type, ImmutableList<Constant> idxList) {
+  private GetElementPtrConstantExpr(String name, Type type, ImmutableList<Constant> idxList, boolean isInBounds) {
     super(name, type, OpCode.GETELEMENTPTR);
     this.idxList = idxList;
+    this.isInBounds = isInBounds;
   }
 
   public static GetElementPtrConstantExpr getInstance(String name, Type type,
-      ImmutableList<Constant> idxList, Constant op) {
-    Pair<Constant, IndexList> key = Pair.of(op, new IndexList(idxList));
+      ImmutableList<Constant> idxList, Constant op, boolean isInBounds) {
+    Pair<Pair<Constant, IndexList>, Boolean> key = Pair.of(Pair.of(op, new IndexList(idxList)), isInBounds);
     if (instances.containsKey(key)) {
       return instances.get(key);
     } else {
-      GetElementPtrConstantExpr instance = new GetElementPtrConstantExpr(name, type, idxList);
+      GetElementPtrConstantExpr instance = new GetElementPtrConstantExpr(name, type, idxList, isInBounds);
       instances.put(key, instance);
       return instance;
     }
+  }
+
+  public boolean isInBounds() {
+    return isInBounds;
   }
 
   @Override

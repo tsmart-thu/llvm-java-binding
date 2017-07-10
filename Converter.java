@@ -609,7 +609,8 @@ public class Converter {
                 "",
                 getType(LLVMTypeOf(valueRef)),
                 ImmutableList.copyOf(idxList),
-                convertValueToConstant(LLVMGetOperand(valueRef, 0)));
+                convertValueToConstant(LLVMGetOperand(valueRef, 0)),
+                LLVMIsInBounds(valueRef) != 0);
         // TODO put it into context
         for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
           operands.add(convert(LLVMGetOperand(valueRef, i)));

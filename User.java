@@ -55,6 +55,10 @@ public class User extends Value {
         this.operands = operands;
     }
 
+    public List<Value> getOperands() {
+        return this.operands;
+    }
+
     public List<Use> getOperandList() {
         throw new NotImplementedException();
     }

@@ -25,6 +25,8 @@ import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
+import com.sun.tools.corba.se.idl.constExpr.Not;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -120,5 +122,9 @@ public class CastInst extends UnaryInstruction {
     res += " to ";
     res += getDestTy().toString();
     return res;
+  }
+
+  public static Instruction create(OpCode opcode, Value operand, Type type) {
+    throw new NotImplementedException();
   }
 }
