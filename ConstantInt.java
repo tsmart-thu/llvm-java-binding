@@ -102,7 +102,9 @@ public class ConstantInt extends ConstantData {
   public String toString() {
     if(val.getBitWidth() == 1)
       return String.valueOf(val.getBoolValue());
-    else
-      return String.valueOf(this.val.getLimitedValue(Long.MAX_VALUE));
+    else {
+      return String.valueOf(val.getSExtValue());
+      //return String.valueOf(this.val.getLimitedValue(Long.MAX_VALUE));
+    }
   }
 }

@@ -49,4 +49,20 @@ public class BinaryConstantExpr extends ConstantExpr {
       return instance;
     }
   }
+
+  @Override
+  public String toString() {
+    String res = getOpcode().toString() + " ";
+    if(flags.hasAnyFlag())
+      res += flags.toString() + " ";
+    res += "(";
+    for(int i = 0; i < getNumOperands(); i++) {
+      res += getOperand(i).getType().toString() + " ";
+      res += getOperand(i).toString();
+      if(i != getNumOperands() - 1)
+        res += ", ";
+    }
+    res += ")";
+    return res;
+  }
 }

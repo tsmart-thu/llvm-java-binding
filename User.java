@@ -64,7 +64,7 @@ public class User extends Value {
     }
 
     public Use getOperandUse(int i) {
-        throw new NotImplementedException();
+        return uses().get(i);
     }
 
     public int getNumOperands() {

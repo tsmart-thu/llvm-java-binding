@@ -597,7 +597,41 @@ public class Converter {
     int opcode = LLVMGetConstOpcode(valueRef);
     Type type;
     List<Value> operands = new ArrayList<>();
+    BytePointer bytePointer = LLVMPrintValueToString(valueRef);
+    String originalText = bytePointer.getString().trim();
+    OperatorFlags flag = new OperatorFlags();
+    parseFlag(originalText, flag);
     switch (opcode) {
+      case LLVMAdd:
+        type = getType(LLVMTypeOf(valueRef));
+        BinaryConstantExpr add =
+            BinaryConstantExpr.getInstance(
+                LLVMGetValueName(valueRef).getString(),
+                type,
+                OpCode.ADD,
+                flag,
+                convertValueToConstant(LLVMGetOperand(valueRef, 0)),
+                convertValueToConstant(LLVMGetOperand(valueRef, 1)));
+        for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
+          operands.add(convert(LLVMGetOperand(valueRef, i)));
+        }
+        add.setOperands(operands);
+        return add;
+      case LLVMSub :
+        type = getType(LLVMTypeOf(valueRef));
+        BinaryConstantExpr sub =
+            BinaryConstantExpr.getInstance(
+                LLVMGetValueName(valueRef).getString(),
+                type,
+                OpCode.SUB,
+                flag,
+                convertValueToConstant(LLVMGetOperand(valueRef, 0)),
+                convertValueToConstant(LLVMGetOperand(valueRef, 1)));
+        for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
+          operands.add(convert(LLVMGetOperand(valueRef, i)));
+        }
+        sub.setOperands(operands);
+        return sub;
       case LLVMGetElementPtr:
         //LLVMDumpValue(valueRef);
         List<Constant> idxList = new ArrayList<>();
@@ -648,6 +682,21 @@ public class Converter {
         }
         pti.setOperands(operands);
         return pti;
+      case LLVMIntToPtr:
+        type = getType(LLVMTypeOf(valueRef));
+        //LLVMDumpValue(valueRef);
+        UnaryConstantExpr itp =
+            UnaryConstantExpr.getInstance(
+                LLVMGetValueName(valueRef).getString(),
+                type,
+                OpCode.INTTOPTR,
+                convertValueToConstant(LLVMGetOperand(valueRef, 0)),
+                type);
+        for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
+          operands.add(convert(LLVMGetOperand(valueRef, i)));
+        }
+        itp.setOperands(operands);
+        return itp;
       default:
         System.out.println(opcode);
         assert false : "unhandled constant expr type";

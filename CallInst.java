@@ -105,12 +105,12 @@ public class CallInst extends Instruction {
   }
 
   public Value getArgOperand(int i) {
-    assert i >= 0 && i < getNumArgOperands() : "Out of bounds!";
+    assert i >= 0 && i <= getNumArgOperands() : "Out of bounds!";
     return getOperand(i);
   }
 
   public Use getArgOperandUse(int i) {
-    assert i >= 0 && i < getNumArgOperands() : "Out of bounds!";
+    assert i >= 0 && i <= getNumArgOperands() : "Out of bounds!";
     return getOperandUse(i);
   }
 

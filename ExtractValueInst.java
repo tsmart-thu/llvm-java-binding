@@ -21,6 +21,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
+import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 import com.google.common.collect.ImmutableList;
@@ -62,5 +63,19 @@ public class ExtractValueInst extends UnaryInstruction {
   @Override
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
+  }
+
+  @Override
+  public String toString() {
+    CallInst callInst = Casting.dyncast(getOperand(0), CallInst.class);
+    String res = "%" + getName().toString() + " = " + getOpcode().toString() + " " + callInst.getType().toString();
+    res += " %" + callInst.getName().toString() + ", ";
+    for(int i = 0; i <= callInst.getNumArgOperands(); i++) {
+      if(callInst.getArgOperandUse(i).getUser() == this) {
+        res += callInst.getNumArgOperands() - i;
+        break;
+      }
+    }
+    return res;
   }
 }
