@@ -130,7 +130,7 @@ public class SwitchInst extends TerminatorInst {
 
   @Override
   public String toString() {
-    String res = "switch ";
+    /*String res = "switch ";
     res += getCondition().getType().toString() + " ";
     res += Formatter.asOperand(getCondition());
     res += ", label %" + getDefaultDest().getName();
@@ -140,7 +140,25 @@ public class SwitchInst extends TerminatorInst {
       ConstantInt constantInt = findCaseDest(basicBlock);
       res += "    " + constantInt.getType().toString() + " " + constantInt.toString() + ", label %" + basicBlock.getName() + "\n";
     }
-    res += "  ]";
+    res += "  ]";*/
+    String res = getOpcode().toString() + " ";
+    for(int i = 0; i < getNumOperands(); i++) {
+      res += getOperand(i).getType().toString() + " ";
+      if(getOperand(i).getName().equals("CONSTANT_INT")) {
+        res += getOperand(i).toString();
+        res += ", ";
+      } else {
+        res += "%" + getOperand(i).getName();
+        if(i == 0)
+          res += ", ";
+        else if(i == 1)
+          res += " [\n    ";
+        else if(i == getNumOperands() - 1)
+          res += "\n  ]";
+        else
+          res += "\n    ";
+      }
+    }
     return res;
   }
 }

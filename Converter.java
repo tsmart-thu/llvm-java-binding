@@ -286,13 +286,25 @@ public class Converter {
       case LLVMLoad:
         {
           int alignment = LLVMGetAlignment(inst);
+          boolean isVolatile;
+          if(LLVMGetVolatile(inst) != 0)
+            isVolatile = true;
+          else
+            isVolatile = false;
           instruction = new LoadInst(name, type, alignment);
+          ((LoadInst)instruction).setVolatile(isVolatile);
         }
         break;
       case LLVMStore:
         {
           int alignment = LLVMGetAlignment(inst);
+          boolean isVolatile;
+          if(LLVMGetVolatile(inst) != 0)
+            isVolatile = true;
+          else
+            isVolatile = false;
           instruction = new StoreInst(name, type, alignment);
+          ((StoreInst)instruction).setVolatile(isVolatile);
         }
         break;
       case LLVMGetElementPtr:

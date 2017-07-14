@@ -106,6 +106,8 @@ public class StoreInst extends Instruction {
   @Override
   public String toString() {
     String res = "store ";
+    if(isVolatile())
+      res += "volatile ";
     Value operand0 = getOperand(0);
     res += operand0.getType().toString() + " ";
     res += Formatter.asOperand(operand0);

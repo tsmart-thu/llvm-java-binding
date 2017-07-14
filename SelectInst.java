@@ -55,4 +55,24 @@ public class SelectInst extends Instruction {
   public static Instruction create(Value operand, Value operand1, Value operand2) {
     throw new NotImplementedException();
   }
+
+  @Override
+  public String toString() {
+    String res = "%" + getName().toString() + " = ";
+    res += getOpcode() + " ";
+    for(int i = 0; i < getNumOperands(); i++) {
+      res += getOperand(i).getType().toString() + " ";
+      if(getOperand(i).getType().isPointerTy()) {
+        res += "@" + getOperand(i).getName().toString();
+      } else if(getOperand(i).getName().equals("CONSTANT_INT")) {
+        res += getOperand(i).toString();
+      } else {
+        res += "%" + getOperand(i).getName().toString();
+      }
+      if(i != getNumOperands() - 1) {
+        res += ", ";
+      }
+    }
+    return res;
+  }
 }

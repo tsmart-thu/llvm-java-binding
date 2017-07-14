@@ -567,6 +567,8 @@ public class Type {
       return "double";
     } else if(isX86_FP80T()) {
       return "x86_fp80";
+    } else if(isLabelTy()) {
+      return "label";
     }
     return "TYPE";
   }

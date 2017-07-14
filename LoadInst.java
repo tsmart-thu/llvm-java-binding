@@ -108,11 +108,15 @@ public class LoadInst extends UnaryInstruction {
   @Override
   public String toString() {
     String res = "%" + getName() + " = load ";
+    if(isVolatile())
+      res += "volatile ";
     res += getType().toString();
     Value operand = getOperand(0);
     res += ", " + operand.getType().toString();
     res += " " + Formatter.asOperand(operand);
     res += ", align " + getAlignment();
+    if(!res.equals(getOriginalText()))
+      System.out.println(" ");
     return res;
   }
 }
