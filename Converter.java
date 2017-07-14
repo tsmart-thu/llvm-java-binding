@@ -437,6 +437,8 @@ public class Converter {
   private void parseFlag(String originalText, OperatorFlags flag) {
     if (originalText.contains("nsw")) {
       flag.setNoSignedWrapFlag();
+    } else if(originalText.contains(("nuw"))) {
+      flag.setNoUnsignedWrapFlag();
     }
   }
 
