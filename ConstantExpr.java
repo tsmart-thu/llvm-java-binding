@@ -99,12 +99,14 @@ public abstract class ConstantExpr extends Constant {
       case SHUFFLEVECTOR: {
         ShuffleVectorInst shuffleVectorInst = new ShuffleVectorInst("", getType());
         shuffleVectorInst.setOperands(getOperands());
+        return shuffleVectorInst;
       }
       case GETELEMENTPTR: {
         GetElementPtrConstantExpr gep = (GetElementPtrConstantExpr) this;
         GetElementPtrInst inst = new GetElementPtrInst("", getType());
         inst.setIsInBounds(gep.isInBounds());
         inst.setOperands(getOperands());
+        return inst;
       }
       default:
         throw new NotImplementedException();
