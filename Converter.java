@@ -564,7 +564,7 @@ public class Converter {
       case LLVMConstantPointerNullValueKind:
         return new ConstantPointerNull(getType(LLVMTypeOf(valueRef)));
       case LLVMConstantFPValueKind:
-        throw new NotImplementedException();
+        return convertValueToConstantFP(valueRef);
       case LLVMFunctionValueKind:
         return context.getFunction(valueRef);
       case LLVMGlobalVariableValueKind:
@@ -577,6 +577,14 @@ public class Converter {
         assert false : "unhandled value kind:" + valueKind;
     }
     return null;
+  }
+
+  private Constant convertValueToConstantFP(LLVMValueRef valueRef) {
+    Type type = getType(LLVMTypeOf(valueRef));
+    int[] losses = new int[10];
+    double value = LLVMConstRealGetDouble(valueRef, losses);
+    ConstantFP constantFP = new ConstantFP("", type, value);
+    return constantFP;
   }
 
   private Constant convertValueToConstantStruct(LLVMValueRef valueRef) {

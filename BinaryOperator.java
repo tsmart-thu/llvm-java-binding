@@ -77,6 +77,8 @@ public class BinaryOperator extends Instruction {
         return "xor";
       case SREM:
         return "srem";
+      case FDIV:
+        return "fdiv";
     }
     return "";
   }

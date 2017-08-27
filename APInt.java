@@ -680,4 +680,12 @@ public class APInt {
     long byteSize = (bitWidth % 8) == 0 ? bitWidth / 8 : bitWidth / 8 + 1;
     return byteSize + " byte, value = " + val.toString();
   }
+
+  public static APInt floatToBits(float f) {
+    return new APInt(32, Float.floatToRawIntBits(f), true);
+  }
+
+  public static APInt doubleToBits(double d) {
+    return new APInt(64, Double.doubleToRawLongBits(d), true);
+  }
 }

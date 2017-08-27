@@ -64,11 +64,16 @@ public class FCmpInst extends CmpInst {
 
   @Override
   public String toString() {
-    String res = "%" + getName().toString() + " = " + getOpcode().toString();
+    String res = "%" + getName() + " = " + getOpcode().toString();
     res += " " + getPredicate().toString();
     res += " " + getOperand(0).getType().toString() + " ";
     for(int i = 0; i < getNumOperands(); i++) {
-      res += "%" + getOperand(i).getName().toString();
+      Value operand = getOperand(i);
+      if (operand instanceof Constant) {
+        res += operand.toString();
+      } else {
+        res += "%" + operand.getName();
+      }
       if(i != getNumOperands() - 1)
         res += ", ";
     }
