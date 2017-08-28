@@ -25,9 +25,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 public class ConstantFP extends ConstantData {
   private APFloat apFloat;
 
-  public ConstantFP(String name, Type type, double value) {
+  public ConstantFP(String name, Type type, double value, boolean isHex) {
     super(name, type);
-    apFloat = new APFloat(value);
+    apFloat = new APFloat(value, isHex);
   }
 
   @Override

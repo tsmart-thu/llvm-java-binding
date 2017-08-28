@@ -583,7 +583,14 @@ public class Converter {
     Type type = getType(LLVMTypeOf(valueRef));
     int[] losses = new int[10];
     double value = LLVMConstRealGetDouble(valueRef, losses);
-    ConstantFP constantFP = new ConstantFP("", type, value);
+    BytePointer bytePointer = LLVMPrintValueToString(valueRef);
+    String originalText = bytePointer.getString().trim();
+    ConstantFP constantFP;
+    if (originalText.indexOf('x') >= 0) {
+      constantFP = new ConstantFP("", type, value, true);
+    } else {
+      constantFP = new ConstantFP("", type, value, false);
+    }
     return constantFP;
   }
 

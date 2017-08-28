@@ -23,12 +23,13 @@ import com.google.common.base.Preconditions;
 import com.google.common.primitives.UnsignedInteger;
 import java.math.BigInteger;
 import javolution.io.Union;
-import org.apfloat.Apfloat;
 
 /**
  * @author guangchen on 05/07/2017.
  */
 public class APFloat {
+
+  private boolean isHex = false;
   private FltSemantics semantics;
   private Significand significand;
   private int sign = 1;
@@ -180,9 +181,10 @@ public class APFloat {
   }
   private double dValue;
   private boolean initFromDValue = false;
-  public APFloat(double d) {
+  public APFloat(double d, boolean isHex) {
     this.dValue = d;
     this.initFromDValue = true;
+    this.isHex = isHex;
 //    initFromAPInt(semIEEEdouble, APInt.doubleToBits(d));
   }
   public APFloat(float f) {
@@ -338,7 +340,7 @@ public class APFloat {
   }
   public void clearSign() {
   }
-  public void copySign(Apfloat rhs) {
+  public void copySign(APFloat rhs) {
   }
   public APInt bitcastToAPInt() {
     return new APInt(0, new BigInteger("0"));
@@ -349,7 +351,7 @@ public class APFloat {
   public float convertToFloat() {
     return 0.0f;
   }
-  public CmpResult compare(Apfloat rhs) {
+  public CmpResult compare(APFloat rhs) {
     return CmpResult.CmpEqual;
   }
   public boolean bitwiseIsEqual(APFloat rhs) {
@@ -404,6 +406,9 @@ public class APFloat {
   @Override
   public String toString() {
     if (this.initFromDValue) {
+      if (this.isHex) {
+        return String.format("0x%16X", Double.doubleToLongBits(dValue));
+      }
       return String.format("%e", dValue);
     }
     switch (category) {
