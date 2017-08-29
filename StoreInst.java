@@ -114,7 +114,9 @@ public class StoreInst extends Instruction {
     Value operand1 = getOperand(1);
     res += ", " + operand1.getType().toString() + " ";
     res += Formatter.asOperand(operand1);
-    res += ", align " + getAlignment();
+    if (getAlignment() != 0) {
+      res += ", align " + getAlignment();
+    }
     return res;
   }
 }
