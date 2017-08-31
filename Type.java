@@ -295,6 +295,16 @@ public class Type {
   }
 
   public int getNumContainedTypes() {
+    if (this instanceof ArrayType) {
+      ArrayType arrayType = (ArrayType) this;
+      return (int) arrayType.getNumElements();
+    } else if (this instanceof StructType) {
+      StructType structType = (StructType) this;
+      return structType.getNumElements();
+    } else if (this instanceof VectorType) {
+      VectorType vectorType = (VectorType) this;
+      return vectorType.getNumElements();
+    }
     throw new NotImplementedException();
   }
 
