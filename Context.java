@@ -42,7 +42,9 @@ public class Context {
   private final Map<LLVMValueRef, GlobalVariable> globalVariableMap = new HashMap<>();
   private final Map<LLVMValueRef, Argument> argumentMap = new HashMap<>();
   private final Map<Type, ConstantAggregateZero> cazMap = new HashMap<>();
+  private final Map<Integer, String> filenameMap = new HashMap<>();
   private DataLayout dataLayout;
+  private Map<String, Instruction> nameInstructionMap = new HashMap<>();
 
   /**
    * Create an empty context
@@ -87,6 +89,10 @@ public class Context {
 
   public void putInst(LLVMValueRef valueRef, Instruction instruction) {
     valueRefInstructionMap.put(valueRef, instruction);
+    String name = LLVMGetValueName(valueRef).getString();
+    if(!name.equals("")) {
+      nameInstructionMap.put(name, instruction);
+    }
   }
 
   public void putFunction(LLVMValueRef valueRef, LlvmFunction function) {
@@ -95,6 +101,10 @@ public class Context {
 
   public Instruction getInst(LLVMValueRef valueRef) {
     return valueRefInstructionMap.get(valueRef);
+  }
+
+  public Instruction getInstByName(String name) {
+    return nameInstructionMap.get(name);
   }
 
   public void putBasicBlock(LLVMBasicBlockRef bb, BasicBlock basicBlock) {
@@ -147,5 +157,11 @@ public class Context {
 
   public void putCAZConstants(Type type, ConstantAggregateZero entry) {
     this.cazMap.put(type, entry);
+  }
+
+  public String getFilename(Integer i) {return filenameMap.get(i);}
+
+  public void putFilename(Integer i, String m) {
+    this.filenameMap.put(i, m);
   }
 }

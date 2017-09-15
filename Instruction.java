@@ -37,6 +37,9 @@ public abstract class Instruction extends User implements IInstruction {
   // initialized in child class
   protected OpCode opCode;
   protected InstructionProperties.OperatorFlags operatorFlags;
+  protected  Metadata metadata;
+
+  public void setMetadata(Metadata m) { metadata = m; }
 
   // only for Converter
   public void setParent(BasicBlock block) {

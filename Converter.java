@@ -162,11 +162,7 @@ public class Converter {
       name = "" + unnamedIndex;
       unnamedIndex++;
     }
-    if (LLVMHasMetadata(inst) != 0) {
-      LLVMValueRef dbg = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
-      //      LLVMDumpValue(dbg);
 
-    }
     Type type = getType(LLVMTypeOf(inst));
     switch (opcode) {
       case LLVMRet:
@@ -390,6 +386,32 @@ public class Converter {
       case LLVMCall:
         {
           CallInst callInst = new CallInst(name, type);
+          String[] s = originalText.split("\\(|\\)");
+          if(s.length >= 2) {
+            if(s[0].equals("call void @llvm.dbg.declare")) {
+              if(s.length > 3) {
+                s[1] = s[1] + s[s.length - 2];
+              }
+              String[] s1 = s[1].split(", ");
+              String[] sss = s1[0].split(" ");
+              Instruction in = this.context.getInstByName(sss[sss.length - 1].replace("%", ""));
+              BytePointer bp = LLVMPrintValueToString(LLVMGetOperand(inst, 1));
+              String ot = bp.getString().trim();
+              String[] s2 = ot.split(" = |\\(|\\)");
+              Metadata md = new Metadata();
+              if(s2[1].equals("!DILocalVariable")) {
+                md.setFile(this.context.getFilename(1));
+                md.setColumn(0);
+                String[] ss = (s2[2]).split(", |: ");
+                for(int i = 0; i < ss.length; i = i + 2) {
+                  if(ss[i].equals("line")) {
+                    md.setLine(Integer.parseInt(ss[i + 1]));
+                  }
+                }
+              }
+              in.setMetadata(md);
+            }
+          }
           callInst.setNumArgs(LLVMGetNumArgOperands(inst));
           instruction = callInst;
         }
@@ -423,6 +445,25 @@ public class Converter {
         break;
       default:
         throw new IllegalArgumentException("Unhandled instruction: " + inst.toString());
+    }
+    if (LLVMHasMetadata(inst) != 0) {
+      LLVMValueRef dbg = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
+      BytePointer bp = LLVMPrintValueToString(dbg);
+      String ot = bp.getString().trim();
+      String[] s = ot.split(" = |\\(|\\)");
+      Metadata md = new Metadata();
+      if(s[1].equals("!DILocation")) {
+        md.setFile(this.context.getFilename(1));
+        String[] ss = (s[2]).split(", |: ");
+        for(int i = 0; i < ss.length; i = i + 2) {
+          if(ss[i].equals("line")) {
+            md.setLine(Integer.parseInt(ss[i + 1]));
+          } else if(ss[i].equals("column")) {
+            md.setColumn(Integer.parseInt(ss[i + 1]));
+          }
+        }
+      }
+      instruction.setMetadata(md);
     }
     context.putInst(inst, instruction);
     List<Value> operands = new ArrayList<>();
@@ -533,7 +574,9 @@ public class Converter {
         return context.getBasicBlock(LLVMValueAsBasicBlock(valueRef));
       case LLVMMetadataAsValueValueKind:
         // TODO metadata
-        throw new NotImplementedException();
+        return new Metadata();
+        //System.out.println(originalText);
+        //throw new NotImplementedException();
       case LLVMArgumentValueKind:
         {
           Argument argument = context.getArgument(valueRef);
@@ -838,7 +881,7 @@ public class Converter {
         throw new NotImplementedException();
     }
     context.putType(typeRef, result);
-    if (result.isFunctionTy() || result.isVoidTy()) {
+    if (result.isFunctionTy() || result.isVoidTy() || result.isMetadataTy()) {
       return result;
     }
     context.putTypeStoreSize(result, LLVMStoreSizeOfType(targetDataRef, typeRef));

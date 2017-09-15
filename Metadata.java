@@ -22,5 +22,26 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 /**
  * @author guangchen on 16/04/2017.
  */
-public class Metadata {
+public class Metadata extends Value {
+  private String file;
+  private int line;
+  private int column;
+  public String getFile() {
+    return file;
+  }
+  public int getLine() {
+    return line;
+  }
+  public int getColumn() {
+    return column;
+  }
+  public void setFile(String f) {
+    file = f;
+  }
+  public void setLine(int l) {
+    line = l;
+  }
+  public void setColumn(int c) {
+    column = c;
+  }
 }
