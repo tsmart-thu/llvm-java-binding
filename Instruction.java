@@ -154,7 +154,7 @@ public abstract class Instruction extends User implements IInstruction {
   / getDebugLoc
   */
   
-  protected OperatorFlags getOperatorFlags() {
+  public OperatorFlags getOperatorFlags() {
     return this.operatorFlags;
   }
 

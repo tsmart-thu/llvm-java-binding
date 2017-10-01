@@ -205,6 +205,10 @@ public class InstructionProperties {
       return (flags & FAST) != 0;
     }
 
+    public int getValue() {
+      return flags;
+    }
+
     @Override
     public String toString() {
       if (hasNoSignedWrapFlag()) {
