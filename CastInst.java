@@ -56,7 +56,7 @@ public class CastInst extends UnaryInstruction {
 
     Type srcTy = getOperand(0).getType();
     Type dstTy = getType();
-    if (srcTy == dstTy) {
+    if (srcTy.equals(dstTy)) {
       return true;
     }
 
