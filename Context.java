@@ -89,7 +89,8 @@ public class Context {
 
   public void putInst(LLVMValueRef valueRef, Instruction instruction) {
     valueRefInstructionMap.put(valueRef, instruction);
-    String name = LLVMGetValueName(valueRef).getString();
+    //String name = LLVMGetValueName(valueRef).getString();
+    String name = instruction.getName();
     if(!name.equals("")) {
       nameInstructionMap.put(name, instruction);
     }
