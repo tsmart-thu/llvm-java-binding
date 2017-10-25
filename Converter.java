@@ -410,6 +410,8 @@ public class Converter {
                 }
               }
               in.setMetadata(md);
+            } else if(s[0].startsWith("call void asm")) {
+              callInst.setInlineAsm(true);
             }
           }
           callInst.setNumArgs(LLVMGetNumArgOperands(inst));
@@ -585,7 +587,12 @@ public class Converter {
         }
       case LLVMInlineAsmValueKind:
         // TODO inline asm
-        throw new NotImplementedException();
+        BytePointer bytePointer = LLVMPrintValueToString(valueRef);
+        String originalText = bytePointer.getString().trim();
+        CallInst callInst = new CallInst(LLVMGetValueName(valueRef).getString(), getType(LLVMTypeOf(valueRef)));
+        callInst.setInlineAsm(true);
+        callInst.setOriginalText(originalText);
+        return callInst;
     }
     LLVMDumpValue(valueRef);
     System.out.println(LLVMGetValueKind(valueRef));
