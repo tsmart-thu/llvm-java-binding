@@ -21,6 +21,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.base.Preconditions;
+import org.sosy_lab.java_smt.api.FormulaType.FloatingPointType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** @author guangchen on 01/03/2017. */
@@ -280,6 +281,16 @@ public class Type {
     if (isX86_FP80T()) return 64;
     if (isFP128Ty()) return 113;
     return -1;
+  }
+/*
+Mine
+ */
+  public int getFPExponentWidth(){
+    if(isFloatingPointTy()){
+      FloatingPointType floatingPointType = Casting.dyncast(this, FloatingPointType.class);
+      return floatingPointType.getExponentSize();
+    }
+    return 0;
   }
 
   public Type getScalarType() {
