@@ -21,6 +21,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.base.Preconditions;
+import org.sosy_lab.java_smt.api.FormulaType.FloatingPointType;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** @author guangchen on 01/03/2017. */
