@@ -282,16 +282,6 @@ public class Type {
     if (isFP128Ty()) return 113;
     return -1;
   }
-/*
-Mine
- */
-  public int getFPExponentWidth(){
-    if(isFloatingPointTy()){
-      FloatingPointType floatingPointType = Casting.dyncast(this, FloatingPointType.class);
-      return floatingPointType.getExponentSize();
-    }
-    return 0;
-  }
 
   public Type getScalarType() {
     VectorType vectorType = Casting.dyncast(this, VectorType.class);
