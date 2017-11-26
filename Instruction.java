@@ -145,7 +145,6 @@ public abstract class Instruction extends User implements IInstruction {
   TODO api involving metadata
   / hasMetadata
   / hasMetadataOtherThanDebugLoc
-  / getMetadata
   / getAllMetadata
   / getAllMetadataOtherThanDebugLoc
   / getAAMetadata
@@ -153,6 +152,8 @@ public abstract class Instruction extends User implements IInstruction {
   / extractProfTotalWeight
   / getDebugLoc
   */
+
+  public Metadata getMetadata() { return metadata; }
   
   public OperatorFlags getOperatorFlags() {
     return this.operatorFlags;

@@ -16,7 +16,7 @@ public class IRReader {
     LLVMCreateMemoryBufferWithContentsOfFile(new BytePointer(fileName), bufferRef, outMessage);
     LLVMModuleRef moduleRef = new LLVMModuleRef();
     LLVMParseIRInContext(context.getContextRef(), bufferRef, moduleRef, outMessage);
-    //get debug info
+    //get filename
     File file = new File(fileName);
     BufferedReader reader = null;
     try {
