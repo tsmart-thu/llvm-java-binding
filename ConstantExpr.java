@@ -21,7 +21,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.Predicate;
-import cn.edu.thu.tsmart.core.cfa.util.Casting;
+import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
@@ -108,8 +108,40 @@ public abstract class ConstantExpr extends Constant {
         inst.setOperands(getOperands());
         return inst;
       }
-      default:
+      // TODO BinaryConstantExpr
+      case ADD:
+      case FADD:
+      case SUB:
+      case FSUB:
+      case MUL:
+      case FMUL:
+      case UDIV:
+      case SDIV:
+      case UREM:
+      case SREM:
+      case FREM:
+      case SHL:
+      case LSHR:
+      case ASHR:
+      case AND:
+      case OR:
+      case XOR:
+      // TODO CompareConstantExpr
+      case FCMP:
+      case ICMP:
+      // TODO ExtractValueConstantExpr
+      case EXTRACTVALUE:
+      // TODO InsertValueConstantExpr
+      case INSERTVALUE:
+      // TODO UnaryConstantExpr
+      case ALLOCA:
+      case LOAD:
+      case STORE:
+      case VA_ARG:
         throw new NotImplementedException();
+      default:
+        Preconditions.checkArgument(false, "Unhandled getAsInstruction Opcode" + opCode.toString());
+        return null;
     }
   }
 }
