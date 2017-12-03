@@ -25,6 +25,8 @@ import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 import com.google.common.collect.ImmutableList;
+import java.util.Arrays;
+import java.util.List;
 
 /**
  * @author guangchen on 27/02/2017.
@@ -63,6 +65,14 @@ public class ExtractValueInst extends UnaryInstruction {
   @Override
   public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
     return visitor.visit(this);
+  }
+
+  public static Instruction create(Value operand, ImmutableList<Integer> indices) {
+    List<Value> list = Arrays.asList(operand);
+    ExtractValueInst instruction = new ExtractValueInst("", null);
+    instruction.setOperands(list);
+    instruction.setIndices(indices);
+    return instruction;
   }
 
   @Override

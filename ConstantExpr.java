@@ -108,7 +108,6 @@ public abstract class ConstantExpr extends Constant {
         inst.setOperands(getOperands());
         return inst;
       }
-      // TODO BinaryConstantExpr
       case ADD:
       case FADD:
       case SUB:
@@ -125,14 +124,19 @@ public abstract class ConstantExpr extends Constant {
       case ASHR:
       case AND:
       case OR:
-      case XOR:
-      // TODO CompareConstantExpr
+      case XOR: {
+        return BinaryOperator.create(getOpcode(), getOperand(0), getOperand(1));
+      }
       case FCMP:
-      case ICMP:
-      // TODO ExtractValueConstantExpr
-      case EXTRACTVALUE:
-      // TODO InsertValueConstantExpr
-      case INSERTVALUE:
+      case ICMP: {
+        return CmpInst.create(getOpcode(), getPredicate(), getOperand(0), getOperand(1));
+      }
+      case EXTRACTVALUE: {
+        return ExtractValueInst.create(getOperand(0), getIndices());
+      }
+      case INSERTVALUE: {
+        return InsertValueInst.create(getOperand(0), getOperand(1), getIndices());
+      }
       // TODO UnaryConstantExpr
       case ALLOCA:
       case LOAD:

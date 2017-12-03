@@ -21,6 +21,10 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
 
+import java.util.Arrays;
+import java.util.List;
+import sun.reflect.generics.reflectiveObjects.NotImplementedException;
+
 /**
  * @author guangchen on 27/02/2017.
  */
@@ -283,5 +287,18 @@ public abstract class CmpInst extends Instruction {
 
   public static boolean isImpliedFalseByMatchingCmp(Predicate pred1, Predicate pred2) {
     return isImpliedTrueByMatchingCmp(pred1, getInversePredicate(pred2));
+  }
+
+  public static Instruction create(OpCode opCode, Predicate predicate, Value op1, Value op2) {
+    List<Value> list = Arrays.asList(op1, op2);
+    if(opCode == OpCode.ICMP) {
+      ICmpInst instruction = new ICmpInst("", null, predicate);
+      instruction.setOperands(list);
+      return instruction;
+    } else {
+      FCmpInst instruction = new FCmpInst("", null, predicate);
+      instruction.setOperands(list);
+      return instruction;
+    }
   }
 }

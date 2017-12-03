@@ -22,6 +22,8 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
+import java.util.Arrays;
+import java.util.List;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlags;
@@ -81,6 +83,13 @@ public class BinaryOperator extends Instruction {
         return "fdiv";
     }
     return "";
+  }
+
+  public static Instruction create(OpCode opCode, Value operand1, Value operand2) {
+    List<Value> list = Arrays.asList(operand1, operand2);
+    BinaryOperator instruction = new BinaryOperator("", operand1.getType(), opCode);
+    instruction.setOperands(list);
+    return instruction;
   }
 
   @Override

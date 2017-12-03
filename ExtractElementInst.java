@@ -23,6 +23,8 @@ import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
+import java.util.Arrays;
+import java.util.List;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -43,6 +45,9 @@ public class ExtractElementInst extends Instruction {
   }
 
   public static Instruction create(Value operand, Value operand1) {
-    throw new NotImplementedException();
+    List<Value> list = Arrays.asList(operand, operand1);
+    ExtractElementInst instruction = new ExtractElementInst("", null);
+    instruction.setOperands(list);
+    return instruction;
   }
 }

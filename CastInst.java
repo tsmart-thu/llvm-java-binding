@@ -25,6 +25,9 @@ import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
+import com.google.common.base.Preconditions;
+import java.util.Arrays;
+import java.util.List;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -124,6 +127,75 @@ public class CastInst extends UnaryInstruction {
   }
 
   public static Instruction create(OpCode opcode, Value operand, Type type) {
-    throw new NotImplementedException();
+    List<Value> list = Arrays.asList(operand);
+    switch (opcode) {
+      case TRUNC: {
+        TruncInst instruction = new TruncInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      case ZEXT: {
+        ZExtInst instruction = new ZExtInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      case SEXT: {
+        SExtInst instruction = new SExtInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      case FPTRUNC: {
+        FPTruncInst instruction = new FPTruncInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      case FPEXT: {
+        FPExtInst instruction = new FPExtInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      case UITOFP: {
+        UIToFPInst instruction = new UIToFPInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      case SITOFP: {
+        SIToFPInst instruction = new SIToFPInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      case FPTOUI: {
+        FPToUIInst instruction = new FPToUIInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      case FPTOSI: {
+        FPToSIInst instruction = new FPToSIInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      case PTRTOINT: {
+        PtrToIntInst instruction = new PtrToIntInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      case INTTOPTR: {
+        IntToPtrInst instruction = new IntToPtrInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      case BITCAST: {
+        BitCastInst instruction = new BitCastInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      case ADDRSPACECAST: {
+        AddrSpaceCastInst instruction = new AddrSpaceCastInst("", type);
+        instruction.setOperands(list);
+        return instruction;
+      }
+      default: Preconditions.checkArgument(false, "Invalid opcode provided" + opcode.toString());
+        return null;
+    }
   }
 }
