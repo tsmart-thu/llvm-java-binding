@@ -23,6 +23,8 @@ import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
 
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
+import java.util.Arrays;
+import java.util.List;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /**
@@ -53,7 +55,10 @@ public class SelectInst extends Instruction {
   }
 
   public static Instruction create(Value operand, Value operand1, Value operand2) {
-    throw new NotImplementedException();
+    List<Value> list = Arrays.asList(operand, operand1, operand2);
+    SelectInst instruction = new SelectInst("", null);
+    instruction.setOperands(list);
+    return instruction;
   }
 
   @Override

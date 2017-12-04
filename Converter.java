@@ -62,7 +62,8 @@ public class Converter {
       String name = LLVMGetValueName(g).getString();
       Type type = getType(LLVMTypeOf(g));
       Constant init = Casting.castOrNull(convert(LLVMGetInitializer(g)), Constant.class);
-      GlobalVariable variable = new GlobalVariable(name, type, init);
+      Metadata m = context.getGlobalVariableMetadata(name);
+      GlobalVariable variable = new GlobalVariable(name, type, init, m);
       context.putGlobalVariable(g, variable);
       globalList.add(variable);
     }

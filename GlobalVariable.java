@@ -24,15 +24,19 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  */
 public class GlobalVariable extends GlobalObject {
     private Constant initializer;
+    private Metadata metadata;
 
-    public GlobalVariable(String name, Type type, Constant init) {
+    public GlobalVariable(String name, Type type, Constant init, Metadata pMetadata) {
         super(name, type);
         this.initializer = init;
+        this.metadata = pMetadata;
     }
 
     public Constant getInitializer() {
         return initializer;
     }
+
+    public Metadata getMetadata() { return metadata; }
 
     @Override
     public String toString() {

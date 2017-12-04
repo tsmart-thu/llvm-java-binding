@@ -25,14 +25,9 @@ import cn.edu.thu.tsmart.core.exceptions.CPAException;
 /**
  * @author guangchen on 27/02/2017.
  */
-public class FuncletPadInst extends Instruction {
+public abstract class FuncletPadInst extends Instruction {
 
   protected FuncletPadInst(String name, Type type) {
     super(name, type);
-  }
-
-  @Override
-  public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
-    return visitor.visit(this);
   }
 }

@@ -43,6 +43,7 @@ public class Context {
   private final Map<LLVMValueRef, Argument> argumentMap = new HashMap<>();
   private final Map<Type, ConstantAggregateZero> cazMap = new HashMap<>();
   private final Map<Integer, String> filenameMap = new HashMap<>();
+  private final Map<String, Metadata> globalVariableMetadataMap = new HashMap<>();
   private DataLayout dataLayout;
   private Map<String, Instruction> nameInstructionMap = new HashMap<>();
 
@@ -164,5 +165,11 @@ public class Context {
 
   public void putFilename(Integer i, String m) {
     this.filenameMap.put(i, m);
+  }
+
+  public Metadata getGlobalVariableMetadata(String name) {return globalVariableMetadataMap.get(name);}
+
+  public void putGlobalVariableMetadata(String name, Metadata m) {
+    this.globalVariableMetadataMap.put(name, m);
   }
 }
