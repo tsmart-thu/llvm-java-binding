@@ -101,6 +101,7 @@ public class Converter {
         bb = LLVMGetNextBasicBlock(bb)) {
       BasicBlock block = new BasicBlock();
       basicBlockList.add(block);
+      block.setParent(value);
       basicBlockRefs.add(bb);
       context.putBasicBlock(bb, block);
     }
@@ -128,6 +129,7 @@ public class Converter {
         inst = LLVMGetNextInstruction(inst)) {
       Instruction instruction = convertValueToInstruction(inst);
       instructionList.add(instruction);
+      instruction.setParent(block);
       context.putInst(inst, instruction);
     }
     for (LLVMValueRef inst = LLVMGetFirstInstruction(ref);
