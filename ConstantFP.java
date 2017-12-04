@@ -23,11 +23,15 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 10/08/2017.
  */
 public class ConstantFP extends ConstantData {
-  private APFloat apFloat;
+  private final APFloat apFloat;
 
   public ConstantFP(String name, Type type, double value, boolean isHex) {
     super(name, type);
     apFloat = new APFloat(value, isHex);
+  }
+
+  public APFloat getValue() {
+    return apFloat;
   }
 
   @Override
