@@ -21,6 +21,9 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.*;
 
+import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
+import cn.edu.thu.tsmart.core.exceptions.CPAException;
+
 /**
  * @author guangchen on 27/02/2017.
  */
@@ -29,5 +32,10 @@ public class CatchPadInst extends FuncletPadInst {
   public CatchPadInst(String name, Type type) {
     super(name, type);
     super.opCode = OpCode.CATCHPAD;
+  }
+
+  @Override
+  public <R, E extends CPAException> R accept(InstructionVisitor<R, E> visitor) throws E {
+    return visitor.visit(this);
   }
 }
