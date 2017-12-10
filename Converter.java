@@ -26,6 +26,7 @@ import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.util.TreeMap;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
@@ -55,7 +56,8 @@ public class Converter {
     targetDataRef = LLVMGetModuleDataLayout(moduleRef);
     SizeTPointer sizeTPointer = new SizeTPointer(64);
     String moduleIdentifier = LLVMGetModuleIdentifier(moduleRef, sizeTPointer).getString();
-    Map<String, LlvmFunction> functionMap = new HashMap<>();
+    // Important make function order natural
+    Map<String, LlvmFunction> functionMap = new TreeMap<>();
     // create globals
     List<GlobalVariable> globalList = new ArrayList<>();
     for (LLVMValueRef g = LLVMGetFirstGlobal(moduleRef); g != null; g = LLVMGetNextGlobal(g)) {
