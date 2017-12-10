@@ -23,6 +23,7 @@ import cn.edu.thu.tsmart.core.cfa.llvm.Attribute.AttributeKind;
 import com.google.common.collect.ImmutableSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 import javax.annotation.Nullable;
 
 /**
@@ -89,5 +90,41 @@ public class LlvmFunction extends GlobalObject {
     String res = "@";
     res += getName().toString();
     return res;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+
+    LlvmFunction that = (LlvmFunction) o;
+
+    if (!Objects.equals(getName(), that.getName())) {
+      return false;
+    }
+
+    if (basicBlockList.size() != that.basicBlockList.size()) {
+      return false;
+    }
+    for (int i = 0; i < basicBlockList.size(); ++i) {
+      if (! basicBlockList.get(i).equals(that.basicBlockList.get(i))) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    int result = basicBlockList.hashCode();
+    if (getName() != null) {
+      result += 31 * result + getName().hashCode();
+    }
+    return result;
   }
 }

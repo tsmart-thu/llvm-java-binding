@@ -44,4 +44,27 @@ public class GlobalVariable extends GlobalObject {
         res += getName().toString();
         return res;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        GlobalVariable that = (GlobalVariable) o;
+
+        if (!initializer.equals(that.initializer)) {
+            return false;
+        }
+        return metadata.equals(that.metadata);
+    }
+
+    @Override
+    public int hashCode() {
+        int result = toString().hashCode();
+        return result;
+    }
 }

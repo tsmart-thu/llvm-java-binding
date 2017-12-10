@@ -57,4 +57,33 @@ public class BasicBlock extends Value {
     public void setParent(LlvmFunction parent) {
         this.parent = parent;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) {
+            return true;
+        }
+        if (o == null || getClass() != o.getClass()) {
+            return false;
+        }
+
+        BasicBlock that = (BasicBlock) o;
+
+        if (instList.size() != that.instList.size()) {
+            return false;
+        }
+
+        for (int i = 0; i < instList.size(); ++i) {
+            if (! instList.get(i).toString().equals(that.instList.get(i).toString())) {
+                return false;
+            }
+        }
+
+        return true;
+    }
+
+    @Override
+    public int hashCode() {
+        return instList.hashCode();
+    }
 }
