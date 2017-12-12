@@ -92,7 +92,9 @@ public class Converter {
     // set argument
     List<Argument> argumentList = new ArrayList<>();
     for (LLVMValueRef arg = LLVMGetFirstParam(key); arg != null; arg = LLVMGetNextParam(arg)) {
-      argumentList.add(convertValueToArgument(arg));
+      Argument convArg = convertValueToArgument(arg);
+      convArg.setFunction(value);
+      argumentList.add(convArg);
     }
     value.setArgumentList(argumentList);
     // set basicBlockList

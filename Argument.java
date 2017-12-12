@@ -23,7 +23,18 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  * @author guangchen on 08/06/2017.
  */
 public class Argument extends Value {
-    public Argument(String name, Type type) {
-        super(name, type);
-    }
+
+  private LlvmFunction function;
+
+  public Argument(String name, Type type) {
+    super(name, type);
+  }
+
+  public void setFunction(LlvmFunction function) {
+    this.function = function;
+  }
+
+  public LlvmFunction getFunction() {
+    return function;
+  }
 }
