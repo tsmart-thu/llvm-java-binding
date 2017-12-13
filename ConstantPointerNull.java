@@ -24,7 +24,7 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
  */
 public class ConstantPointerNull extends Constant {
     public ConstantPointerNull(Type type) {
-        super("null", type);
+        super("", type);
     }
 
     @Override
