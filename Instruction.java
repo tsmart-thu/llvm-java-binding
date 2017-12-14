@@ -425,20 +425,6 @@ public abstract class Instruction extends User implements IInstruction {
   public String getOriginalText() { return originalText; }
 
   @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (o == null || getClass() != o.getClass()) {
-      return false;
-    }
-
-    Instruction that = (Instruction) o;
-
-    return originalText.equals(that.originalText) && getFunction().getName().equals(that.getFunction().getName());
-  }
-
-  @Override
   public int hashCode() {
     return originalText.hashCode() * 31 + getFunction().getName().hashCode();
   }
