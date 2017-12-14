@@ -25,7 +25,6 @@ import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
 
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.AtomicOrdering;
-import com.google.common.base.Objects;
 import com.google.common.base.Optional;
 
 public abstract class Instruction extends User implements IInstruction {
@@ -436,12 +435,11 @@ public abstract class Instruction extends User implements IInstruction {
 
     Instruction that = (Instruction) o;
 
-    return this.getFunction() == that.getFunction() &&
-        this.originalText.equals(that.originalText);
+    return originalText.equals(that.originalText) && getFunction().getName().equals(that.getFunction().getName());
   }
 
   @Override
   public int hashCode() {
-    return originalText.hashCode();
+    return originalText.hashCode() * 31 + getFunction().getName().hashCode();
   }
 }
