@@ -435,11 +435,11 @@ public abstract class Instruction extends User implements IInstruction {
 
     Instruction that = (Instruction) o;
 
-    return originalText.equals(that.originalText);
+    return originalText.equals(that.originalText) && getFunction().getName().equals(that.getFunction().getName());
   }
 
   @Override
   public int hashCode() {
-    return originalText.hashCode();
+    return originalText.hashCode() * 31 + getFunction().getName().hashCode();
   }
 }
