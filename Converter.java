@@ -23,9 +23,14 @@ import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlags;
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.Predicate;
 import cn.edu.thu.tsmart.core.cfa.llvm.Type.TypeID;
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
+import cn.edu.thu.tsmart.util.globalinfo.GlobalInfo;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
+import java.io.BufferedReader;
+import java.io.File;
+import java.io.FileReader;
+import java.io.IOException;
 import java.util.TreeMap;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.PointerPointer;
@@ -52,6 +57,33 @@ public class Converter {
   }
 
   public LlvmModule convert(LLVMModuleRef moduleRef) {
+    //get filename
+    File file = new File(GlobalInfo.getInstance().getIoManager().getProgramNames());
+    BufferedReader reader = null;
+    try {
+      reader = new BufferedReader(new FileReader(file));
+      String line = null;
+      while((line = reader.readLine()) != null) {
+        if(line.length() < 2)
+          continue;
+        if(line.charAt(0) == '!' && line.charAt(1) >= '0' && line.charAt(1) <= '9') {
+          String[] s = line.split(" = |\\(|\\)");
+          if(s[1].equals("!DIFile")) {
+            String[] ss = (s[2]).split(", |: ");
+            context.putFilename(1, ss[1].replace("\"", ""));
+          } else if(s[1].contains("!DIGlobalVariable")) {
+            String[] ss = (s[2]).split(", |: ");
+            Metadata m = new Metadata();
+            m.setFile(context.getFilename(Integer.valueOf(ss[5].replace("!", ""))));
+            m.setLine(Integer.valueOf(ss[7]));
+            context.putGlobalVariableMetadata(ss[1].replace("\"", ""), m);
+          }
+        }
+      }
+      reader.close();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
     // DataLayout
     targetDataRef = LLVMGetModuleDataLayout(moduleRef);
     SizeTPointer sizeTPointer = new SizeTPointer(64);
