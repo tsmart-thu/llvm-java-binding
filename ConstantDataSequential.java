@@ -24,6 +24,9 @@ import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 /** @author guangchen on 12/06/2017. */
 public class ConstantDataSequential extends Constant {
+  public ConstantDataSequential(String name, Type type) {
+    super(name, type);
+  }
   public long getElementAsInteger(int i) {
     throw new NotImplementedException();
   }

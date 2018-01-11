@@ -20,9 +20,13 @@
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
+import java.util.List;
 
 /** @author guangchen on 12/06/2017. */
 public class ConstantDataArray extends ConstantDataSequential {
+  public ConstantDataArray(String name, Type type) {
+    super(name, type);
+  }
   public ArrayType getType() {
     return Casting.cast(super.getType(), ArrayType.class);
   }

@@ -648,7 +648,7 @@ public class Converter {
       case LLVMConstantAggregateZeroValueKind:
         return new ConstantAggregateZero(getType(LLVMTypeOf(valueRef)));
       case LLVMConstantDataArrayValueKind:
-        return new ConstantDataArray();
+        return convertValueToConstantArray(valueRef);
       case LLVMConstantExprValueKind:
         return convertValueToConstantExpr(valueRef);
       case LLVMConstantPointerNullValueKind:
@@ -669,6 +669,16 @@ public class Converter {
         assert false : "unhandled value kind:" + valueKind;
     }
     return null;
+  }
+
+  private Constant convertValueToConstantArray(LLVMValueRef valueRef) {
+    List<Value> operands = new ArrayList<>();
+    for (int i = 0; i < LLVMGetArrayLength(LLVMTypeOf(valueRef)); i++) {
+      operands.add(convert(LLVMGetElementAsConstant(valueRef, i)));
+    }
+    ConstantDataArray constantDataArray = new ConstantDataArray("", getType(LLVMTypeOf(valueRef)));
+    constantDataArray.setOperands(operands);
+    return constantDataArray;
   }
 
   private Constant convertValueToConstantFP(LLVMValueRef valueRef) {
