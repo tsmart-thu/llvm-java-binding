@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2017
+ * Copyright (c) 2018
  * ------------------
  * Institute on Software System and Engineering
  * School of Software, Tsinghua University
@@ -28,6 +28,12 @@ public class ConstantDataSequential extends Constant {
     super(name, type);
   }
   public long getElementAsInteger(int i) {
+
+    // FIXME:
+    Value op = getOperand(i);
+    if (op instanceof ConstantInt) {
+      return ((ConstantInt) op).getValue().getValue().longValue();
+    }
     throw new NotImplementedException();
   }
   //
