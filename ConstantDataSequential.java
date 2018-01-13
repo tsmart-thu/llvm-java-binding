@@ -27,14 +27,24 @@ public class ConstantDataSequential extends Constant {
   public ConstantDataSequential(String name, Type type) {
     super(name, type);
   }
-  public long getElementAsInteger(int i) {
 
-    // FIXME:
-    Value op = getOperand(i);
-    if (op instanceof ConstantInt) {
-      return ((ConstantInt) op).getValue().getValue().longValue();
+  public long getElementAsInteger(int i) {
+    if (getElementType().isIntegerTy()) {
+      if (i < getNumOperands()) {
+        return ((ConstantInt) getOperand(i)).getValue().getValue().longValue();
+      } else {
+        assert false : "Try to visit element in " + (i + 1) + " while operands num is" + getNumOperands();
+      }
+    } else {
+      assert false : "Accessor can only be used when element is an integer";
     }
-    throw new NotImplementedException();
+    return 0;
+    // FIXME:
+    //Value op = getOperand(i);
+    //if (op instanceof ConstantInt) {
+    //  return ((ConstantInt) op).getValue().getValue().longValue();
+    //}
+    //throw new NotImplementedException();
   }
   //
   //    public APFloat getElementAsAPFloat(int i) {
@@ -42,21 +52,46 @@ public class ConstantDataSequential extends Constant {
   //    }
 
   public float getElementAsFloat(int i) {
-    throw new NotImplementedException();
+    if (getElementType().isFloatTy()) {
+      if (i < getNumOperands()) {
+        return ((ConstantInt) getOperand(i)).getValue().getValue().floatValue();
+      } else {
+        assert false : "Try to visit element in " + (i + 1) + " while operands num is" + getNumOperands();
+      }
+    } else {
+      assert false : "Accessor can only be used when element is an integer";
+    }
+    return 0;
   }
 
   public double getElementAsDouble(int i) {
-    throw new NotImplementedException();
+    if (getElementType().isDoubleTy()) {
+      if (i < getNumOperands()) {
+        return ((ConstantInt) getOperand(i)).getValue().getValue().doubleValue();
+      } else {
+        assert false : "Try to visit element in " + (i + 1) + " while operands num is" + getNumOperands();
+      }
+    } else {
+      assert false : "Accessor can only be used when element is an integer";
+    }
+    return 0;
   }
 
   public Constant getElementAsConstant(int i) {
-      Type elementType = getElementType();
-      if (elementType.isHalfTy() || elementType.isFloatTy() || elementType.isDoubleTy()) {
-          // TODO APFloat
-          throw new NotImplementedException();
+    Type elementType = getElementType();
+    if (elementType.isHalfTy()) {
+      if (i < getNumOperands()) {
+        return new ConstantFP("", elementType, ((ConstantInt) getOperand(i)).getValue().getValue().doubleValue(), false);
+      } else {
+        assert false : "Try to visit element in " + (i + 1) + " while operands num is" + getNumOperands();
       }
-      IntegerType integerType = Casting.cast(elementType, IntegerType.class);
-      return ConstantInt.get(integerType, new APInt(integerType.getBitWidth(), String.valueOf(getElementAsInteger(i))));
+    } else if (elementType.isFloatTy()) {
+      return new ConstantFP("", elementType, getElementAsFloat(i), false);
+    } else if(elementType.isDoubleTy()) {
+      return new ConstantFP("", elementType, getElementAsDouble(i), false);
+    }
+    IntegerType integerType = Casting.cast(elementType, IntegerType.class);
+    return ConstantInt.get(integerType, new APInt(integerType.getBitWidth(), String.valueOf(getElementAsInteger(i))));
   }
 
   public SequentialType getType() {
@@ -80,15 +115,26 @@ public class ConstantDataSequential extends Constant {
   }
 
   public boolean isString() {
-    throw new NotImplementedException();
+    if (getElementType().isIntegerTy()) {
+      return true;
+    } else {
+      return false;
+    }
   }
 
-  public boolean isCString() {
-    throw new NotImplementedException();
-  }
+  public boolean isCString() { throw new NotImplementedException(); }
 
   public String getAsString() {
-    throw new NotImplementedException();
+    if (isString()) {
+      StringBuffer sbu = new StringBuffer();
+      java.util.List<Value> value = getOperands();
+      for (Value v : value) {
+        sbu.append((char) Integer.parseInt(v.toString()));
+      }
+      return sbu.toString();
+    } else {
+      return "";
+    }
   }
 
   public String getAsCString() {
