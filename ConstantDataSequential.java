@@ -39,12 +39,6 @@ public class ConstantDataSequential extends Constant {
       assert false : "Accessor can only be used when element is an integer";
     }
     return 0;
-    // FIXME:
-    //Value op = getOperand(i);
-    //if (op instanceof ConstantInt) {
-    //  return ((ConstantInt) op).getValue().getValue().longValue();
-    //}
-    //throw new NotImplementedException();
   }
   //
   //    public APFloat getElementAsAPFloat(int i) {
