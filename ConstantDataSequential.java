@@ -22,8 +22,11 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
-/** @author guangchen on 12/06/2017. */
+/**
+ * @author guangchen on 12/06/2017.
+ */
 public class ConstantDataSequential extends Constant {
+
   public ConstantDataSequential(String name, Type type) {
     super(name, type);
   }
@@ -33,7 +36,8 @@ public class ConstantDataSequential extends Constant {
       if (i < getNumOperands()) {
         return ((ConstantInt) getOperand(i)).getValue().getValue().longValue();
       } else {
-        assert false : "Try to visit element in " + (i + 1) + " while operands num is" + getNumOperands();
+        assert false :
+            "Try to visit element in " + (i + 1) + " while operands num is" + getNumOperands();
       }
     } else {
       assert false : "Accessor can only be used when element is an integer";
@@ -50,7 +54,8 @@ public class ConstantDataSequential extends Constant {
       if (i < getNumOperands()) {
         return ((ConstantInt) getOperand(i)).getValue().getValue().floatValue();
       } else {
-        assert false : "Try to visit element in " + (i + 1) + " while operands num is" + getNumOperands();
+        assert false :
+            "Try to visit element in " + (i + 1) + " while operands num is" + getNumOperands();
       }
     } else {
       assert false : "Accessor can only be used when element is an integer";
@@ -63,7 +68,8 @@ public class ConstantDataSequential extends Constant {
       if (i < getNumOperands()) {
         return ((ConstantInt) getOperand(i)).getValue().getValue().doubleValue();
       } else {
-        assert false : "Try to visit element in " + (i + 1) + " while operands num is" + getNumOperands();
+        assert false :
+            "Try to visit element in " + (i + 1) + " while operands num is" + getNumOperands();
       }
     } else {
       assert false : "Accessor can only be used when element is an integer";
@@ -75,17 +81,20 @@ public class ConstantDataSequential extends Constant {
     Type elementType = getElementType();
     if (elementType.isHalfTy()) {
       if (i < getNumOperands()) {
-        return new ConstantFP("", elementType, ((ConstantInt) getOperand(i)).getValue().getValue().doubleValue(), false);
+        return new ConstantFP("", elementType,
+            ((ConstantInt) getOperand(i)).getValue().getValue().doubleValue(), false);
       } else {
-        assert false : "Try to visit element in " + (i + 1) + " while operands num is" + getNumOperands();
+        assert false :
+            "Try to visit element in " + (i + 1) + " while operands num is" + getNumOperands();
       }
     } else if (elementType.isFloatTy()) {
       return new ConstantFP("", elementType, getElementAsFloat(i), false);
-    } else if(elementType.isDoubleTy()) {
+    } else if (elementType.isDoubleTy()) {
       return new ConstantFP("", elementType, getElementAsDouble(i), false);
     }
     IntegerType integerType = Casting.cast(elementType, IntegerType.class);
-    return ConstantInt.get(integerType, new APInt(integerType.getBitWidth(), String.valueOf(getElementAsInteger(i))));
+    return ConstantInt.get(integerType,
+        new APInt(integerType.getBitWidth(), String.valueOf(getElementAsInteger(i))));
   }
 
   public SequentialType getType() {
@@ -93,7 +102,7 @@ public class ConstantDataSequential extends Constant {
   }
 
   public Type getElementType() {
-      return getType().getElementType();
+    return getType().getElementType();
   }
 
   public long getNumElements() {
@@ -105,7 +114,7 @@ public class ConstantDataSequential extends Constant {
   }
 
   public long getElementByteSize() {
-      return getElementType().getPrimitiveSizeInBits()/8;
+    return getElementType().getPrimitiveSizeInBits() / 8;
   }
 
   public boolean isString() {
@@ -116,7 +125,9 @@ public class ConstantDataSequential extends Constant {
     }
   }
 
-  public boolean isCString() { throw new NotImplementedException(); }
+  public boolean isCString() {
+    throw new NotImplementedException();
+  }
 
   public String getAsString() {
     if (isString()) {

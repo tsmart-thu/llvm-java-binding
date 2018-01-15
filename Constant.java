@@ -43,6 +43,10 @@ public abstract class Constant extends User {
       ConstantAggregateZero that = Casting.cast(this, ConstantAggregateZero.class);
       return index < that.getNumElements() ? that.getElementValue(index) : null;
     }
+    if (this instanceof ConstantDataSequential) {
+      ConstantDataSequential that = Casting.cast(this, ConstantDataSequential.class);
+      return index < that.getNumElements() ? that.getElementAsConstant(index) : null;
+    }
     assert false : "not implemented aggregate type";
     return null;
   }
@@ -50,7 +54,8 @@ public abstract class Constant extends User {
   public static Constant getNullValue(Type type) {
     switch (type.getTypeID()) {
       case IntegerTyID:
-        return ConstantInt.get((IntegerType) type, new APInt(((IntegerType) type).getBitWidth(), "0"));
+        return ConstantInt
+            .get((IntegerType) type, new APInt(((IntegerType) type).getBitWidth(), "0"));
       case HalfTyID:
       case FloatTyID:
       case DoubleTyID:
