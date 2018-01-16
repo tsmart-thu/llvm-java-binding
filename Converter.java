@@ -68,15 +68,30 @@ public class Converter {
           continue;
         if(line.charAt(0) == '!' && line.charAt(1) >= '0' && line.charAt(1) <= '9') {
           String[] s = line.split(" = |\\(|\\)");
+          if(s.length < 2)
+            continue;
           if(s[1].equals("!DIFile")) {
             String[] ss = (s[2]).split(", |: ");
-            context.putFilename(1, ss[1].replace("\"", ""));
+            int fileNum = Integer.parseInt(s[0].replace("!", ""));
+            context.putFilename(fileNum, ss[1].replace("\"", ""));
           } else if(s[1].contains("!DIGlobalVariable")) {
             String[] ss = (s[2]).split(", |: ");
             Metadata m = new Metadata();
             m.setFile(context.getFilename(Integer.valueOf(ss[5].replace("!", ""))));
             m.setLine(Integer.valueOf(ss[7]));
             context.putGlobalVariableMetadata(ss[1].replace("\"", ""), m);
+          } else if(s[1].contains("!DILexicalBlock")) {
+            String[] ss = (s[2]).split(", |: ");
+            int fileNum = Integer.parseInt(ss[3].replace("!", ""));
+            int myNum = Integer.parseInt(s[0].replace("!", ""));
+            String fileName = context.getFilename(fileNum);
+            context.putFilename(myNum, fileName);
+          } else if(s[1].contains("!DISubprogram")) {
+            String[] ss = (s[2]).split(", |: ");
+            int fileNum = Integer.parseInt(ss[5].replace("!", ""));
+            int myNum = Integer.parseInt(s[0].replace("!", ""));
+            String fileName = context.getFilename(fileNum);
+            context.putFilename(myNum, fileName);
           }
         }
       }
@@ -439,7 +454,8 @@ public class Converter {
               String[] s2 = ot.split(" = |\\(|\\)");
               Metadata md = new Metadata();
               if(s2[1].equals("!DILocalVariable")) {
-                md.setFile(this.context.getFilename(1));
+                String[] s2s = (s2[2]).split(", |: ");
+                md.setFile(this.context.getFilename(Integer.valueOf(s2s[5].replace("!", ""))));
                 md.setColumn(0);
                 String[] ss = (s2[2]).split(", |: ");
                 for(int i = 0; i < ss.length; i = i + 2) {
@@ -489,12 +505,25 @@ public class Converter {
     }
     if (LLVMHasMetadata(inst) != 0) {
       LLVMValueRef dbg = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
-      BytePointer bp = LLVMPrintValueToString(dbg);
+      LLVMValueRef dbg2 = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
+      LLVMGetMDNodeOperands(dbg, dbg);
+      int numOperands;
+      while(true) {
+        numOperands = 0;
+        numOperands = LLVMGetNumOperands(dbg);
+        if (numOperands <= 0 || numOperands > 1000) {
+          break;
+        }
+        dbg = LLVMGetOperand(dbg, 0);
+      }
+      BytePointer bp = LLVMPrintValueToString(dbg2);
+      String fileName = LLVMPrintValueToString(dbg).getString();
+      fileName = fileName.replace("\"", "").replace("!", "");
       String ot = bp.getString().trim();
       String[] s = ot.split(" = |\\(|\\)");
       Metadata md = new Metadata();
       if(s[1].equals("!DILocation")) {
-        md.setFile(this.context.getFilename(1));
+        md.setFile(fileName);
         String[] ss = (s[2]).split(", |: ");
         for(int i = 0; i < ss.length; i = i + 2) {
           if(ss[i].equals("line")) {
