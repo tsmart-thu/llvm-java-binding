@@ -464,7 +464,8 @@ public class Converter {
                   }
                 }
               }
-              in.setMetadata(md);
+              if (in != null)
+                in.setMetadata(md);
             } else if(s[0].startsWith("call void asm")) {
               callInst.setInlineAsm(true);
             }
