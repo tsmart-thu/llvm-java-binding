@@ -47,6 +47,12 @@ public class Context {
   private DataLayout dataLayout;
   private Map<String, Instruction> nameInstructionMap = new HashMap<>();
 
+  public long getPointerSize() {
+    return pointerSize;
+  }
+
+  private long pointerSize;
+
   /**
    * Create an empty context
    */
@@ -171,5 +177,9 @@ public class Context {
 
   public void putGlobalVariableMetadata(String name, Metadata m) {
     this.globalVariableMetadataMap.put(name, m);
+  }
+
+  public void putPointerSize(long l) {
+    this.pointerSize = l;
   }
 }

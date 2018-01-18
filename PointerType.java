@@ -61,4 +61,9 @@ public class PointerType extends SequentialType {
   public String toString() {
     return elementType.toString() + "*";
   }
+
+  @Override
+  public long sizeInBytes() {
+    return getContext().getPointerSize();
+  }
 }

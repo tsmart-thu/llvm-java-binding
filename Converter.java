@@ -953,6 +953,7 @@ public class Converter {
           Type elementType = getType(LLVMGetElementType(typeRef));
           int addressSpace = LLVMGetPointerAddressSpace(typeRef);
           result = PointerType.get(elementType, addressSpace);
+          context.putPointerSize(LLVMStoreSizeOfType(targetDataRef, typeRef));
           break;
         }
       case LLVMVectorTypeKind:
