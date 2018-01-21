@@ -32,6 +32,7 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.TreeMap;
+import jdk.nashorn.internal.codegen.CompilerConstants.Call;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
@@ -43,6 +44,7 @@ import java.util.List;
 import java.util.Map;
 
 import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OpCode;
+import static cn.edu.thu.tsmart.util.lang.LlvmUtil.determineCalledFunctionName;
 import static org.bytedeco.javacpp.LLVM.*;
 
 /** @author guangchen on 03/03/2017. */
@@ -126,7 +128,65 @@ public class Converter {
       convertValueToFunction(pair.getKey(), value);
       functionMap.put(value.getName(), value);
     }
-    return new LlvmModule(context, moduleIdentifier, functionMap, globalList);
+    LlvmModule llvmModule = new LlvmModule(context, moduleIdentifier, functionMap, globalList);
+    postProcess(llvmModule);
+    return llvmModule;
+  }
+
+  private void postProcess(LlvmModule llvmModule) {
+    for (LlvmFunction function : llvmModule.functions()) {
+      for (BasicBlock basicBlock : function.getBasicBlockList()) {
+        for (Instruction instruction : basicBlock.getInstList()) {
+          if (instruction.getOpcode() == OpCode.CALL) {
+            CallInst callInst = (CallInst)instruction;
+            String calledFunctionName = determineCalledFunctionName(callInst);
+            if (calledFunctionName == null) {
+              continue;
+            }else if (calledFunctionName.equals("llvm.dbg.declare")) {
+              LLVMValueRef valueRef = llvmModule.getContext().getLLVMValueRefByInst(instruction);
+              if (instruction.getNumOperands() < 2)
+                continue;
+              String variableName = "";
+              if (instruction.getOperand(0) != null)
+                variableName = instruction.getOperand(0).getName();
+              Instruction variableInst = llvmModule.getContext().getInstByName(variableName);
+              if (variableInst == null)
+                continue;
+              LLVMValueRef dbg = LLVMGetMetadata(valueRef, LLVMGetMDKindID("dbg", "dbg".length()));
+              LLVMValueRef dbg2 = LLVMGetMetadata(valueRef, LLVMGetMDKindID("dbg", "dbg".length()));
+              LLVMGetMDNodeOperands(dbg, dbg);
+              int numOperands;
+              while(true) {
+                numOperands = 0;
+                numOperands = LLVMGetNumOperands(dbg);
+                if (numOperands <= 0 || numOperands > 1000) {
+                  break;
+                }
+                dbg = LLVMGetOperand(dbg, 0);
+              }
+              BytePointer bp = LLVMPrintValueToString(dbg2);
+              String fileName = LLVMPrintValueToString(dbg).getString();
+              fileName = fileName.replace("\"", "").replace("!", "");
+              String ot = bp.getString().trim();
+              String[] s = ot.split(" = |\\(|\\)");
+              Metadata md = new Metadata();
+              if(s[1].equals("!DILocation")) {
+                md.setFile(fileName);
+                String[] ss = (s[2]).split(", |: ");
+                for(int i = 0; i < ss.length; i = i + 2) {
+                  if(ss[i].equals("line")) {
+                    md.setLine(Integer.parseInt(ss[i + 1]));
+                  } else if(ss[i].equals("column")) {
+                    md.setColumn(Integer.parseInt(ss[i + 1]));
+                  }
+                }
+              }
+              variableInst.setMetadata(md);
+            }
+          }
+        }
+      }
+    }
   }
 
   private void convertValueToFunction(LLVMValueRef key, LlvmFunction value) {
@@ -179,7 +239,7 @@ public class Converter {
     for (LLVMValueRef inst = LLVMGetFirstInstruction(ref);
         inst != null;
         inst = LLVMGetNextInstruction(inst)) {
-      Instruction instruction = convertValueToInstruction(inst);
+      Instruction instruction = convertValueToInstruction(block, inst);
       instructionList.add(instruction);
       instruction.setParent(block);
       context.putInst(inst, instruction);
@@ -187,7 +247,7 @@ public class Converter {
     for (LLVMValueRef inst = LLVMGetFirstInstruction(ref);
         inst != null;
         inst = LLVMGetNextInstruction(inst)) {
-      Instruction instruction = convertValueToInstruction(inst);
+      Instruction instruction = context.getInst(inst);
       List<Use> uses = new ArrayList<>();
       int i = 0;
       for (LLVMUseRef useRef = LLVMGetFirstUse(inst);
@@ -202,20 +262,22 @@ public class Converter {
     block.setInstList(instructionList);
   }
 
-  private Instruction convertValueToInstruction(LLVMValueRef inst) {
+  private Instruction convertValueToInstruction(BasicBlock parent, LLVMValueRef inst) {
     Instruction instruction = context.getInst(inst);
     if (instruction != null) {
       return instruction;
     }
-    BytePointer bytePointer = LLVMPrintValueToString(inst);
-    String originalText = bytePointer.getString().trim();
-    LLVMDisposeMessage(bytePointer);
+    //BytePointer bytePointer = LLVMPrintValueToString(inst);
+    //String originalText = bytePointer.getString().trim();
+    //LLVMDisposeMessage(bytePointer);
     int opcode = LLVMGetInstructionOpcode(inst);
     String name = LLVMGetValueName(inst).getString();
-    if (needName(originalText) && "".equals(name)) {
-      name = "" + unnamedIndex;
-      unnamedIndex++;
-    }
+    /*if ("".equals(name)) {
+      if (needName(LLVMPrintValueToString(inst).getString().trim())) {
+        name = "" + unnamedIndex;
+        unnamedIndex++;
+      }
+    }*/
 
     Type type = getType(LLVMTypeOf(inst));
     switch (opcode) {
@@ -253,7 +315,7 @@ public class Converter {
         {
           instruction = new BinaryOperator(name, type, OpCode.ADD);
           OperatorFlags flag = new OperatorFlags();
-          parseFlag(originalText, flag);
+          //parseFlag(LLVMPrintValueToString(inst).getString().trim(), flag);
           instruction.setOperatorFlags(flag);
         }
         break;
@@ -265,7 +327,7 @@ public class Converter {
           instruction = new BinaryOperator(name, type, OpCode.SUB);
           OperatorFlags flag = new OperatorFlags();
           //flag.setNoSignedWrapFlag();
-          parseFlag(originalText, flag);
+          //parseFlag(LLVMPrintValueToString(inst).getString().trim(), flag);
           instruction.setOperatorFlags(flag);
         }
         break;
@@ -276,7 +338,7 @@ public class Converter {
         {
           instruction = new BinaryOperator(name, type, OpCode.MUL);
           OperatorFlags flag = new OperatorFlags();
-          parseFlag(originalText, flag);
+          //parseFlag(LLVMPrintValueToString(inst).getString().trim(), flag);
           instruction.setOperatorFlags(flag);
         }
         break;
@@ -440,36 +502,6 @@ public class Converter {
       case LLVMCall:
         {
           CallInst callInst = new CallInst(name, type);
-          String[] s = originalText.split("\\(|\\)");
-          if(s.length >= 2) {
-            if(s[0].equals("call void @llvm.dbg.declare")) {
-              if(s.length > 3) {
-                s[1] = s[1] + s[s.length - 2];
-              }
-              String[] s1 = s[1].split(", ");
-              String[] sss = s1[0].split(" ");
-              Instruction in = this.context.getInstByName(sss[sss.length - 1].replace("%", ""));
-              BytePointer bp = LLVMPrintValueToString(LLVMGetOperand(inst, 1));
-              String ot = bp.getString().trim();
-              String[] s2 = ot.split(" = |\\(|\\)");
-              Metadata md = new Metadata();
-              if(s2[1].equals("!DILocalVariable")) {
-                String[] s2s = (s2[2]).split(", |: ");
-                md.setFile(this.context.getFilename(Integer.valueOf(s2s[5].replace("!", ""))));
-                md.setColumn(0);
-                String[] ss = (s2[2]).split(", |: ");
-                for(int i = 0; i < ss.length; i = i + 2) {
-                  if(ss[i].equals("line")) {
-                    md.setLine(Integer.parseInt(ss[i + 1]));
-                  }
-                }
-              }
-              if (in != null)
-                in.setMetadata(md);
-            } else if(s[0].startsWith("call void asm")) {
-              callInst.setInlineAsm(true);
-            }
-          }
           callInst.setNumArgs(LLVMGetNumArgOperands(inst));
           instruction = callInst;
         }
@@ -504,6 +536,8 @@ public class Converter {
       default:
         throw new IllegalArgumentException("Unhandled instruction: " + inst.toString());
     }
+    if (parent != null)
+      instruction.setParent(parent);
     if (LLVMHasMetadata(inst) != 0) {
       LLVMValueRef dbg = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
       LLVMValueRef dbg2 = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
@@ -542,7 +576,13 @@ public class Converter {
       operands.add(convert(LLVMGetOperand(inst, i)));
     }
     instruction.setOperands(operands);
-    instruction.setOriginalText(originalText);
+    instruction.setOriginalText("");
+    if ("".equals(instruction.getName())) {
+      if (needName(instruction)) {
+        instruction.setName("" + unnamedIndex);
+        unnamedIndex++;
+      }
+    }
     return instruction;
   }
 
@@ -618,8 +658,11 @@ public class Converter {
     return null;
   }
 
-  private boolean needName(String text) {
-    return text.startsWith("%");
+  private boolean needName(Instruction instruction) {
+    if (instruction.getType().isVoidTy()) {
+      return false;
+    }
+    return true;
   }
 
   public Value convert(LLVMValueRef valueRef) {
@@ -629,7 +672,7 @@ public class Converter {
     //System.out.println(LLVMGetValueKind(valueRef));
     switch (LLVMGetValueKind(valueRef)) {
       case LLVMInstructionValueKind:
-        return convertValueToInstruction(valueRef);
+        return convertValueToInstruction(null, valueRef);
       case LLVMConstantIntValueKind:
       case LLVMConstantExprValueKind:
       case LLVMConstantPointerNullValueKind:
@@ -646,7 +689,12 @@ public class Converter {
         return context.getBasicBlock(LLVMValueAsBasicBlock(valueRef));
       case LLVMMetadataAsValueValueKind:
         // TODO metadata
-        return new Metadata();
+        Metadata metadata = new Metadata();
+        if (LLVMGetNumOperands(valueRef) == 1) {
+          String variableName = LLVMGetValueName(LLVMGetOperand(valueRef, 0)).getString();
+          metadata.setName(variableName);
+        }
+        return metadata;
         //System.out.println(originalText);
         //throw new NotImplementedException();
       case LLVMArgumentValueKind:
@@ -657,11 +705,9 @@ public class Converter {
         }
       case LLVMInlineAsmValueKind:
         // TODO inline asm
-        BytePointer bytePointer = LLVMPrintValueToString(valueRef);
-        String originalText = bytePointer.getString().trim();
         CallInst callInst = new CallInst(LLVMGetValueName(valueRef).getString(), getType(LLVMTypeOf(valueRef)));
         callInst.setInlineAsm(true);
-        callInst.setOriginalText(originalText);
+        callInst.setOriginalText("");
         return callInst;
     }
     LLVMDumpValue(valueRef);
@@ -758,13 +804,11 @@ public class Converter {
     int opcode = LLVMGetConstOpcode(valueRef);
     Type type;
     List<Value> operands = new ArrayList<>();
-    BytePointer bytePointer = LLVMPrintValueToString(valueRef);
-    String originalText = bytePointer.getString().trim();
     OperatorFlags flag = new OperatorFlags();
-    parseFlag(originalText, flag);
     switch (opcode) {
       case LLVMAdd:
         type = getType(LLVMTypeOf(valueRef));
+        //parseFlag(LLVMPrintValueToString(valueRef).getString().trim(), flag);
         BinaryConstantExpr add =
             BinaryConstantExpr.getInstance(
                 LLVMGetValueName(valueRef).getString(),
@@ -780,6 +824,7 @@ public class Converter {
         return add;
       case LLVMSub :
         type = getType(LLVMTypeOf(valueRef));
+        //parseFlag(LLVMPrintValueToString(valueRef).getString().trim(), flag);
         BinaryConstantExpr sub =
             BinaryConstantExpr.getInstance(
                 LLVMGetValueName(valueRef).getString(),

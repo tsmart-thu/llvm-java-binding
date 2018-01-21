@@ -36,7 +36,7 @@ public class Context {
   private final LLVMContextRef contextRef;
   private final BiMap<LLVMTypeRef, Type> typeRefTypeMap = HashBiMap.create();
   private final Map<Type, Long> typeStoreSizeMap = new HashMap<>();
-  private final Map<LLVMValueRef, Instruction> valueRefInstructionMap = new HashMap<>();
+  private final BiMap<LLVMValueRef, Instruction> valueRefInstructionMap = HashBiMap.create();
   private final Map<LLVMBasicBlockRef, BasicBlock> basicBlockRefBasicBlockMap = new HashMap<>();
   private final Map<LLVMValueRef, LlvmFunction> functionMap = new HashMap<>();
   private final Map<LLVMValueRef, GlobalVariable> globalVariableMap = new HashMap<>();
@@ -110,6 +110,8 @@ public class Context {
   public Instruction getInst(LLVMValueRef valueRef) {
     return valueRefInstructionMap.get(valueRef);
   }
+
+  public LLVMValueRef getLLVMValueRefByInst(Instruction instruction) { return valueRefInstructionMap.inverse().get(instruction); }
 
   public Instruction getInstByName(String name) {
     return nameInstructionMap.get(name);
