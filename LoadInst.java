@@ -115,8 +115,6 @@ public class LoadInst extends UnaryInstruction {
     res += ", " + operand.getType().toString();
     res += " " + Formatter.asOperand(operand);
     res += ", align " + getAlignment();
-    if(!res.equals(getOriginalText()))
-      System.out.println(" ");
     return res;
   }
 }
