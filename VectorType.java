@@ -36,5 +36,9 @@ public class VectorType extends SequentialType {
 
   public int getNumElements() { return this.numElements; }
 
+  public static VectorType get(Type elementType, int numElements) {
+    return new VectorType(elementType.getContext(), elementType, numElements);
+  }
+
   public int getBitWidth() { return numElements * elementType.getPrimitiveSizeInBits(); }
 }

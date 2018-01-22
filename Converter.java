@@ -1002,7 +1002,12 @@ public class Converter {
           break;
         }
       case LLVMVectorTypeKind:
-        throw new NotImplementedException();
+      {
+        Type elementType = getType(LLVMGetElementType(typeRef));
+        int numElements = LLVMGetArrayLength(typeRef);
+        result = VectorType.get(elementType, numElements);
+        break;
+      }
       case LLVMMetadataTypeKind:
         result = Type.getMetadataTy(context);
         break;
