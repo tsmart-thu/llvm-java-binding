@@ -78,6 +78,9 @@ public class ExtractValueInst extends UnaryInstruction {
   @Override
   public String toString() {
     CallInst callInst = Casting.dyncast(getOperand(0), CallInst.class);
+    if (callInst == null) {
+      return "";
+    }
     String res = "%" + getName().toString() + " = " + getOpcode().toString() + " " + callInst.getType().toString();
     res += " %" + callInst.getName().toString() + ", ";
     for(int i = 0; i <= callInst.getNumArgOperands(); i++) {
