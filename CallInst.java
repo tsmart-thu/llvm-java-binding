@@ -198,6 +198,18 @@ public class CallInst extends Instruction {
 
   @Override
   public String toString() {
-    return getOriginalText();
+    String str = "";
+    if ("".equals(getName()))
+      str = "call ";
+    else
+      str = "%" + getName() + " = call ";
+    str += getType().toString() + " ";
+    str += getOperand(getNumOperands() - 1).toString() + "(";
+    str += getOperand(0).getType().toString() + " ";
+    if ("".equals(getOperand(0).getName()))
+      str += getOperand(0).toString() + ")";
+    else
+      str += "%" + getOperand(0).getName() + ")";
+    return str;
   }
 }
