@@ -25,6 +25,7 @@ import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.TailCallKind
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
 
 import cn.edu.thu.tsmart.core.cfa.llvm.Attribute.AttributeKind;
+import cn.edu.thu.tsmart.core.cfa.util.Formatter;
 import cn.edu.thu.tsmart.core.cfa.util.visitor.InstructionVisitor;
 import cn.edu.thu.tsmart.core.exceptions.CPAException;
 import com.google.common.collect.ImmutableSet;
@@ -205,11 +206,18 @@ public class CallInst extends Instruction {
       str = "%" + getName() + " = call ";
     str += getType().toString() + " ";
     str += getOperand(getNumOperands() - 1).toString() + "(";
-    str += getOperand(0).getType().toString() + " ";
-    if ("".equals(getOperand(0).getName()))
-      str += getOperand(0).toString() + ")";
-    else
-      str += "%" + getOperand(0).getName() + ")";
+    for (int i = 0; i <= getNumArgOperands(); i ++) {
+      if (getOperand(0) instanceof Metadata) {
+        str += "metadata ??";
+      } else {
+        str += getOperand(0).getType().toString() + " ";
+        str += Formatter.asOperand(getOperand(i));
+      }
+      if (i < getNumArgOperands()) {
+        str += ", ";
+      }
+    }
+    str += ")";
     return str;
   }
 }
