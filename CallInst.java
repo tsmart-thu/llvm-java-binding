@@ -200,6 +200,10 @@ public class CallInst extends Instruction {
   @Override
   public String toString() {
     String str = "";
+    if (isInlineAsm()) {
+      str = "call asm " + getType().toString();
+      return str;
+    }
     if ("".equals(getName()))
       str = "call ";
     else
