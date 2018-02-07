@@ -194,7 +194,7 @@ public class CastInst extends UnaryInstruction {
         instruction.setOperands(list);
         return instruction;
       }
-      default: Preconditions.checkArgument(false, "Invalid opcode provided" + opcode.toString());
+      default: Preconditions.checkArgument(false, "Invalid opcode provided %s", opcode.toString());
         return null;
     }
   }

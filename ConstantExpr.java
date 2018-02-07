@@ -144,7 +144,7 @@ public abstract class ConstantExpr extends Constant {
       case VA_ARG:
         throw new NotImplementedException();
       default:
-        Preconditions.checkArgument(false, "Unhandled getAsInstruction Opcode" + opCode.toString());
+        Preconditions.checkArgument(false, "Unhandled getAsInstruction Opcode %s", opCode.toString());
         return null;
     }
   }
