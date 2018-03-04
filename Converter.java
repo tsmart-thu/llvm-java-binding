@@ -112,7 +112,7 @@ public class Converter {
     for (LLVMValueRef g = LLVMGetFirstGlobal(moduleRef); g != null; g = LLVMGetNextGlobal(g)) {
       String name = LLVMGetValueName(g).getString();
       Type type = getType(LLVMTypeOf(g));
-      Constant init = Casting.castOrNull(convert(LLVMGetInitializer(g)), Constant.class);
+      Constant init = Casting.castOrNull(convert(LLVMGetInitializer(g), null), Constant.class);
       Metadata m = context.getGlobalVariableMetadata(name);
       GlobalVariable variable = new GlobalVariable(name, type, init, m);
       context.putGlobalVariable(g, variable);
@@ -573,7 +573,7 @@ public class Converter {
     context.putInst(inst, instruction);
     List<Value> operands = new ArrayList<>();
     for (int i = 0; i < LLVMGetNumOperands(inst); i++) {
-      operands.add(convert(LLVMGetOperand(inst, i)));
+      operands.add(convert(LLVMGetOperand(inst, i), parent));
     }
     instruction.setOperands(operands);
     instruction.setOriginalText("");
@@ -665,14 +665,14 @@ public class Converter {
     return true;
   }
 
-  public Value convert(LLVMValueRef valueRef) {
+  public Value convert(LLVMValueRef valueRef, BasicBlock parent) {
     if (valueRef == null) {
       return null;
     }
     //System.out.println(LLVMGetValueKind(valueRef));
     switch (LLVMGetValueKind(valueRef)) {
       case LLVMInstructionValueKind:
-        return convertValueToInstruction(null, valueRef);
+        return convertValueToInstruction(parent, valueRef);
       case LLVMConstantIntValueKind:
       case LLVMConstantExprValueKind:
       case LLVMConstantPointerNullValueKind:
@@ -750,7 +750,7 @@ public class Converter {
   private Constant convertValueToConstantArray(LLVMValueRef valueRef) {
     List<Value> operands = new ArrayList<>();
     for (int i = 0; i < LLVMGetArrayLength(LLVMTypeOf(valueRef)); i++) {
-      operands.add(convert(LLVMGetElementAsConstant(valueRef, i)));
+      operands.add(convert(LLVMGetElementAsConstant(valueRef, i), null));
     }
     ConstantDataArray constantDataArray = new ConstantDataArray("", getType(LLVMTypeOf(valueRef)));
     constantDataArray.setOperands(operands);
@@ -818,7 +818,7 @@ public class Converter {
                 convertValueToConstant(LLVMGetOperand(valueRef, 0)),
                 convertValueToConstant(LLVMGetOperand(valueRef, 1)));
         for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
-          operands.add(convert(LLVMGetOperand(valueRef, i)));
+          operands.add(convert(LLVMGetOperand(valueRef, i), null));
         }
         add.setOperands(operands);
         return add;
@@ -834,7 +834,7 @@ public class Converter {
                 convertValueToConstant(LLVMGetOperand(valueRef, 0)),
                 convertValueToConstant(LLVMGetOperand(valueRef, 1)));
         for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
-          operands.add(convert(LLVMGetOperand(valueRef, i)));
+          operands.add(convert(LLVMGetOperand(valueRef, i), null));
         }
         sub.setOperands(operands);
         return sub;
@@ -853,7 +853,7 @@ public class Converter {
                 LLVMIsInBounds(valueRef) != 0);
         // TODO put it into context
         for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
-          operands.add(convert(LLVMGetOperand(valueRef, i)));
+          operands.add(convert(LLVMGetOperand(valueRef, i), null));
         }
         ce.setOperands(operands);
         // TODO may require setting originalText
@@ -869,7 +869,7 @@ public class Converter {
                 convertValueToConstant(LLVMGetOperand(valueRef, 0)),
                 type);
         for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
-          operands.add(convert(LLVMGetOperand(valueRef, i)));
+          operands.add(convert(LLVMGetOperand(valueRef, i), null));
         }
         bc.setOperands(operands);
         return bc;
@@ -884,7 +884,7 @@ public class Converter {
                 convertValueToConstant(LLVMGetOperand(valueRef, 0)),
                 type);
         for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
-          operands.add(convert(LLVMGetOperand(valueRef, i)));
+          operands.add(convert(LLVMGetOperand(valueRef, i), null));
         }
         pti.setOperands(operands);
         return pti;
@@ -899,7 +899,7 @@ public class Converter {
                 convertValueToConstant(LLVMGetOperand(valueRef, 0)),
                 type);
         for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
-          operands.add(convert(LLVMGetOperand(valueRef, i)));
+          operands.add(convert(LLVMGetOperand(valueRef, i), null));
         }
         itp.setOperands(operands);
         return itp;
