@@ -538,7 +538,8 @@ public class Converter {
     }
     if (parent != null)
       instruction.setParent(parent);
-    if (LLVMHasMetadata(inst) != 0) {
+    if (false) {
+    //if (LLVMHasMetadata(inst) != 0) {
       LLVMValueRef dbg = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
       LLVMValueRef dbg2 = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
       LLVMGetMDNodeOperands(dbg, dbg);
@@ -683,6 +684,8 @@ public class Converter {
       case LLVMGlobalVariableValueKind:
       case LLVMConstantArrayValueKind:
       case LLVMConstantStructValueKind:
+      case LLVMConstantVectorValueKind:
+      case LLVMConstantDataVectorValueKind:
       case LLVMUndefValueValueKind:
         return convertValueToConstant(valueRef);
       case LLVMBasicBlockValueKind:
@@ -739,6 +742,9 @@ public class Converter {
         return new ConstantArray();
       case LLVMConstantStructValueKind:
         return convertValueToConstantStruct(valueRef);
+      case LLVMConstantDataVectorValueKind:
+      case LLVMConstantVectorValueKind:
+        return convertValueToConstantVector(valueRef);
       case LLVMUndefValueValueKind:
         return new UndefValue("", getType(LLVMTypeOf(valueRef)));
       default:
@@ -755,6 +761,16 @@ public class Converter {
     ConstantDataArray constantDataArray = new ConstantDataArray("", getType(LLVMTypeOf(valueRef)));
     constantDataArray.setOperands(operands);
     return constantDataArray;
+  }
+
+  private Constant convertValueToConstantVector(LLVMValueRef valueRef) {
+    List<Value> operands = new ArrayList<>();
+    for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
+      operands.add(convert(LLVMGetOperand(valueRef, i), null));
+    }
+    ConstantDataVector constantDataVector = new ConstantDataVector("", getType(LLVMTypeOf(valueRef)));
+    constantDataVector.setOperands(operands);
+    return constantDataVector;
   }
 
   private Constant convertValueToConstantFP(LLVMValueRef valueRef) {
