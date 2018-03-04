@@ -538,8 +538,7 @@ public class Converter {
     }
     if (parent != null)
       instruction.setParent(parent);
-    if (false) {
-    //if (LLVMHasMetadata(inst) != 0) {
+    if (LLVMHasMetadata(inst) != 0) {
       LLVMValueRef dbg = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
       LLVMValueRef dbg2 = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
       LLVMGetMDNodeOperands(dbg, dbg);
