@@ -541,34 +541,36 @@ public class Converter {
     if (LLVMHasMetadata(inst) != 0) {
       LLVMValueRef dbg = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
       LLVMValueRef dbg2 = LLVMGetMetadata(inst, LLVMGetMDKindID("dbg", "dbg".length()));
-      LLVMGetMDNodeOperands(dbg, dbg);
-      int numOperands;
-      while(true) {
-        numOperands = 0;
-        numOperands = LLVMGetNumOperands(dbg);
-        if (numOperands <= 0 || numOperands > 1000) {
-          break;
+      if (dbg != null) {
+        LLVMGetMDNodeOperands(dbg, dbg);
+        int numOperands;
+        while (true) {
+          numOperands = 0;
+          numOperands = LLVMGetNumOperands(dbg);
+          if (numOperands <= 0 || numOperands > 1000) {
+            break;
+          }
+          dbg = LLVMGetOperand(dbg, 0);
         }
-        dbg = LLVMGetOperand(dbg, 0);
-      }
-      BytePointer bp = LLVMPrintValueToString(dbg2);
-      String fileName = LLVMPrintValueToString(dbg).getString();
-      fileName = fileName.replace("\"", "").replace("!", "");
-      String ot = bp.getString().trim();
-      String[] s = ot.split(" = |\\(|\\)");
-      Metadata md = new Metadata();
-      if(s[1].equals("!DILocation")) {
-        md.setFile(fileName);
-        String[] ss = (s[2]).split(", |: ");
-        for(int i = 0; i < ss.length; i = i + 2) {
-          if(ss[i].equals("line")) {
-            md.setLine(Integer.parseInt(ss[i + 1]));
-          } else if(ss[i].equals("column")) {
-            md.setColumn(Integer.parseInt(ss[i + 1]));
+        BytePointer bp = LLVMPrintValueToString(dbg2);
+        String fileName = LLVMPrintValueToString(dbg).getString();
+        fileName = fileName.replace("\"", "").replace("!", "");
+        String ot = bp.getString().trim();
+        String[] s = ot.split(" = |\\(|\\)");
+        Metadata md = new Metadata();
+        if (s[1].equals("!DILocation")) {
+          md.setFile(fileName);
+          String[] ss = (s[2]).split(", |: ");
+          for (int i = 0; i < ss.length; i = i + 2) {
+            if (ss[i].equals("line")) {
+              md.setLine(Integer.parseInt(ss[i + 1]));
+            } else if (ss[i].equals("column")) {
+              md.setColumn(Integer.parseInt(ss[i + 1]));
+            }
           }
         }
+        instruction.setMetadata(md);
       }
-      instruction.setMetadata(md);
     }
     context.putInst(inst, instruction);
     List<Value> operands = new ArrayList<>();
