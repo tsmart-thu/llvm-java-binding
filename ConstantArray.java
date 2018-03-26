@@ -19,8 +19,15 @@
  */
 package cn.edu.thu.tsmart.core.cfa.llvm;
 
+import cn.edu.thu.tsmart.core.cfa.util.Casting;
+
 /**
  * @author guangchen on 14/06/2017.
  */
 public class ConstantArray extends ConstantAggregate {
+  public ConstantArray(String name, Type type) { super(name, type); }
+
+  public ArrayType getType () {
+    return Casting.cast(super.getType(), ArrayType.class);
+  }
 }
