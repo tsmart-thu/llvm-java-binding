@@ -223,6 +223,25 @@ public class Converter {
       BasicBlock block = basicBlockList.get(i);
       convertValueToBasicBlock(ref, block);
     }
+    // set use
+    for (int i = 0; i < basicBlockList.size(); i++) {
+      LLVMBasicBlockRef ref = basicBlockRefs.get(i);
+      for (LLVMValueRef inst = LLVMGetFirstInstruction(ref);
+          inst != null;
+          inst = LLVMGetNextInstruction(inst)) {
+        Instruction instruction = context.getInst(inst);
+        List<Use> uses = new ArrayList<>();
+        int j = 0;
+        for (LLVMUseRef useRef = LLVMGetFirstUse(inst);
+            useRef != null;
+            useRef = LLVMGetNextUse(useRef)) {
+          LLVMValueRef userRef = LLVMGetUser(useRef);
+          uses.add(new Use(instruction, context.getInst(userRef), j));
+          j++;
+        }
+        instruction.setUses(uses);
+      }
+    }
     // set
     value.setBasicBlockList(basicBlockList);
   }
@@ -243,21 +262,6 @@ public class Converter {
       instructionList.add(instruction);
       instruction.setParent(block);
       context.putInst(inst, instruction);
-    }
-    for (LLVMValueRef inst = LLVMGetFirstInstruction(ref);
-        inst != null;
-        inst = LLVMGetNextInstruction(inst)) {
-      Instruction instruction = context.getInst(inst);
-      List<Use> uses = new ArrayList<>();
-      int i = 0;
-      for (LLVMUseRef useRef = LLVMGetFirstUse(inst);
-          useRef != null;
-          useRef = LLVMGetNextUse(useRef)) {
-        LLVMValueRef userRef = LLVMGetUser(useRef);
-        uses.add(new Use(instruction, context.getInst(userRef), i));
-        i++;
-      }
-      instruction.setUses(uses);
     }
     block.setInstList(instructionList);
   }
