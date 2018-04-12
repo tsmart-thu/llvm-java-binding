@@ -210,14 +210,14 @@ public class CallInst extends Instruction {
       str = "%" + getName() + " = call ";
     str += getType().toString() + " ";
     str += getOperand(getNumOperands() - 1).toString() + "(";
-    for (int i = 0; i <= getNumArgOperands(); i ++) {
+    for (int i = 0; i < getNumArgOperands(); i ++) {
       if (getOperand(0) instanceof Metadata) {
         str += "metadata ??";
       } else {
         str += getOperand(0).getType().toString() + " ";
         str += Formatter.asOperand(getOperand(i));
       }
-      if (i < getNumArgOperands()) {
+      if (i < getNumArgOperands() - 1) {
         str += ", ";
       }
     }
