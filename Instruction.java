@@ -24,13 +24,18 @@ import static cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlag
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.cast;
 import static cn.edu.thu.tsmart.core.cfa.util.Casting.dyncast;
 
+import cn.edu.thu.sse.common.UniqueIdGenerator;
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.AtomicOrdering;
 import com.google.common.base.Optional;
 
-public abstract class Instruction extends User implements IInstruction {
+public abstract class Instruction extends User implements IInstruction, Comparable<Instruction> {
+
+  private static final UniqueIdGenerator idGenerator = new UniqueIdGenerator();
+  private int id;
 
   protected Instruction(String name, Type type) {
     super(name, type);
+    this.id = idGenerator.getFreshId();
   }
 
   protected BasicBlock parent;
@@ -427,5 +432,10 @@ public abstract class Instruction extends User implements IInstruction {
   @Override
   public int hashCode() {
     return originalText.hashCode() * 31 + getFunction().getName().hashCode();
+  }
+
+  @Override
+  public int compareTo(Instruction o) {
+    return this.id - o.id;
   }
 }
