@@ -28,7 +28,7 @@ import cn.edu.thu.sse.common.UniqueIdGenerator;
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.AtomicOrdering;
 import com.google.common.base.Optional;
 
-public abstract class Instruction extends User implements IInstruction, Comparable<Instruction> {
+public abstract class Instruction extends User implements IInstruction {
 
   private static final UniqueIdGenerator idGenerator = new UniqueIdGenerator();
   private int id;
@@ -434,8 +434,7 @@ public abstract class Instruction extends User implements IInstruction, Comparab
     return originalText.hashCode() * 31 + getFunction().getName().hashCode();
   }
 
-  @Override
-  public int compareTo(Instruction o) {
-    return this.id - o.id;
+  public int getId() {
+    return id;
   }
 }
