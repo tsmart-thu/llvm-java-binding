@@ -431,7 +431,7 @@ public abstract class Instruction extends User implements IInstruction {
 
   @Override
   public int hashCode() {
-    return originalText.hashCode() * 31 + getFunction().getName().hashCode();
+    return id;
   }
 
   public int getId() {
