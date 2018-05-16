@@ -21,8 +21,8 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlags;
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.Predicate;
-import cn.edu.thu.tsmart.core.cfa.llvm.Type.TypeID;
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
+import cn.edu.thu.tsmart.util.Trouble;
 import cn.edu.thu.tsmart.util.globalinfo.GlobalInfo;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
@@ -32,14 +32,12 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
 import java.util.TreeMap;
-import jdk.nashorn.internal.codegen.CompilerConstants.Call;
 import org.bytedeco.javacpp.BytePointer;
 import org.bytedeco.javacpp.PointerPointer;
 import org.bytedeco.javacpp.SizeTPointer;
 import sun.reflect.generics.reflectiveObjects.NotImplementedException;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -935,8 +933,11 @@ public class Converter {
         itp.setOperands(operands);
         return itp;
       default:
-        System.out.println(opcode);
-        assert false : "unhandled constant expr type";
+        Trouble
+            .futureWork("unhandled constant expr type for opcode: " + opcode
+                + ", origin statement is: "
+                + LLVMPrintValueToString(valueRef).getString());
+        break;
     }
     return null;
   }
