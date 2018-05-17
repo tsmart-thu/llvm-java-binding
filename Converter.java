@@ -932,6 +932,20 @@ public class Converter {
         }
         itp.setOperands(operands);
         return itp;
+      case LLVMTrunc:
+        type = getType(LLVMTypeOf(valueRef));
+        UnaryConstantExpr trunc =
+            UnaryConstantExpr.getInstance(
+                LLVMGetValueName(valueRef).getString(),
+                type,
+                OpCode.TRUNC,
+                convertValueToConstant(LLVMGetOperand(valueRef, 0)),
+                type);
+        for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
+          operands.add(convert(LLVMGetOperand(valueRef, i), null));
+        }
+        trunc.setOperands(operands);
+        return trunc;
       default:
         Trouble
             .futureWork("unhandled constant expr type for opcode: " + opcode
