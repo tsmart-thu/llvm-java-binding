@@ -211,10 +211,10 @@ public class CallInst extends Instruction {
     str += getType().toString() + " ";
     str += getOperand(getNumOperands() - 1).toString() + "(";
     for (int i = 0; i < getNumArgOperands(); i ++) {
-      if (getOperand(0) instanceof Metadata) {
+      if (getOperand(i) instanceof Metadata) {
         str += "metadata ??";
       } else {
-        str += getOperand(0).getType().toString() + " ";
+        str += getOperand(i).getType().toString() + " ";
         str += Formatter.asOperand(getOperand(i));
       }
       if (i < getNumArgOperands() - 1) {
