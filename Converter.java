@@ -88,10 +88,14 @@ public class Converter {
             context.putFilename(myNum, fileName);
           } else if(s[1].contains("!DISubprogram")) {
             String[] ss = (s[2]).split(", |: ");
+            String functionName = ss[1].replace("\"", "");
+            int myLine = Integer.parseInt(ss[7]);
             int fileNum = Integer.parseInt(ss[5].replace("!", ""));
             int myNum = Integer.parseInt(s[0].replace("!", ""));
             String fileName = context.getFilename(fileNum);
             context.putFilename(myNum, fileName);
+            context.putFunctionFilename(functionName, fileName);
+            context.putFunctionLine(functionName, myLine);
           }
         }
       }
@@ -133,6 +137,10 @@ public class Converter {
 
   private void postProcess(LlvmModule llvmModule) {
     for (LlvmFunction function : llvmModule.functions()) {
+      Metadata fMd = new Metadata();
+      fMd.setFile(context.getFunctionFilename(function.getName()));
+      fMd.setLine(context.getFunctionLine(function.getName()));
+      function.setMetadata(fMd);
       for (BasicBlock basicBlock : function.getBasicBlockList()) {
         for (Instruction instruction : basicBlock.getInstList()) {
           if (instruction.getOpcode() == OpCode.CALL) {

@@ -184,4 +184,20 @@ public class Context {
   public void putPointerSize(long l) {
     this.pointerSize = l;
   }
+
+  private Map<String, String> functionToFile = new HashMap<>();
+  public void putFunctionFilename(String functionName, String fileName) {
+    this.functionToFile.put(functionName, fileName);
+  }
+  public String getFunctionFilename(String functionName) {
+    return this.functionToFile.get(functionName);
+  }
+  private Map<String, Integer> functionToLine = new HashMap<>();
+  public void putFunctionLine(String functionName, int line) {
+    this.functionToLine.put(functionName, line);
+  }
+  public int getFunctionLine(String functionName) {
+    Integer line = this.functionToLine.get(functionName);
+    return line != null ? line : 0;
+  }
 }

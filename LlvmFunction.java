@@ -36,6 +36,7 @@ public class LlvmFunction extends GlobalObject {
   // TODO initialize in Converter
   private AttributeList attrs;
   private List<Argument> argumentList;
+  private Metadata metadata;
 
   public LlvmFunction() {}
 
@@ -99,5 +100,13 @@ public class LlvmFunction extends GlobalObject {
       result += 31 * result + getName().hashCode();
     }
     return result;
+  }
+
+  public void setMetadata(Metadata metadata) {
+    this.metadata = metadata;
+  }
+
+  public Metadata getMetadata() {
+    return metadata;
   }
 }
