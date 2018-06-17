@@ -185,7 +185,16 @@ public class CallInst extends Instruction {
 
   @Nullable
   public LlvmFunction getCalledFunction() {
-    return dyncast(getOperand(getNumOperands() - 1), LlvmFunction.class);
+    Value operandFunction = getOperand(getNumOperands() - 1);
+    LlvmFunction dyncast = dyncast(operandFunction, LlvmFunction.class);
+    if (dyncast != null) {
+      return dyncast;
+    }
+    if (operandFunction instanceof UnaryConstantExpr && ((UnaryConstantExpr) operandFunction).getOpcode() == OpCode.BITCAST) {
+      // handle external function which is bitcast ... to ...
+      dyncast = dyncast(((UnaryConstantExpr) operandFunction).getOperand(0), LlvmFunction.class);
+    }
+    return dyncast;
   }
 
   public Value getCalledValue() {
