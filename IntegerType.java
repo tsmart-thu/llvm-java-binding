@@ -21,6 +21,8 @@ package cn.edu.thu.tsmart.core.cfa.llvm;
 
 // import cn.edu.thu.tsmart.core.util.math.MathExtras;
 
+import java.util.Objects;
+
 /**
  * @author guangchen on 01/03/2017.
  */
@@ -57,4 +59,20 @@ public class IntegerType extends Type {
     return "i" + bitWidth;
   }
 
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (o == null || getClass() != o.getClass()) {
+      return false;
+    }
+    IntegerType that = (IntegerType) o;
+    return bitWidth == that.bitWidth;
+  }
+
+  @Override
+  public int hashCode() {
+    return bitWidth;
+  }
 }
