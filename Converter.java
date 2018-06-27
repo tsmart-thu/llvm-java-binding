@@ -110,16 +110,7 @@ public class Converter {
     // Important make function order natural
     Map<String, LlvmFunction> functionMap = new TreeMap<>();
     // create globals
-    List<GlobalVariable> globalList = new ArrayList<>();
-    for (LLVMValueRef g = LLVMGetFirstGlobal(moduleRef); g != null; g = LLVMGetNextGlobal(g)) {
-      String name = LLVMGetValueName(g).getString();
-      Type type = getType(LLVMTypeOf(g));
-      Constant init = Casting.castOrNull(convert(LLVMGetInitializer(g), null), Constant.class);
-      Metadata m = context.getGlobalVariableMetadata(name);
-      GlobalVariable variable = new GlobalVariable(name, type, init, m);
-      context.putGlobalVariable(g, variable);
-      globalList.add(variable);
-    }
+    List<GlobalVariable> globalList = getGlobalVariables(moduleRef);
     // first create
     for (LLVMValueRef f = LLVMGetFirstFunction(moduleRef); f != null; f = LLVMGetNextFunction(f)) {
       LlvmFunction func = new LlvmFunction();
@@ -133,6 +124,20 @@ public class Converter {
     LlvmModule llvmModule = new LlvmModule(context, moduleIdentifier, functionMap, globalList);
     postProcess(llvmModule);
     return llvmModule;
+  }
+
+  public List<GlobalVariable> getGlobalVariables(LLVMModuleRef moduleRef) {
+    List<GlobalVariable> globalList = new ArrayList<>();
+    for (LLVMValueRef g = LLVMGetFirstGlobal(moduleRef); g != null; g = LLVMGetNextGlobal(g)) {
+      String name = LLVMGetValueName(g).getString();
+      Type type = getType(LLVMTypeOf(g));
+      Constant init = Casting.castOrNull(convert(LLVMGetInitializer(g), null), Constant.class);
+      Metadata m = context.getGlobalVariableMetadata(name);
+      GlobalVariable variable = new GlobalVariable(name, type, init, m);
+      context.putGlobalVariable(g, variable);
+      globalList.add(variable);
+    }
+    return globalList;
   }
 
   private void postProcess(LlvmModule llvmModule) {
