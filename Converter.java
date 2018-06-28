@@ -847,6 +847,7 @@ public class Converter {
     Type type;
     List<Value> operands = new ArrayList<>();
     OperatorFlags flag = new OperatorFlags();
+    Predicate pred;
     switch (opcode) {
       case LLVMAdd:
         type = getType(LLVMTypeOf(valueRef));
@@ -959,6 +960,22 @@ public class Converter {
         }
         trunc.setOperands(operands);
         return trunc;
+      case LLVMICmp:
+        type = getType(LLVMTypeOf(valueRef));
+        pred = getICmpPredicate(valueRef);
+        CompareConstantExpr icmp =
+            CompareConstantExpr.getInstance(
+                LLVMGetValueName(valueRef).getString(),
+                type,
+                OpCode.ICMP,
+                pred,
+                convertValueToConstant(LLVMGetOperand(valueRef, 0)),
+                convertValueToConstant(LLVMGetOperand(valueRef, 1)));
+        for (int i = 0; i < LLVMGetNumOperands(valueRef); i++) {
+          operands.add(convert(LLVMGetOperand(valueRef, i), null));
+        }
+        icmp.setOperands(operands);
+        return icmp;
       default:
         Trouble
             .futureWork("unhandled constant expr type for opcode: " + opcode
