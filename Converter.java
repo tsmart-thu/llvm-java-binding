@@ -89,13 +89,27 @@ public class Converter {
           } else if(s[1].contains("!DISubprogram")) {
             String[] ss = (s[2]).split(", |: ");
             String functionName = ss[1].replace("\"", "");
-            int myLine = Integer.parseInt(ss[7]);
-            int fileNum = Integer.parseInt(ss[5].replace("!", ""));
-            int myNum = Integer.parseInt(s[0].replace("!", ""));
-            String fileName = context.getFilename(fileNum);
-            context.putFilename(myNum, fileName);
-            context.putFunctionFilename(functionName, fileName);
-            context.putFunctionLine(functionName, myLine);
+            int lineIndex = 0, fileIndex = 0;
+            while (lineIndex < ss.length) {
+              if(ss[lineIndex].equals("line")) {
+                lineIndex++;
+                int myLine = Integer.parseInt(ss[lineIndex]);
+                context.putFunctionLine(functionName, myLine);
+                break;
+              }
+              lineIndex++;
+            }
+            while (fileIndex < ss.length) {
+              if (ss[fileIndex].equals("file")) {
+                fileIndex++;
+                int fileNum = Integer.parseInt(ss[fileIndex].replace("!", ""));
+                int myNum = Integer.parseInt(s[0].replace("!", ""));
+                String fileName = context.getFilename(fileNum);
+                context.putFilename(myNum, fileName);
+                context.putFunctionFilename(functionName, fileName);
+              }
+              fileIndex++;
+            }
           }
         }
       }
