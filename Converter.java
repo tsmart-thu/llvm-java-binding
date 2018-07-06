@@ -58,7 +58,7 @@ public class Converter {
 
   public LlvmModule convert(LLVMModuleRef moduleRef) {
     //get filename
-    File file = new File(GlobalInfo.getInstance().getIoManager().getProgramNames());
+    File file = new File(GlobalInfo.getInstance().getIoManager().getMergedIrFile());
     BufferedReader reader = null;
     try {
       reader = new BufferedReader(new FileReader(file));
