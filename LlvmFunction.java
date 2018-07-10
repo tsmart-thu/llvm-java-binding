@@ -89,7 +89,7 @@ public class LlvmFunction extends GlobalObject {
   @Override
   public String toString() {
     String res = "@";
-    res += getName().toString();
+    res += getName();
     return res;
   }
 
