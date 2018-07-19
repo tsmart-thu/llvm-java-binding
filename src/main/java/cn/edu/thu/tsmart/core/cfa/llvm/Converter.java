@@ -23,7 +23,6 @@ import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.OperatorFlags;
 import cn.edu.thu.tsmart.core.cfa.llvm.InstructionProperties.Predicate;
 import cn.edu.thu.tsmart.core.cfa.util.Casting;
 import cn.edu.thu.tsmart.util.Trouble;
-import cn.edu.thu.tsmart.util.globalinfo.GlobalInfo;
 import com.google.common.base.Optional;
 import com.google.common.base.Preconditions;
 import com.google.common.collect.ImmutableList;
@@ -56,9 +55,9 @@ public class Converter {
     this.context = context;
   }
 
-  public LlvmModule convert(LLVMModuleRef moduleRef) {
+  public LlvmModule convert(LLVMModuleRef moduleRef, String filename) {
     //get filename
-    File file = new File(GlobalInfo.getInstance().getIoManager().getMergedIrFile());
+    File file = new File(filename);
     BufferedReader reader = null;
     try {
       reader = new BufferedReader(new FileReader(file));

@@ -18,7 +18,7 @@ public class IRReader {
     LLVMParseIRInContext(context.getContextRef(), bufferRef, moduleRef, outMessage);
 
     Converter converter = new Converter(context);
-    return converter.convert(moduleRef);
+    return converter.convert(moduleRef, fileName);
   }
 
   public LlvmModule parseBytecodeFile(String fileName, Context context) {
@@ -28,6 +28,6 @@ public class IRReader {
     LLVMModuleRef moduleRef = new LLVMModuleRef();
     LLVMParseBitcodeInContext2(context.getContextRef(), bufferRef, moduleRef);
     Converter converter = new Converter(context);
-    return converter.convert(moduleRef);
+    return converter.convert(moduleRef, fileName);
   }
 }

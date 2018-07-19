@@ -23,7 +23,6 @@ import com.google.common.base.Function;
 import com.google.common.base.Optional;
 import com.google.common.collect.Lists;
 
-import javax.annotation.Nullable;
 import java.util.List;
 
 /**
@@ -71,9 +70,8 @@ public class Value {
 
     public List<User> users() {
         return Lists.transform(this.uses, new Function<Use, User>() {
-            @Nullable
             @Override
-            public User apply(@Nullable Use input) {
+            public User apply(Use input) {
                 return Optional.fromNullable(input).transform(new Function<Use, User>() {
                     @Override
                     public User apply(Use input) {
